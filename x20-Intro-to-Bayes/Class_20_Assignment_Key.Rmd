@@ -1,0 +1,135 @@
+---
+title: "Intro to Bayes: Assignment"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_20_Assignment_Key.Rmd") -->
+
+#### Due by the beginning of next class (11/16)
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment20.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment20.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about Bayesian statistics
+
+2. extrapolate from in-class exercises to apply Bayesian inference to arbitrary distributions
+
+3. use your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+1. Write down Bayes' Theorem using $D$ to denote "data" and $\theta$ to denote "the hypothesis"
+
+$\Large p(\theta \mid D) = \frac{p(D \mid \theta)p(\theta)}{p(D)}$
+
+2. Label the different components using the following list of concepts:
+	- the posterior probability of the hypothesis
+	- the marginal likelihood of the data
+	- the prior probability of the hypothesis
+	- the likelihood of the data given the hypothesis
+
+$\Large \text{posterior probability} = \frac{\text{likelihood } \times \text{ prior}}{\text{marginal likelihood}}$
+
+### Question 2
+
+If you know a child younger than 5 (or a parent of a child younger than 5), 
+chances are you've heard of RSV (respiratory syncytial virus), 
+a flu-like illness that infects virtually all children in their 
+first few years of life. Although RSV prevalence usually peaks in the winter 
+months in the Northern Hemisphere, this year has seen an unusual 
+wave in the late summer/early fall season.
+
+To detect RSV, healthcare providers generally administer antigen tests, 
+which are cheaper and faster (although generally less accurate) than PCR-based tests.
+The most commonly used RSV antigen test has a 91.7% sensitivity and a 98.9% specificity. 
+Let's say my younger kid (Abe) shows some symptoms of RSV, so we get him
+an antigen test, which comes back positive. 
+Given that result, what is the probability Abe is actually infected with RSV?
+
+In your calculations, assume the following:\
+
+-There are ~7,000 kids under the age of 2 in Ingham County\
+-Abe can be treated as a random draw from the <2yos of Ingham County\
+-over the last 10 days, the average per-day number of new detected cases of active RSV infection in Ingham County is 5\
+-someone infected with RSV is infectious for 7 days\
+-only 1 out of every 3 RSV infections is detected and reported.\
+
+prior: $p(\text{rsv})$ = (new daily cases * number of days infectious * number of unreported cases per reported case)/toddlers of Ingham County = `r 3*5*7/7000`\
+
+```{r, echo=FALSE}
+priorRSV <- 3*5*7/7000
+sensitivity <- 0.917
+specificity <- 0.989
+falsePos <- 1-specificity
+```
+
+
+likelihood: $p(\text{positive result} \mid \text{infected with RSV})$ = `r sensitivity`\
+
+marginal likelihood: $p(\text{positive result}) = p(\text{rsv})p(\text{positive result} \mid \text{rsv}) + (1-p(\text{rsv}))p(\text{positive result} \mid \text{no rsv}) = 
+`r priorRSV*sensitivity + (1-priorRSV)*falsePos`$
+
+posterior probability: $p(\text{rsv} \mid \text{positive result}) = \frac{p(\text{positive result} \mid \text{rsv}) \times p(\text{rsv})}{p(\text{positive result})}$
+
+$\Large p(\text{rsv} \mid \text{positive result}) =  `r (sensitivity * priorRSV)/(priorRSV*sensitivity + (1-priorRSV)*falsePos)`$
+
+So there is only a `r round((sensitivity * priorRSV)/(priorRSV*sensitivity + (1-priorRSV)*falsePos),3)*100`% 
+chance that, given his positive antigen test result, Abe is actually infected with RSV.
+
+
+### Question 3
+
+3a) Building on the results from Question 2, 
+write an R function that explores how the probability Abe is actually infected with RSV 
+given a positive result from an antigen test 
+is dependent on the number of infected toddlers in Ingham County.
+The function should take as its arguments: \
+ -the percentage of toddlers in Ingham County who are actively infected \
+ -the sensitivity of the antigen test (from Question 2)\
+ -the specificity of the antigen test (from Question 2)\
+ 
+and it should return the probability a given toddler is infected with RSV given the positive test result.
+
+
+```{r}
+
+haveRSV <- function(inghamRSV,sensitivity,specificity){
+	pHaveRSV <- (sensitivity * inghamRSV) / (inghamRSV * sensitivity + (1-inghamRSV) * (1-specificity))
+	return(pHaveRSV)
+}
+
+inghamRSV <- seq(0,0.1,length.out=1000)
+rsvProbs <- haveRSV(inghamRSV=inghamRSV,
+	 		   		  sensitivity=0.917,
+	 		   		  specificity=0.989)
+plot(inghamRSV,rsvProbs,
+	 xlab="background rate of RSV in Ingham County",
+	 ylab="probability a given toddler is actually infected RSV\n given a positive test result")
+
+```
+
+3b) At what background level of RSV prevalence in Ingham County does 
+the probability of a given toddler actually being infected given a positive antigen test result go above 0.9?
+
+```{r}
+inghamRSV[which(rsvProbs>0.9)][1]
+```
+
+
+

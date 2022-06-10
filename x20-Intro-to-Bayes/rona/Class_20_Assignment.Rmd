@@ -1,0 +1,87 @@
+---
+title: "Intro to Bayes: Assignment"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_20_Assignment.Rmd") -->
+
+#### Due by the beginning of next class (11/17)
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment20.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment20.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about Bayesian statistics
+
+2. extrapolate from in-class exercises to apply Bayesian inference to arbitrary distributions
+
+3. use your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+1. Write down Bayes' Theorem using $D$ to denote "data" and $\theta$ to denote "the hypothesis"
+
+2. Label the different components using the following list of concepts:
+	- the posterior probability of the hypothesis
+	- the marginal likelihood of the data
+	- the prior probability of the hypothesis
+	- the likelihood of the data given the hypothesis
+
+
+### Question 2
+
+Although a real time PCR (rtPCR) test is used most frequently 
+to diagnose a patient with SARS-CoV-2, this assay is slow, 
+expensive, has to be administered in a lab, and may incorrectly identify 
+a patient as infectious a large fraction of the time 
+(rtPCR is essentially **too** sensitive: 
+it can can detect viral DNA even after it is at such low titers 
+that the patient can longer infect others).
+
+Antigen tests are cheaper, faster, and have the potential to be administered at home.
+The Abbott PanBio antigen test is currently being developed for public use.
+Abbott researchers know it has a 91.7% sensitivity and a 98.9% specificity. 
+Abbott is testing its new assay in Ingham County, MI, where you live.
+On a whim, you get an Abbott PanBio antigen test, which comes back positive. 
+Given that result, what is the probability you are actually infected with SARS-CoV-2?
+
+In your calculations, assume the following:
+-There are ~280,000 people in Ingham County\
+-you can be treated as a random draw from Ingham County\
+-over the last 10 days, the average per-day number of new detected cases of active SARS-CoV-2 infection in Ingham County is 100\
+-someone infected with SARS-CoV-2 is infectious for 10 days\
+-only 1 out of every 4 SARS-CoV-2 infections is detected and reported.\
+
+
+### Question 3
+
+3a) Building on the results from Question 2, 
+write an R function that explores how the probability you are actually infected with SARS-CoV-2 
+given a positive result from an Abbott PanBio antigen test 
+is dependent on the number of infected people in Ingham County.
+The function should take as its arguments: \
+ -the percentage of people in Ingham County who are actively infected \
+ -the sensitivity of the Abbott test (from Question 2)\
+ -the specificity of the Abbott test (from Question 2)\
+ 
+and it should return the probability you are infected with SARS-CoV-2 given the positive test result.
+
+
+3b) At what background level of SARS-CoV-2 prevalence in Ingham County does 
+the probability of you actually being infected given your positive Abbott antigen test result go above 0.9?
+

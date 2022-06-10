@@ -1,0 +1,933 @@
+---
+title: "Lecture 20 - Intro to Bayesian Statistics"
+author: "Gideon Bradburd"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  ioslides_presentation:
+    transition: 0.001
+    bigger: true
+    incremental: true
+---
+<!-- To render the lecture in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("lecture20.Rmd") -->
+
+```{r, include=FALSE}
+	set.seed(234)
+	options(digits=5)
+```
+
+## Quick Recap
+
+1. Probability
+
+2. Random variables 
+
+3. Probability distributions
+
+4. Likelihood
+
+## Rules of probability: recap {.build}
+
+1. The probability of an **_outcome_** is the number of times the outcome occurs divided by the total number of trials.
+
+2. The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
+
+3. The probability of a **_shared event_** is the product of the probabilities of its constitutive events, so long as they're independent.
+
+4. The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
+
+5. A **_conditional probability_** is probability of one outcome _conditional_ on another, 
+and is equal to the probability of the intersection of the outcomes, 
+divided by the probability of the condition
+
+
+## Intro to random variables: recap
+
+1. The outcome of a random process is called a **_random variable_**
+
+2. To calculate the probability of any given value of the random variable:
+	+ we can either define the state space and count or
+	+ we can figure out the probability distribution function
+
+3. A **_probability distribution function_** is a rule or formula 
+that describes the probability of all possible outcomes of a random event
+
+
+## Probability Distributions: recap {.build}
+
+1. A probability distribution gives the probabilities of 
+the outcomes of some stochastic process
+
+2. Many natural processes are well described by some 
+commonly used distributions, which can be categorized 
+as discrete or continuous
+
+3. Given the parameters of the distribution, we can 
+calculate the probability of each outcome of a process
+
+4. For a continuous distribution, this is actually the 
+_relative_ probability
+
+## Likelihood {.build}
+
+In parametric inference, 
+we treat observed data as draws from 
+an underlying process or **_population_**, 
+and we try to learn about that population from our sample.
+
+E.g., if we observe 46 heads out of 100 flips: 
+
+probability says: given that the coin is fair, what's the probability of getting 46 heads out of 100 flips?
+
+statistics says: given 46 heads out of 100 flips, can we figure out the probability that this coin comes up heads?
+
+In formulating the problem this way, 
+we are treating the observed data ($k=46$) as a _known_, 
+and treating $p$ as an unknown **_parameter_** of the model.
+
+
+## Log Likelihood (twin peaks!)
+
+```{r,echo=FALSE}
+heads <- rbinom(10,size=100,prob=0.5)
+probs <- seq(0,1,length.out=50)
+likelihood <- unlist(lapply(probs,function(p){prod(dbinom(heads,100,p))}))
+log.likelihood <- unlist(lapply(probs,function(p){sum(dbinom(heads,100,p,log=TRUE))}))
+
+par(mfrow=c(1,2))
+	plot(probs,likelihood,main="likelihood",pch=20,xlab="p(heads)",ylab="likelihood")
+	plot(probs,log.likelihood,main="log likelihood",pch=20,xlab="p(heads)",ylab="log likelihood")
+```
+
+## Likelihood and number of observations {.build}
+
+What do you think will happen to the likelihood as 
+we increase the number of observations?
+
+```{r}
+n.heads <- rbinom(n=1e4,size=100,prob=0.7)
+probs <- seq(0.001,0.999,length.out=50)
+```
+
+```{r,echo=FALSE}
+lnL1 <- sapply(probs,function(p){
+			sum(dbinom(n.heads[1:100],100,p,log=TRUE))})
+
+lnL2 <- sapply(probs,function(p){
+			sum(dbinom(n.heads[1:1000],100,p,log=TRUE))})
+
+lnL3 <- sapply(probs,function(p){
+			sum(dbinom(n.heads[1:10000],100,p,log=TRUE))})
+```
+
+## Likelihood and number of observations
+
+```{r,echo=FALSE,fig.width=7,fig.height=5.5}
+plot(probs,lnL1,ylab="log likelihood",ylim=c(-2e5,5e4),type='n')
+	abline(v=0.7,col=1,lty=2)
+legend(x="topleft",lty=1,lwd=3,
+		col=c("blue","purple","red"),
+		legend=c("n=1e2","n=1e3","n=1e4"))
+```
+
+## Likelihood and number of observations
+
+```{r,echo=FALSE,fig.width=7,fig.height=5.5}
+plot(probs,lnL1,ylab="log likelihood",ylim=c(-2e5,5e4),type='n')
+	abline(v=0.7,col=1,lty=2)
+	lines(probs,lnL1,col="blue")
+	lines(probs,lnL2,col="purple")
+	lines(probs,lnL3,col="red")
+legend(x="topleft",lty=1,lwd=3,
+		col=c("blue","purple","red"),
+		legend=c("n=1e2","n=1e3","n=1e4"))
+```
+
+## Likelihood recap {.build}
+
+We can calculate the likelihood of observed data given values of the parameters of a distribution
+
+**_Maximum likelihood (ML) inference_** is a method for estimating the values 
+of the parameters of a statistical model that maximize the likelihood 
+of the observed data.
+
+The **_maximum likelihood estimate_** (MLE) is the parameter value
+(or, if there are multiple parameters, the vector of parameter values) 
+that maximize the likelihood of the data.
+
+When we have multiple observations, we calculate their likelihood as the 
+product of their individual likelihoods, or (better) the sum of their **_log likelihoods_**.
+
+The more observations we have, 
+the more confident we are in our parameter estimates 
+(the "peakier" our likelihood surface becomes).
+
+## Bird's-eye view {.build}
+
+Step 7: say something _quantitative_ and _objective_ about 
+the effect of a predictor on a response.
+
+Step 6: run model (use likelihood-based 
+inference and an algorithm to estimate values of parameters of the model)
+
+Step 5: build model (make choices about how we think our data are distributed 
+and the nature of the relationship between predictor and response)
+
+Step 4: know about prob. distributions and deterministic functions 
+
+Step 3: understand the concept of likelihood
+
+Step 2: understand the rules of probability
+
+Step 1: be able to do stuff in R
+
+
+## Bird's-eye view
+
+Step 7: say something _quantitative_ and _objective_ about 
+the effect of a predictor on a response.
+
+Step 6: run model (use likelihood-based 
+inference and an algorithm to estimate values of parameters of the model)
+
+Step 5: build **Bayesian** model (make choices about how we think our data are distributed 
+and the nature of the relationship between predictor and response)
+
+Step 4: know about prob. distributions and deterministic functions 
+
+Step 3: understand the concept of likelihood
+
+Step 2: understand the rules of probability
+
+Step 1: be able to do stuff in R
+
+
+## Bird's-eye view
+
+Step 8: say something _quantitative_ and _objective_ about 
+the effect of a predictor on a response.
+
+Step 7: run model (use likelihood-based 
+inference and an algorithm to estimate values of parameters of the model)
+
+Step 6: build **Bayesian** model (make choices about how we think our data are distributed 
+and the nature of the relationship between predictor and response)
+
+Step 5: know about prob. distributions and deterministic functions 
+
+Step 4: **learn about Bayes Theorem**
+
+Step 3: understand the concept of likelihood
+
+Step 2: understand the rules of probability
+
+
+## Bayes Theorem {.build}
+
+Say we have some hypothesis **$\theta$**, often expressed as the belief a parameter takes a particular value 
+(e.g., that the probability that a given coin flips Heads is 0.4)
+
+And we also have some observed data **$D$** (e.g., some number of flips from that coin)
+
+<div class="centered">
+<span style="color:red">$\Huge{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$</span>
+</div>
+
+Bayes Theorem allows us to assess the probability of a hypothesis given some data, 
+rather than the other way around, 
+as in frequentist statistics.
+
+
+## Bayes Theorem {.build}
+
+Recall (from the definition of conditional probabilities):
+
+<div class="centered">
+$\Large{p(A \; \mid \; B) = \frac{p(A \cap B)}{p(B)}}$
+</div>
+
+and 
+
+<div class="centered">
+$\Large{p(B \; \mid \; A) = \frac{p(B \cap A)}{p(A)}}$
+</div>
+
+and 
+
+<div class="centered">
+$\Large{p(B \cap A) = p(A \cap B)}$
+</div>
+
+## Bayes Theorem {.build}
+
+$\Large{p(A \cap B) = p(A \; \mid \; B) \; \times \; p(B)}$
+
+$\Large{p(B \cap A) = p(B \; \mid \; A) \; \times \; p(A)}$
+
+$\Large{p(A \cap B) = p(B \cap A)}$
+
+so
+
+$\Large{p(A \; \mid \; B) \times p(B) = p(B \; \mid \; A) \; \times \; p(A)}$
+
+\
+
+<span style="color:red">$\Huge{p(A \; \mid \; B) = \frac{p(B \; \mid \; A) \; \times \; p(A)}{p(B)}}$</span>
+
+
+## Bayes Theorem {.build}
+
+<div class="centered">
+<span style="color:red">$\Huge{p(A \; \mid \; B) = \frac{p(B \; \mid \; A) \; \times \; p(A)}{p(B)}}$</span>
+</div>
+
+$p(A \; \mid \; B)$ is the _posterior probability_ (p(A given B))
+
+$p(B \; \mid \; A)$ is the _likelihood_ of B given A
+
+$p(A)$ is the _prior probability_ of A
+
+$p(B)$ is the _marginal likelihood_ or _model evidence_ of B
+
+
+## Bayes Theorem
+
+<div class="centered">
+<span style="color:red">$\Huge{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$</span>
+</div>
+
+$p(\theta \; \mid \; D)$ is the _posterior probability_ (p(model given the data))
+
+$p(D \; \mid \; \theta)$ is the _likelihood_ of the data given the model
+
+$p(\theta)$ is the _prior probability_ of the model
+
+$p(D)$ is the _marginal likelihood_ or _model evidence_ of the data
+
+## Bayes Theorem {.build}
+
+<div class="centered">
+<span style="color:red">$\Huge{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$</span>
+</div>
+
+Allows us to assess the probability of a hypothesis given some data, 
+rather than the other way around ( $p(D \; \mid \; \theta)$ ), 
+as in frequentist statistics.
+
+## Bayes Theorem - Example {.build}
+
+- Using data collected in 1975, we know that the proportion of people that develop thyroid cancer is 0.0001.
+
+- The probability that a biopsy correctly identifies these people as having cancer is 90%.
+
+- The probability of a “false positive” (the test saying there was cancer when there wasn't) is 0.001.
+
+**What is the probability that a person with a positive result actually has cancer?**
+
+## Bayes Theorem - Example {.build}
+
+$\LARGE{p(A \; \mid \; B) = \frac{p(B \; \mid \; A) \; \times \; p(A)}{p(B)}}$
+
+What's A, and what's B?
+
+"A" is cancer, and "B" is the positive result.
+
+\
+\
+
+$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+
+
+## Bayes Theorem - Example {.build}
+
+**What is the probability that a person with a positive result actually has cancer?**
+
+$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+
+$\Large p(\text{PosRes} \; \mid \; \text{Cancer}) =$
+
+$\Large p(\text{Cancer}) =$
+
+$\Large p(\text{PosRes}) =$
+
+
+## Bayes Theorem - Example
+
+**What is the probability that a person with a positive result actually has cancer?**
+
+$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+
+$p(\text{PosRes} \mid \text{Cancer}) = \text{sensitivity (true positive rate)}$
+
+$p(\text{Cancer}) = \text{prior on having cancer}$
+
+$p(\text{PosRes}) = \text{???}$
+	
+## Bayes Theorem - Example {.build}
+
+What about $p(\text{PosRes})$?
+
+$\begin{aligned}
+p(\text{PosRes}) = \: &p(\text{Cancer}) \times p(\text{PosRes} \mid \text{Cancer}) \\
+&+ p(\text{noCancer}) \times p(\text{PosRes} \mid \text{noCancer})
+\end{aligned}$
+
+## Bayes Theorem - Example
+
+**What is the probability that a person with a positive result actually has cancer?**
+
+$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+
+$p(\text{PosRes} \; \mid \; \text{Cancer}) = \text{sensitivity (true positive rate)}$
+
+$p(\text{Cancer}) = \text{prior on having cancer}$
+
+$p(\text{noCancer}) =$
+
+$p(\text{PosRes} \mid \text{noCancer}) =$
+
+$\begin{aligned}
+p(\text{PosRes}) = \: &p(\text{Cancer}) \times p(\text{PosRes} \mid \text{Cancer}) \\
+&+ p(\text{noCancer}) \times p(\text{PosRes} \mid \text{noCancer})
+\end{aligned}$
+
+## Bayes Theorem - Example {.build}
+
+- Using data collected in 1975, we know that the proportion of people that develop thyroid cancer is 0.0001.
+
+    + this gives us the **prior probability** of developing thyroid cancer
+
+- The probability that a biopsy correctly identifies these people as having cancer is 90%.
+
+    + this gives the **sensitivity** of the biopsy test
+
+- The probability that the test says there is cancer when there isn't is 0.001.
+
+    + this gives the **false positive rate** of the biopsy test
+
+## Bayes Theorem - Example
+```{r,echo=FALSE}
+pr.cancer <- 1/1e4
+pr.false.pos <- 1/1e3
+sensitivity <- 0.9
+```
+
+**What is the probability that a person with a positive result actually has cancer?**
+
+$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+
+$\large p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
+
+$\large p(\text{Cancer}) =$ `r pr.cancer`
+
+$\large p(\text{noCancer}) =$ `r 1 - pr.cancer`
+
+$p\large (\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
+
+$\large p(\text{PosRes}) =$ `r pr.cancer` $\times$ `r sensitivity` $+$ `r 1-pr.cancer` $\times$ `r pr.false.pos`
+
+
+## Bayes Theorem - Example
+
+**What is the probability that a person with a positive result actually has cancer?**
+
+$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+
+$\large p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
+
+$\large p(\text{Cancer}) =$ `r pr.cancer`
+
+$\large p(\text{noCancer}) =$ `r 1 - pr.cancer`
+
+$p\large (\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
+
+$\large p(\text{PosRes}) =$ `r pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos`
+
+
+## Bayes Theorem - Example
+
+**What is the probability that a person with a positive result actually has cancer?**
+
+$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{`r (sensitivity * pr.cancer)`}{`r (pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos)`}$
+
+$\large p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
+
+$\large p(\text{Cancer}) =$ `r pr.cancer`
+
+$\large p(\text{noCancer}) =$ `r 1 - pr.cancer`
+
+$p\large (\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
+
+$\large p(\text{PosRes}) =$ `r pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos`
+
+
+## Bayes Theorem - Example
+
+**What is the probability that a person with a positive result actually has cancer?**
+
+$\large p(\text{Cancer} \; \mid \; \text{PosRes}) =$ `r (sensitivity * pr.cancer)/(pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos)`
+
+$\large p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
+
+$\large p(\text{Cancer}) =$ `r pr.cancer`
+
+$\large p(\text{noCancer}) =$ `r 1 - pr.cancer`
+
+$p\large (\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
+
+$\large p(\text{PosRes}) =$ `r pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos`
+
+
+## Bayes'd & Confused {.build}
+
+What's going on here?
+
+We know the false positive rate is only 1/1000, 
+so if a person gets a "positive" diagnosis, 
+shouldn't there be a 99.9% that they have cancer?
+
+Yes, but think about the numbers!
+
+## Bayes'd & Confused {.build}
+
+```{r,include=FALSE}
+n.people <- 1e7
+```
+
+Out of `r n.people` people: 
+
+ - there will be `r n.people * pr.cancer` cancer victims
+ 
+	 + of whom `r n.people * pr.cancer * sensitivity` will be correctly diagnosed.
+
+Of the remaining `r n.people * (1 - pr.cancer)` healthy people:
+ 
+ - there will be `r (n.people * (1 - pr.cancer)) * pr.false.pos` false positives.
+ 
+ So if there's a positive diagnosis, the probability that a person actually has cancer is 
+$\frac{`r n.people * pr.cancer * sensitivity` }{`r n.people * pr.cancer * sensitivity` + `r (n.people * (1 - pr.cancer)) * pr.false.pos`}$
+= `r n.people * pr.cancer * sensitivity/(n.people * pr.cancer * sensitivity + (n.people * (1 - pr.cancer)) * pr.false.pos)`
+
+## Bayes Theorem - Goats and Doors {.build}
+
+I'm a game show host, and you're a contestant!
+
+**The game:**
+
+There are 3 doors. One hides $1,000,000, and there are goats behind the other two doors.
+
+**for the purposes of the game, we assume goats are not a pet that we'd be delighted to welcome into the family.**
+
+## Bayes Theorem - Goats and Doors
+
+I'm a game show host, and you're a contestant!
+
+**The game:**
+
+There are 3 doors. One hides $1,000,000, and there are goats behind the other two doors.
+
+**The rules:**
+
+ - You guess a door, then I open one of the _other two doors_, and I _never reveal the money_.
+
+ - After I open the door, I ask whether you want to switch your guess to the _other_ door.
+
+ - **Should you switch your guess?!** (POLL: A for switch and B for stay)
+
+## Goats & Doors (Monty Hall)
+
+```{r,echo=FALSE}
+	monty.hall.sim <- function(switch=FALSE){
+		money.door <- sample(1:3,1)
+		my.guess1 <- sample(1:3,1)
+		if(my.guess1 != money.door){
+			host.opens <- c(1:3)[-unique(c(money.door,my.guess1))]
+		} else {
+			host.opens <- sample(c(1:3)[-unique(c(money.door,my.guess1))],1)
+		}
+		my.guess2 <- ifelse(switch,
+							c(1:3)[-unique(c(my.guess1,host.opens))],
+							my.guess1)
+		results <- list(list("switch" = switch,
+						"doors" = list("money.door" = money.door,
+									   "my.guess1" = my.guess1,
+									   "host.opens" = host.opens,
+									   "my.guess2" = my.guess2),
+						"win" = ifelse(my.guess2 == money.door,
+									   TRUE,
+									   FALSE)))
+		return(results)
+	}
+
+	plot.monty.hall <- function(results){
+		doors <- matrix(c(1,3,5,1.5,1.5,1.5),nrow=3,ncol=2)
+		lapply(results,
+			function(r){
+				plot(0,xlim=c(0,6),ylim=c(0,3),xaxt='n',yaxt='n',xlab="",ylab="",type='n',main=paste0("Switch=",r$switch))
+					rect(c(0.5,2.5,4.5),c(0.5,0.5,0.5),c(1.5,3.5,5.5),c(2.5,2.5,2.5),col="brown")
+					points(c(1.3,3.3,5.3),c(1.5,1.5,1.5),pch=19,cex=2)
+					text(x=doors[r$doors$money.door,1],y=doors[r$doors$money.door,2],labels="$",cex=5,col=ifelse(r$win,"green","red"))
+					text(x=doors[r$doors$my.guess1,1],y=doors[r$doors$my.guess1,2]+1.2,labels="guess1",cex=3,col="orange")
+					text(x=doors[r$doors$host.opens,1],y=doors[r$doors$host.opens,2]+1.2,labels="opens",cex=3,col="orange")
+					if(r$switch){
+						text(x=doors[r$doors$my.guess2,1],y=doors[r$doors$my.guess2,2]+1.2,labels="guess2",cex=3,col="orange")			
+					}
+				if(r$win){
+					box(lwd=3,col="green")
+				} else {
+					box(lwd=3,col="red")		
+				}
+		})
+		return(invisible(""))
+	}
+```
+
+## Goats & Doors (Monty Hall)
+
+```{r,echo=FALSE}
+	set.seed(123)
+	plot.monty.hall(monty.hall.sim(switch=FALSE))
+```
+
+```{r,cache=TRUE}
+	noswitch.results <- replicate(400,monty.hall.sim(switch=FALSE))
+```
+
+## Goats & Doors (Monty Hall)
+```{r,echo=FALSE}
+	set.seed(123)
+	plot.monty.hall(monty.hall.sim(switch=TRUE))
+```
+
+```{r,cache=TRUE}
+	switch.results <- replicate(400,monty.hall.sim(switch=TRUE))
+```
+
+## No switch p(win):  `r sum(unlist(lapply(noswitch.results,"[[","win")))/400`
+
+```{r,echo=FALSE,cache=TRUE}
+	par(mar=rep(0.05,4),mfrow=c(20,20))
+		plot.monty.hall(noswitch.results)
+```
+
+## Switch p(win): `r sum(unlist(lapply(switch.results,"[[","win")))/400`
+
+```{r,echo=FALSE,cache=TRUE}
+	par(mar=rep(0.05,4),mfrow=c(20,20))
+		plot.monty.hall(switch.results)
+```
+
+## Goats & Doors, with Bayes {.build}
+
+$\Large{p(H \; \mid \; D) = \frac{p(D \; \mid \; H) \; \times \; p(H)}{p(D)}}$
+
+Say I pick Door 1 and Monty opens Door 3.
+
+H1: Door 1 = $ \
+H2: Door 2 = $ \
+H3: Door 3 = $ \
+D3 = Door 3 opened
+
+$p(D3 \; \mid \; H1) = \frac{1}{2}$ \
+$p(H1) = \frac{1}{3}$ \
+$p(D3) =$ ?
+
+## Goats & Doors, with Bayes {.build}
+$p(D3) = p(H1) \times p(D3 \mid H1) \; +$ \
+$\phantom{p(D3) = \;}p(H2) \times p(D3 \mid H2) \; +$ \
+$\phantom{p(D3) = \;}p(H3) \times p(D3 \mid H3)$
+
+$p(D3 \mid H1) = \frac{1}{2}$ \
+$p(D3 \mid H2) = 1$ \
+$p(D3 \mid H3) = 0$ \
+
+$p(H1) = p(H2) = p(H3) = \frac{1}{3}$
+
+$p(D3) = \frac{1}{3}\left(\frac{1}{2} + 1 + 0\right)$
+
+## Goats & Doors, with Bayes {.build}
+
+$\Large{p(H1 \; \mid \; D3) = \frac{p(D3 \; \mid \; H1) \; \times \; p(H1)}{p(D3)}}$
+
+$\Large{p(H1 \; \mid \; D3) = \frac{\frac{1}{2} \; \times \; \frac{1}{3}}{\frac{1}{2}}} = \frac{1}{3}$
+
+and now compare to: 
+
+$\Large{p(H2 \; \mid \; D3) = \frac{p(D3 \; \mid \; H2) \; \times \; p(H2)}{p(D3)}}$
+
+## Goats & Doors, with Bayes {.build}
+
+$\Large{p(H2 \; \mid \; D3) = \frac{p(D3 \; \mid \; H2) \; \times \; p(H2)}{p(D3)}}$
+
+$p(D3 \; \mid \; H2) = 1$ \
+
+$p(H2) = \text{ same as } p(H1) = (\frac{1}{3})$ \
+
+$p(D3) =$ same as before (0.5) \
+
+
+so 
+
+$\Large{p(H2 \; \mid \; D3) = \frac{1 \; \times \; \frac{1}{3}}{\frac{1}{2}}} = \frac{2}{3}$
+
+## Again with the coins {.build}
+
+```{r,echo=FALSE}
+#flips1 <- rbinom(1,10,0.5)
+#flips2 <- rbinom(1,100,0.5)
+flips1 <- 4
+flips2 <- 52
+p.seq <- seq(1e-4,1-1e-4,length.out=500)
+```
+
+```{r,include=FALSE,cache=TRUE}
+
+	lnL.foo <- function(flips,n,p){
+		lnL <- sum(dbinom(flips,n,p,log=TRUE))
+		return(lnL)
+	}
+
+	lnL1 <- sapply(p.seq,function(p){lnL.foo(flips1,n=10,p=p)})
+	lnL2 <- sapply(p.seq,function(p){lnL.foo(flips2,n=100,p=p)})
+	pr1 <- dunif(p.seq,log=TRUE)
+	pr2 <- dbeta(p.seq,3,3,log=TRUE)
+	pr3 <- dbeta(p.seq,1/10,1/10,log=TRUE)
+```
+
+```{r, echo=FALSE}
+	plot(p.seq,lnL1,type='l',col="red",ylim=c(-15,0),
+	 		ylab="likelihood",xlab="values of p",
+	 		main=sprintf("10 coin flips (%s heads)",flips1))
+```
+
+## Again with the coins
+
+```{r, echo=FALSE}
+	plot(p.seq,lnL1,type='l',col="red",ylim=c(-15,0),
+	 ylab="likelihood",xlab="values of p",
+	 main=sprintf("10 coin flips (%s heads)",flips1))
+	 
+	 abline(v=0.5,lwd=3)
+	 text(x=0.32,y=-1,labels="prob(coin is fair)?",font=2)
+```
+
+
+## Prob(coin is fair)?
+
+<div class="centered">
+<span style="color:red">$\Huge{p(A \; \mid \; B) = \frac{p(B \; \mid \; A) \; \times \; p(A)}{p(B)}}$</span>
+</div>
+
+## P(coin is fair)? {.build}
+
+<div class="centered">
+$\large 
+\begin{aligned}
+\text{p}(p=0.5 \mid \text{flips}) \propto \; &\text{p}(\text{flips} \mid p=0.5)\\ 
+&\times \text{p}(p=0.5)
+\end{aligned}$
+</div>
+
+ - what is $\text{p}(p = 0.5)$?
+
+## Prior probability distributions {.build}
+
+Ok well first we have to specify a prior.
+
+What prior should we specify if:
+
+ - we are aliens, and we've never seen a coin before?
+
+ - if we used to be professional coin-flippers, and this isn't our first rodeo?
+
+ - if we know the coin-maker is a shifty dude?
+
+
+## Prior probability distributions
+
+```{r,echo=FALSE,height=5.5,width=4}
+plot(p.seq,type='n',ylim=c(-2,2),xlim=c(0,1),ylab="log prior probability",main="Possible Priors",xlab="values of p")
+	lines(p.seq,pr1,lwd=3,col="blue")
+		text(x=0.5,y=0.2,col="blue",font=2,labels="aliens",cex=2)
+```
+
+## Prior probability distributions
+
+```{r,echo=FALSE,height=5.5,width=4}
+plot(p.seq,type='n',ylim=c(-2,2),xlim=c(0,1),ylab="log prior probability",main="Possible Priors",xlab="values of p")
+	lines(p.seq,pr1,lwd=3,col="blue")
+		text(x=0.5,y=0.2,col="blue",font=2,labels="aliens",cex=2)
+```
+
+<div class="centered">
+$\Large p \sim U(a=0,b=1)$
+</div>
+
+
+## Prior probability distributions
+
+```{r,echo=FALSE,height=5.5,width=4}
+plot(p.seq,type='n',ylim=c(-2,2),xlim=c(0,1),ylab="log prior probability",main="Possible Priors",xlab="values of p")
+		lines(p.seq,pr2,lwd=3,col="green")
+			text(x=0.5,y=1,col="green",font=2,labels=">1 rodeo",cex=2)
+```
+
+## Prior probability distributions
+
+```{r,echo=FALSE,height=5.5,width=4}
+plot(p.seq,type='n',ylim=c(-2,2),xlim=c(0,1),ylab="log prior probability",main="Possible Priors",xlab="values of p")
+		lines(p.seq,pr2,lwd=3,col="green")
+			text(x=0.5,y=1,col="green",font=2,labels=">1 rodeo",cex=2)
+```
+
+<div class="centered">
+$\Large p \sim \text{Beta}(\alpha=3,\beta=3)$
+</div>
+
+
+## Prior probability distributions
+
+```{r,echo=FALSE,height=5.5,width=4}
+plot(p.seq,type='n',ylim=c(-2,2),xlim=c(0,1),ylab="log prior probability",main="Possible Priors",xlab="values of p")
+		lines(p.seq,pr3,lwd=3,col="purple")
+			text(x=0.5,y=-1.45,col="purple",font=2,labels="shifty dude",cex=2)
+```
+
+## Prior probability distributions
+
+```{r,echo=FALSE,height=5.5,width=4}
+plot(p.seq,type='n',ylim=c(-2,2),xlim=c(0,1),ylab="log prior probability",main="Possible Priors",xlab="values of p")
+		lines(p.seq,pr3,lwd=3,col="purple")
+			text(x=0.5,y=-1.45,col="purple",font=2,labels="shifty dude",cex=2)
+```
+
+<div class="centered">
+$\Large p \sim \text{Beta}(\alpha=0.1,\beta=0.1)$
+</div>
+
+
+## Prior probability distributions {.build}
+
+```{r,echo=FALSE,,fig.height=5.5,fig.width=7.5}
+	plot(p.seq,type='n',ylim=c(-2,2),xlim=c(0,1),ylab="log prior probability",main="Possible Priors",xlab="values of p")
+		lines(p.seq,pr1,lwd=3,col="blue")
+			text(x=0.5,y=0.2,col="blue",font=2,labels="aliens",cex=2)
+		lines(p.seq,pr2,lwd=3,col="green")
+			text(x=0.5,y=1,col="green",font=2,labels=">1 rodeo",cex=2)
+		lines(p.seq,pr3,lwd=3,col="purple")
+			text(x=0.5,y=-1.45,col="purple",font=2,labels="shifty dude",cex=2)
+		
+```
+
+## Posterior probability
+
+```{r,echo=FALSE,fig.height=5.5,fig.width=7.5}
+plot(p.seq,lnL1,ylim=c(-15,5),type='l',col=2,lwd=2,ylab="log posterior probability",xlab="values of p",
+	 	main=sprintf("10 coin flips (%s heads)",flips1))
+	lines(p.seq,lnL1+pr1,col="blue",lwd=2,lty=2)
+	lines(p.seq,lnL1+pr2,col="green",lwd=2,lty=2)
+	lines(p.seq,lnL1+pr3,col="purple",lwd=2,lty=2)
+	legend(x="topleft",lty=1,col=c("red","blue","green","purple"),
+			legend=c("log-likelihood","uniform prior",">1 rodeo prior","shifty dude prior"),
+			lwd=3)
+```
+
+## Posterior probability
+
+```{r,echo=FALSE,fig.height=5.5,fig.width=7.5}
+
+pr1.foo <- function(p){
+	pr1 <- dunif(p,0,1,log=TRUE)
+	return(pr1)
+}
+
+pr2.foo <- function(p){
+	pr2 <- dbeta(p,3,3,log=TRUE)
+	return(pr2)
+}
+
+pr3.foo <- function(p){
+	pr3 <- dbeta(p,0.1,0.1,log=TRUE)
+	return(pr3)
+}
+
+post.prob1 <- lnL.foo(flips1,10,0.5) + pr1.foo(0.5)
+post.prob2  <- lnL.foo(flips1,10,0.5) + pr2.foo(0.5)
+post.prob3 <- lnL.foo(flips1,10,0.5) + pr3.foo(0.5)
+
+plot(p.seq,lnL1,ylim=c(-15,5),type='l',col=2,lwd=2,
+		ylab="log posterior probability",xlab="values of p",
+		main=sprintf("10 coin flips (%s heads)",flips1))
+	lines(p.seq,lnL1+pr1,col="blue",lwd=2,lty=2)
+	lines(p.seq,lnL1+pr2,col="green",lwd=2,lty=2)
+	lines(p.seq,lnL1+pr3,col="purple",lwd=2,lty=2)
+	legend(x="topleft",lty=1,col=c("red","blue","green","purple"),
+			legend=c("log-likelihood","uniform prior",">1 rodeo prior","shifty dude prior"),
+			lwd=3)
+	abline(v=0.5,lwd=2)
+		segments(x0=0.5,y0=post.prob1,x1=1.2,y1=post.prob1,lty=2,col="blue")
+		segments(x0=0.5,y0=post.prob2,x1=1.2,y1=post.prob2,lty=2,col="green")
+		segments(x0=0.5,y0=post.prob3,x1=1.2,y1=post.prob3,lty=2,col="purple")
+	# text(x=0.92,y=c(-25,-27.5,-30),
+			# labels=paste0("p(p=0.5) = ",round(c(post.prob2, post.prob1, post.prob3),1)),
+			# col=c("green","blue","purple"))
+	# text(x=0.13,y=c(-40,-42.5,-45),
+			# labels=paste0("p(p=0.0 01) = ",
+						# round(c(lnL.foo(flips,20,0.001) + pr3.foo(0.001),
+								# lnL.foo(flips,20,0.001) + pr1.foo(0.001),
+								# lnL.foo(flips,20,0.001) + pr2.foo(0.001) ),1)),
+			# col=c("purple","blue","green"))
+```
+
+## Posterior probability
+
+```{r,echo=FALSE,,fig.height=5.5,fig.width=7.5}
+
+post.prob1 <- lnL.foo(flips2,100,0.5) + pr1.foo(0.5)
+post.prob2  <- lnL.foo(flips2,100,0.5) + pr2.foo(0.5)
+post.prob3 <- lnL.foo(flips2,100,0.5) + pr3.foo(0.5)
+
+plot(p.seq,lnL2,ylim=c(-15,5),type='l',col=2,lwd=2,
+		ylab="log posterior probability",xlab="values of p",
+		main=sprintf("100 coin flips (%s heads)",flips2))
+	lines(p.seq,lnL2+pr1,col="blue",lwd=2,lty=2)
+	lines(p.seq,lnL2+pr2,col="green",lwd=2,lty=2)
+	lines(p.seq,lnL2+pr3,col="purple",lwd=2,lty=2)
+	legend(x="topleft",lty=1,col=c("red","blue","green","purple"),
+			legend=c("log-likelihood","uniform prior",">1 rodeo prior","shifty dude prior"),
+			lwd=3)
+	abline(v=0.5,lwd=2)
+		segments(x0=0.5,y0=post.prob1,x1=1.2,y1=post.prob1,lty=2,col="blue")
+		segments(x0=0.5,y0=post.prob2,x1=1.2,y1=post.prob2,lty=2,col="green")
+		segments(x0=0.5,y0=post.prob3,x1=1.2,y1=post.prob3,lty=2,col="purple")
+	# text(x=0.92,y=c(-25,-27.5,-30),
+			# labels=paste0("p(p=0.5) = ",round(c(post.prob2, post.prob1, post.prob3),1)),
+			# col=c("green","blue","purple"))
+	# text(x=0.13,y=c(-40,-42.5,-45),
+			# labels=paste0("p(p=0.0 01) = ",
+						# round(c(lnL.foo(flips,20,0.001) + pr3.foo(0.001),
+								# lnL.foo(flips,20,0.001) + pr1.foo(0.001),
+								# lnL.foo(flips,20,0.001) + pr2.foo(0.001) ),1)),
+			# col=c("purple","blue","green"))
+```
+
+## Bayes Takeaways {.build}
+
+<div class="centered">
+<span style="color:red">$\Huge{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$</span>
+</div>
+
+ - the _prior_ represents a belief based on previous information
+ 
+ - the _posterior probability_ is an update of previous beliefs, based on new information
+ 
+ - the likelihood is the vehicle by which the data update the prior
+
+ - Bayes Theorem allows us to assess the probability of a hypothesis given some data (rather than the other way around)
+
+## Next time on Bayes of our lives {.build}
+
+1. So how do we do inference in a Bayesian world?
+
+2. And what happened to that denominator in Bayes Theorem that you said was so difficult to calculate and then conveniently dropped from all calculations?
+

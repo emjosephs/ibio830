@@ -1,0 +1,223 @@
+---
+title: "Skills & Concept Review Homework: Assignment"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Review_Assignment_Key.Rmd") -->
+
+#### Due by the beginning of next class (11/16)
+
+Save this Rmarkdown script as a file named “YourlastName_ReviewAssignment.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_ReviewAssignment.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about probability, likelihood, probability distributions, and Bayesian statistics
+
+2. use your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+You are at a county fair playing a game of chance. 
+The rules are: you roll two 6-sided dice then flip two coins.
+If you roll a 7 AND both coins come up heads, you win the prize: 
+a large stuffed teddy bear.
+
+1a. Assuming the dice and coins are fair, 
+what is the probability that you win the teddy bear?
+
+$p(\text{sum(dice)=7 AND two heads}) = p(\text{sum(dice)=7}) \times p(\text{two heads})$
+
+$p(\text{winning}) = \frac{1}{6} \times \frac{1}{4} = `r round(1/24,3)`$
+
+1b. Write a function that simulates this game, and use it to confirm 
+the analytical probability you calculated in part 1a. I've included 
+pseudocode to help guide your function-writing.
+
+
+
+```{r}
+
+# [twist: the function doesn't require you to pass
+#		it any arguments]
+
+# first, roll two six-sided dice and add them together
+#		(hint: sample)
+
+# next, flip two coins
+#		(hint: rbinom)
+
+# use a logic statement to determine 
+#	whether the outcome is a win or a loss
+
+# call the function many times and determine  
+#	the probability of winning from the 
+#	outcome of the simulations (number of times you won
+#	out of total number of simulations)
+
+simGame <- function(){
+	rolls <- sum(sample(1:6,2,replace=TRUE))
+	flips <- rbinom(1,2,prob=0.5)
+	if(rolls == 7 && flips==2){
+		outcome <- 1
+	} else {
+		outcome <- 0
+	}
+	return(outcome)
+}
+
+sims <- replicate(1e5,simGame())
+length(which(sims==1))/length(sims)
+```
+
+1c. Suppose that the rules of the game have now changed 
+and you win the teddy bear if you roll a 7 OR if you flip 
+two heads (or if you do both).  Edit the function you wrote in part 1b to 
+simulate the probability of winning under this new game.
+
+```{r}
+simGame <- function(){
+	rolls <- sum(sample(1:6,2,replace=TRUE))
+	flips <- rbinom(1,2,prob=0.5)
+	if(rolls == 7 | flips==2){
+		outcome <- 1
+	} else {
+		outcome <- 0
+	}
+	return(outcome)
+}
+
+sims <- replicate(1e5,simGame())
+length(which(sims==1))/length(sims)
+```
+
+
+### Question 2
+
+Use maximum likelihood inference to estimate the parameter values 
+I used to simulate data from a Normal distribution, 
+which are saved as a .Robj file in the Review folder.
+Note that you will have to estimate BOTH the mean and the 
+standard deviation.
+
+```{r,echo=FALSE,}
+normData <- rnorm(1e4,mean=-16,sd=12)
+save(normData,file="normData.Robj")
+```
+
+
+```{r,cache=TRUE}
+load("normData.Robj")
+
+# use mean(normData) and sd(normData)
+# to inform the parameter ranges within 
+# which you do your grid search
+
+meanRange <- mean(normData) + c(-abs(mean(normData))/10,abs(mean(normData))/10)
+sdRange <- sd(normData) + c(-sd(normData)/10,sd(normData)/10)
+
+# use seq() to define the increments at which you'll 
+#	evaluate the likelihood of your data
+nSteps <- 1e2
+meanSeq <- seq(meanRange[1],meanRange[2],length.out=nSteps)
+sdSeq <- seq(sdRange[1],sdRange[2],length.out=nSteps)
+
+# create an empty matrix in which to store the log-likelihood
+#	of the data for each parameter combination
+
+logLik <- matrix(NA,nrow=nSteps,ncol=nSteps)
+
+# calculate the log likelihood of the data 
+#	given every possible parameter combination
+for(i in 1:nSteps){
+	for(j in 1:nSteps){
+		logLik[i,j] <- sum(dnorm(x=normData,mean=meanSeq[i],sd=sdSeq[j],log=TRUE))
+	}
+}
+
+# look at it!
+image(logLik)
+
+# report the MLEs
+
+meanSeq[which(logLik==max(logLik),arr.ind=TRUE)[1,1]]
+sdSeq[which(logLik==max(logLik),arr.ind=TRUE)[1,2]]
+```
+
+### Question 3
+
+Suppose there are two full bowls of cookies. 
+Bowl #1 has 10 chocolate chip and 30 snickerdoodles, 
+while bowl #2 has 20 of each. 
+Our friend Cookiemonster picks a bowl at random, and then picks a cookie at random. 
+We have no reason to believe Cookiemonster treats one bowl differently from another, 
+likewise for the cookies. 
+The cookie turns out to be a snickerdoodle.
+
+ 
+3a. Use Bayes Theorem to calculate the analytical probability that 
+Cookiemonster picked it out of Bowl #1?
+
+$\text{p(bowl1 | snickerdoodle)} = \frac{\text{p(snickerdoodle | bowl1)} \times \text{p(bowl1)}}{\text{p(snickerdoodle)}}$
+
+$\text{p(snickerdoodle | bowl1)} = \frac{30}{40} = `r 30/40`$
+
+$\text{p(bowl1)} = \frac{1}{2} = `r 1/2`$
+
+$\text{p(snickerdoodle) = p(bowl1)} \times \text{p(snickerdoodle | bowl1) + p(bowl2)} \times \text{p(snickerdoodle | bowl2)}$
+
+$\text{p(snickerdoodle)} = \frac{1}{2} \times \frac{30}{40} + \frac{1}{2} \times \frac{20}{40} = `r 1/2 * 30/40 + 1/2 * 20/40`$
+
+$\text{p(bowl1 | snickerdoodle)} = `r (30/40 * 1/2) / (1/2 * 30/40 + 1/2 * 20/40)`$
+
+
+
+3b. Write R code to simulate this problem to see 
+if your answer from 3a was correct.
+
+
+```{r}
+# define the cookies in bowl 1
+bowl1 <- c(rep("chocchip",10),rep("snickerdoodle",30))
+
+# define the cookies in bowl 2
+bowl2 <- c(rep("chocchip",20),rep("snickerdoodle",20))
+
+# define a function to sample a bowl at random
+#	then sample a cookie from that bowl
+simCookie <- function(bowl1,bowl2){
+	bowl <- sample(c("bowl1","bowl2"),1)
+	if(bowl=="bowl1"){
+		cookie <- sample(bowl1,1)
+	} else if (bowl=="bowl2"){
+		cookie <- sample(bowl2,1)
+	}
+	return(c(bowl,cookie))
+}
+
+# simulate that process many times
+nSims <- 1e4
+sims <- replicate(nSims,simCookie(bowl1,bowl2))
+
+# count the number of simulations in which Cookiemonster
+#	draws a snickerdoodle from bowl1, divided by the number 
+# 	of times Cookiemonster draws a snickerdoodle
+
+length(which(sims[1,which(sims[2,]=="snickerdoodle")]=="bowl1"))/length(which(sims[2,]=="snickerdoodle"))
+
+```
+
