@@ -1,0 +1,155 @@
+---
+title: "Intro to Probability 2: Assignment"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_16_Assignment_Key.Rmd") -->
+
+#### Due by the beginning of next class (11/2)
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment16.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment16.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about probability
+
+2. use simulations to build intuition
+
+3. use your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+Define the following terms: 
+
+1a) random variable
+ 
+ \
+**the outcome of a stochastic process**
+ \
+ 
+1b) probability distribution function
+ 
+ \
+**a rule or formula that describes the probability of all possible outcomes of a stochastic process**
+ \
+
+
+### Question 2
+
+<div class="centered">
+$\Large {{n}\choose{k}}p^k (1-p)^{n-k}$
+</div>
+
+2a) Using your own words, break down the equation above and 
+describe what each part means (or is doing).
+
+\
+**The first part ("n choose k") describes the number of ways to get _k_ successes 
+out of _n_ trials.
+The second part ($p^k \times (1-p)^{n-k})$) gives the probability of getting _k_ successes
+out of _n_ trials, where the probability of a success is _p_.
+Together, these two parts describe the probability of seeing _k_ successes out of _n_ trials, 
+where the probability of a success is _p_.
+\
+
+2b) Using the function of this equation that you coded up in class, calculate the probability of 
+seeing 71 successes out of 531 trials, where the probability of success is 0.12345.
+
+\
+`r choose(531,71) * 0.12345^71 * (1-0.12345)^(531-71)`
+**0.03947493**
+\
+
+
+### Question 3
+
+\
+\
+
+October in the Northern Hemisphere marks the start of flu season.
+If our class were meeting in person, what is the probability 
+that no one in the classroom would have an active case of the flu?
+\
+
+For the purposes of this calculation, assume the following:
+
+-there are 55 people in our class\
+-each of us can be treated as a random draw from Ingham County\
+-there are ~280,000 people in Ingham County\
+-over the last 5 days, the average per-day number of newly detected flu cases in Ingham County is 40\
+-someone infected with the flu is infectious for 5 days\
+-only 1 in every 3 flu infections is detected.\
+
+3a) What is the analytical probability that no one in our classroom 
+has an active flu infection?
+
+\
+```{r}
+nClass <- 55
+ingPop <- 2.8e5
+nDaysInf <- 5
+avgDailyCases <- 40
+detProb <- 1/3
+pInf <- (nDaysInf * avgDailyCases / ingPop)/detProb
+```
+p(a random Ingham County resident has flu) = 
+(3 cases for every detected case * 5 days * 40 cases/day) / 280000 people in county = 
+`r pInf`
+p(a random Ingham resident _does not_ have the flu) = `r 1-pInf`
+
+p(no one in class is infected) = `r (1-pInf)^nClass`
+
+\
+
+3b) What is the probability at least one person in the room **_does_** have an active 
+flu infection
+
+p(at least one person is infected) = `r 1-(1-pInf)^nClass`
+
+3c) What is probability 2 people in the room are infected?
+
+`r choose(nClass,2)* (pInf^2) * (1-pInf)^(nClass-2)`
+
+3d) Write a function for simulating this problem for gatherings of arbitrary size.
+The arguments of the function should be the number of people in the room 
+and the probability that a randomly selected person in the county has an active flu infection,
+and it should return the probability (from simulations), 
+that no one in the room has an active flu infection.
+
+\
+\
+```{r}
+simFlu <- function(N,pInf,nReps){
+	sims <- replicate(nReps,
+						any(
+							sample(x = c(0,1),
+								   size = N,
+								   p = c(1-pInf,pInf),
+								   replace = TRUE)
+							== 1)
+					  )
+	return(1-length(which(sims))/nReps)
+}
+
+simFlu(N=10,pInf=pInf,nReps=1e4)
+simFlu(N=nClass,pInf=pInf,nReps=1e4)
+simFlu(N=100,pInf=pInf,nReps=1e4)
+simFlu(N=500,pInf=pInf,nReps=1e4)
+```
+\
+\
