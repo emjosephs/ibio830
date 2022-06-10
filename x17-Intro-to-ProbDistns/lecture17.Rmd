@@ -1,0 +1,409 @@
+---
+title: "Lecture 17 - Introduction to Probability Distributions"
+author: "Gideon Bradburd"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  ioslides_presentation:
+    transition: 0.001
+    bigger: true
+    incremental: true
+---
+<!-- To render the lecture in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("lecture17.Rmd") -->
+
+```{r,echo=FALSE}
+	#set any global options
+	options(digits=3)
+	set.seed(123)
+```
+
+## Intro to random variables: recap
+
+1. The outcome of a random process is called a **_random variable_**
+
+2. To calculate the probability of any given value of the random variable:
+	+ we can either define the state space and count or
+	+ we can figure out the probability distribution function
+
+3. A **_probability distribution function_** is a rule or formula 
+that describes the probability of all possible outcomes of a random event
+
+## Coin-flipping {.build}
+
+Given:
+
+ - a number of flips (**_n_**)
+ 
+ - and a probability of flipping heads (**_p_**)
+
+can we come up with a rule for calculating 
+the probability of any number of heads (**_k_**)?
+
+\
+
+E.g., what's the probability of 43 heads out of 100 flips?
+
+## Coin-flipping {.build}
+
+What's the probability of 43 heads out of 100 flips?
+
+Well, let's start with calculating the probability of 
+any _particular_ sequence of **_n=100_** flips 
+that contains **_k=43_** heads?
+
+```{r}
+	tmp <- rep("T",100)
+	tmp[sample(1:100,43,replace=FALSE)] <- "H"
+	tmp
+```
+
+
+## Coin-flipping  {.build}
+
+What is the probability of any _particular_ sequence of **_n_** flips 
+that contains **_k_** heads?
+
+Well, what do we know?
+
+the probability of each "H" is ______
+
+so the probability of $k$ heads is ______
+
+the probability of each "T" is ______
+
+if there are $n$ flips and $k$ heads, there are ____ tails
+
+so the probability of all the tails is _____
+
+and the probability of a particular sequence of **_n_** flips containing **_k_** heads is ______
+
+
+## Coin-flipping
+
+What is the probability of any _particular_ sequence of **_n_** flips 
+that contains **_k_** heads?
+
+Well, what do we know?
+
+the probability of each "H" is $p$
+ 
+so the probability of $k$ heads is $p^k$
+ 
+the probability of each "T" is $1-p$
+ 
+if there are $n$ flips and $k$ heads, there are $n-k$ tails
+ 
+so the probability of $n-k$ tails is $(1-p)^{(n-k)}$
+ 
+and the probability of a particular sequence of **_n_** flips containing **_k_** heads is $p^k \times (1-p)^{(n-k)}$
+
+
+## Coin-flipping  {.build}
+
+What's the probability of 43 heads out of 100 flips?
+
+Well, we know the probability of any _particular_ sequence of 
+**_n=100_** flips containing **_k=43_** heads is 
+
+<div class="centered">
+$\Large (0.5)^{43} \times (1-0.5)^{57}$
+</div>
+
+\
+
+Now we need to know _how many ways there are_ of getting a sequence of 
+**_n=100_** flips containing **_k=43_** heads.
+
+<div class="centered">
+$\Large {{n}\choose{k}}$
+</div>
+
+```{r,eval=FALSE}
+	choose(n=100,k=43)
+```
+
+
+## Coin-flipping  {.build}
+
+So, what's the probability of 43 heads out of 100 flips?
+
+Well, we've just derived the **_probability distribution function_** 
+for coin-flipping!
+
+<div class="centered">
+$\Large {{n}\choose{k}} \times \left( p^k \times (1-p)^{n-k}	\right)$
+</div>
+
+```{r}
+	coin.flip.prob <- function(n,k,p){
+		prob <- choose(n,k) * p^k * (1-p)^(n-k)
+		return(prob)
+	}
+```
+	
+```{r}
+	coin.flip.prob(n=100,k=43,p=0.5)
+```
+
+## Coin-flipping - a probability distribution function {.build}
+```{r,fig.width=6.5,fig.height=5,fig.align="center",echo=FALSE}
+	plot(coin.flip.prob(n=100,k=0:100,p=0.5),
+			xlab="successes",ylab="probability",main="coin-flipping:\nprobability distribution function",
+			pch=20,col=adjustcolor(1,0.7))
+```
+
+## 
+```{r,fig.width=6.5,fig.height=5,fig.align="center",echo=FALSE}
+	plot(0,type='n',xlim=c(0,25),ylim=c(0,0.2),
+			xlab="successes",ylab="probability",main="Recreate Me!")
+		lines(0:25,coin.flip.prob(n=25,k=0:25,p=0.3),lwd=3,col="blue")
+		lines(0:25,coin.flip.prob(n=25,k=0:25,p=0.5),lwd=3,col="purple")
+		lines(0:25,coin.flip.prob(n=25,k=0:25,p=0.7),lwd=3,col="red")
+		legend(x="topright",lty=1,lwd=3,col=c("blue","purple","red"),legend=c(0.3,0.5,0.7),title="p(heads) = ")
+```
+
+## The binomial distribution {.build}
+
+Per wikipedia:
+
+\
+
+The **_binomial distribution_** with parameters **_n_** and **_p_** is the discrete probability 
+distribution of the number of successes in a sequence of **_n_** independent experiments, 
+each asking a yes–no question, and each with its own boolean-valued outcome - 
+a random variable containing single bit of information:
+ 
+ - success/yes/true/one (with probability p) 
+
+ - or failure/no/false/zero (with probability q = 1 − p). 
+
+## Probability distributions: the binomial {.build}
+
+If a random variable **_X_** is binomially distributed, we write:
+
+\
+
+<div class="centered">
+$\Large X \sim B(n,p)$
+</div> 
+
+\
+
+Read as: "_X_ is a draw from a binomial distribution 
+with parameters _n_ and _p_"
+
+\
+
+And, if **_X_** is a draw from a binomial distribution, 
+we can use the **_binomial probability distribution function_** 
+to calculate the probability for any value of **_X_**, given **_n_** and **_p_**.
+
+## Probability distributions: the binomial {.build}
+
+There are also tools available for working with the binomial distribution:
+
+```{r,eval=FALSE}
+# look at rbinom and dbinom
+?rbinom
+```
+
+Using `rbinom`, generate 1 sample of 100 draws from a 
+binomial distribution with `p=0.6`.
+
+```{r}
+	rbinom(n=1,size=100,p=0.6)
+```
+
+## Probability distributions: the binomial {.build}
+
+The mean and variance of the binomial distribution are 
+defined!
+
+If $X \sim B(n,p)$, we know:
+
+<div class="centered">
+$\Large \mathbb{E}[X] = np$
+</div> 
+
+\
+
+and
+
+\
+
+<div class="centered">
+$\Large \mathbb{V}ar(X) = np(1-p)$
+</div>
+
+## Probability distributions: the binomial {.build}
+
+<div class="centered">
+```{r,echo=FALSE,fig.height=5,fig.width=6}
+	viz.binom.stats <- function(n,p){
+		binomDraws <- rbinom(1e5,n,p)
+		hist(binomDraws,xlab="number of heads",main=sprintf("X ~ Binomial(n=%s,p=%s)\nE[X]=%s, Var[X] = %s",n,p,n*p,n*p*(1-p)))
+		abline(v=mean(binomDraws),lwd=3,col=4,lty=1)
+		abline(v=n*p,lwd=3,col=2,lty=3)
+		segments(x0=n*p - var(binomDraws)/2,y0=5,
+				 x1=n*p + var(binomDraws)/2,y1=5,
+				 col=4,lwd=4,lty=1)
+		segments(x0=n*p - (n*p*(1-p)/2),y0=0,
+				 x1=n*p + (n*p*(1-p)/2),y1=0,
+				 col=2,lwd=4,lty=3)
+		legend(x="topright",legend=c("sample","predicted"),col=c(4,2),lwd=3,lty=c(1,3))
+	}
+	viz.binom.stats(n=50,p=0.7)
+```
+</div> 
+
+## Probability distributions {.build}
+
+The binomial is only one probability distribution; 
+there are many others!
+
+Why are they useful?
+
+Because they describe processes that shape 
+the world around us!
+
+## Course Motto: D.R.E.A.M. {.build}
+
+### **D**istributions
+
+### **R**ule
+
+### **E**verything
+
+### **A**round
+
+### **M**e
+
+## Distributions and Random Variables {.build}
+
+Random variables come in two flavors: **_discrete_** and **_continuous_**
+
+- **Discrete** random variables are things that can be counted
+	+ heads in a coinflip experiment, fish in a lake
+\
+\
+
+- **Continuous** random variables are things that can be measured
+	+ height or weight
+
+\
+\
+
+Fun fact: continuous RVs are kind of discrete?!
+
+## Distributions and Random Variables {.build}
+
+Discrete probability distributions have 
+**_probability mass functions_**
+
+- <div class="centered">
+$\Large {{n}\choose{k}}p^k (1-p)^{n-k}$
+</div>
+
+- a **_pmf_** gives the probability that a discrete random variable is _exactly_ equal to some value
+	+ e.g., what's the probability of getting _exactly_ 43 heads out of 100 coin flips
+\
+
+What about continuous RVs?
+
+## {.columns-2 .build}
+### Discrete (heads):
+
+\
+\
+
+```{r,fig.width=4,fig.height=4,echo=FALSE,align="center"}
+plot(coin.flip.prob(n=100,k=0:100,p=0.5),
+			xlab="successes",ylab="probability",
+			pch=20,col=adjustcolor(1,0.7),main="discrete")
+```
+
+\
+\
+
+### Continuous (height):
+
+\
+\
+
+```{r,fig.width=4,fig.height=4,echo=FALSE,align="center"}
+norm.prob <- function(x,mean,sigma){
+ 	prob <- exp(-((x-mean)^2/(2*sigma^2)))/sqrt(2*pi*sigma^2)
+ 	return(prob)
+}
+lower <- 10
+upper <- 130
+plot(lower:upper,norm.prob(lower:upper,mean=70,sigma=20),type='n',
+		xlab="height",ylab="probability",main="continuous")
+	lines(seq(lower,upper,length.out=500),
+			norm.prob(seq(lower,upper,length.out=500),mean=70,sigma=20))
+```
+
+## Probability density functions {.build}
+
+A continuous variable can take 
+an infinite possible number of values, 
+**the probability of any specific value is 0**.
+ 
+So, a pdf measures the _relative_ probability 
+of a given value.
+
+<div class="centered">
+```{r,fig.width=5,fig.height=4,echo=FALSE,align="center"}
+norm.prob <- function(x,mean,sigma){
+ 	prob <- exp(-((x-mean)^2/(2*sigma^2)))/sqrt(2*pi*sigma^2)
+ 	return(prob)
+}
+lower <- 10
+upper <- 130
+plot(lower:upper,norm.prob(lower:upper,mean=70,sigma=20),type='n',
+		xlab="height",ylab="probability",main="continuous")
+	lines(seq(lower,upper,length.out=500),
+			norm.prob(seq(lower,upper,length.out=500),mean=70,sigma=20))
+```
+</div>
+
+## Intro to random variables: recap
+
+1. The outcome of a random process is called a **_random variable_**
+
+2. To calculate the probability of any given value of the random variable:
+	+ we can either define the state space and count or
+	+ we can figure out the probability distribution function
+
+3. A **_probability distribution function_** is a rule or formula 
+that describes the probability of all possible outcomes of a random event
+
+## Intro to probability distributions: recap 
+
+1. There are many named **_probability distributions_**. These are useful 
+for describing different natural processes.
+
+2. There are many tools for working with different probability distributions, 
+including tools for simulating data, and calculations for the expected mean and variance
+
+3. Probability distributions can be either discrete or continuous.
+	+ the probability of discrete events can be characterized by a **_probability mass function_**
+	+ the probability of any value in a continuous distribution is 0, but the _relative_ probability 
+	can be described by a **_probability density function_**
+
+## Shiny Demo!
+
+## Get to know a distribution
+
+**continuous**: beta, exponential, gamma, lognormal, normal, uniform
+
+**discrete**: poisson, geometric, negative binomial, Bernoulli
+
+Make an Rmarkdown info cheatsheet, including:
+
+1. A brief history of the distribution (wikipedia is your friend, citations unnecessary unless you make outlandish claims)
+2. A walkthrough of the notation, with an explanation of all parameters
+3. Description of mean and variance, with some intuition-(and character!)-building discussion
+4. State the bounds of the distribution (if there are any), and state whether it is continuous or discrete
+5. Examples of data that are well described by the distribution (preferably biological, better if it's from your field)
+6. Shiny demo
