@@ -1,0 +1,121 @@
+---
+title: "Intro to Probability 1: Assignment"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_15_Assignment.Rmd") -->
+
+#### Due by the beginning of next class (10/28)
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment15.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment15.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about probability
+
+2. use simulations to build intuition
+
+3. use your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+Define the following terms: 
+
+ - probability
+ 
+ \
+ \
+ 
+ - simple event 
+ 
+ \
+ \
+ 
+ - complex event
+ 
+ \
+ \
+ 
+ - shared event
+ 
+ \
+ \
+ 
+ - conditional probability
+
+ \
+ \
+ 
+ - statistical independence
+
+ \
+ \
+ \
+
+
+### Question 2
+
+2a) Suppose a process has two possible outcomes: A and B.
+If the probability of A ($p(A)$) is 0.2, what is p(B)?
+
+\
+\
+
+2b) More generally, if a process has many possible outcomes, 
+one of which is A, what is the probability of _not_ A?
+
+\
+\
+\
+
+
+### Question 3
+
+**The Birthday Problem** is a classic problem in probability:
+
+how many people must be in a room for there to be > 50% probability 
+that _at least_ two of them share a birthday?
+
+\
+
+3a) Write a function for simulating the birthday problem. 
+The argument of the function should be the number of people in the room, 
+and it should return the probability (from simulations), that two or more 
+share a birthday.
+
+\
+\
+\
+\
+
+3b) Using this function, determine how many people must be in a room for 
+there to be > 50% probability that _at least_ two of them share a birthday
+
+\
+\
+\
+\
+
+3c) Suppose humans colonize Mars.  How many people have to be in a room 
+on Mars for there to be a >50% probability that at least 2 of them share 
+a **Martian** birthday?
+
+\
+\
+\
+\

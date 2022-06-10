@@ -1,0 +1,27 @@
+start w/ pipeline showing data (response and predictor)
+
+need a way to make quantitative statements about your data 
+(e.g., is there an effect of X on Y, and if so, how much)
+
+we do that by building a model and doing inference on the parameters
+
+we do that by picking a probability distribution to describe our data 
+and picking a deterministic function to describe the relationship between our 
+predictor and response, then using likelihood-based inference to 
+estimate the values of the parameters of the model
+
+We do that using the principle of likelihood, 
+
+which is based on the fundamentals of probability.
+
+WORK THROUGH THIS PIPELINE AT THE BEGINNING OF EACH LECTURE, WORKING OUR WAY UP!
+
+i think the best flow would be to do simple events -> complex events -> shared events where everything is independent
+and then introduce non-independence and have them realize that expected is different from observed
+and then use that to intro cond probs
+
+drop lou shoes
+
+
+from 2021: 
+	change language on "die rolls" to make it clear that it's die 1 and die 2, not roll-of-2-dice 1 and 2

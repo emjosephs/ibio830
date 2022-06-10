@@ -1,0 +1,968 @@
+---
+title: "Lecture 15 - Intro to Probability"
+author: "Gideon Bradburd"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  ioslides_presentation:
+    transition: 0.0
+    background_transition: none
+    bigger: true
+---
+
+<style>
+.forceBreak { -webkit-column-break-after: always; break-after: column; }
+</style>
+
+<!-- To render the lecture in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("lecture15.Rmd") -->
+
+```{r,echo=FALSE}
+	#set any global options
+	options(digits=3)
+	set.seed(123)
+```
+
+## Hello!
+
+I am Gideon Bradburd
+
+- interested in: evolution, population genetics, statistics, coding, natural history
+
+## How I use R -- for work
+
+- R packages, figures, calculator, simulator, intuition builder
+
+## How I use R -- for fun {.build .smaller}
+
+- choose an episode of Star Trek: The Next Generation to watch AT RANDOM!
+
+```{r}
+choose.TNG <- function(season=NULL){
+	tng.ep.wiki <- paste0("https://en.wikipedia.org/wiki/",
+						  "List_of_Star_Trek:_The_Next_Generation_episodes")
+	ep.names <- rvest::html_text(
+					rvest::html_nodes(
+						xml2::read_html(tng.ep.wiki),
+						".summary"))
+	ep.names <- gsub("\"","",ep.names)
+	if(is.null(season)){
+		season <- sample(1:7,1)
+	}
+	n.eps <- c(25,22,26,26,26,26,25)
+	episode <- sample(1:n.eps[season],1)
+	ep.name <- ep.names[sum(n.eps[1:season]) - n.eps[season] + episode]
+	return(paste0("Season ",season,", Episode ",episode,":  ",ep.name))
+}
+choose.TNG()
+```
+	
+## How I use R -- for fun {.build}
+### Anniversary card for your pRtner!
+
+```{r,eval=FALSE}
+make.heart <- function(x,y,s){
+		z <- seq(0, 2*pi, by=0.1)
+		x.heart <- 16/s * sin(z)^3 + x
+		y.heart <- (13*cos(z)-5*cos(2*z)-2*cos(3*z)-cos(4*z))/s + y
+		return(cbind(x.heart,y.heart))
+	}
+```
+
+## How I use R -- for fun
+### Anniversary card for your pRtner!
+```{r,echo=FALSE,cache=TRUE,message=FALSE,results='hide'}
+make.heart <- function(x,y,s){
+		z <- seq(0, 2*pi, by=0.1)
+		x.heart <- 16/s * sin(z)^3 + x
+		y.heart <- (13*cos(z)-5*cos(2*z)-2*cos(3*z)-cos(4*z))/s + y
+		return(cbind(x.heart,y.heart))
+	}
+	
+hearts <- lapply(1:1000,
+				function(n){
+				make.heart(x=runif(1,-100,100),
+						   y=runif(1,-62.5,62.5),
+						   s=15*rbeta(1,5,5))})
+				
+cols <- rgb(1,0,0,alpha=runif(1000))
+
+animation::saveGIF({
+	for(i in 1:50){
+		plot(0,xlim=c(-100,100),ylim=c(-62.5,62.5),
+			 type='n',xaxt='n',yaxt='n',xlab="",ylab="",bty="n")
+		lapply(1:(i*20),
+			function(n){
+				polygon(hearts[[n]],col = cols[n])
+		})
+	}
+},movie.name="~/Dropbox/TEACHING/IBIO830/EEBstats_2021/Lectures/x15_Intro_to_Probability_1/figs/valengif.gif",
+  clean=TRUE,verbose=FALSE,
+  ani.height=500,ani.width=800,
+  interval=0.05,loop=1,autoplay=FALSE)
+```
+
+<iframe src="figs/valengif.gif" height="500px" width="800px" align="middle" style="border: none;"></iframe>
+
+
+## How I use probability -- for work
+
+> - model estimation with likelihood-based inference
+> - models implemented in R packages
+	- BEDASSLE, SpaceMix, and conStruct
+
+## How I use probability -- for life
+> - should I buy a lotto ticket?
+> - should I get my wisdom teeth out?
+> - when will my kid be born?
+
+## 
+
+```{r, out.width="750px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/not_stat_bio.jpeg")
+```
+
+## Gnar 'Zards
+
+```{r, out.width="350px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/bradburd_chuckwallas.jpg")
+```
+
+
+## Need to do $\hspace{3.2cm}$      1st semester goals {.columns-2}
+
+1. Data into spreadsheet
+
+2. Wrangle data into R
+
+3. Visualize data
+
+4. Build a model
+	+ how are data distributed?
+	+ relationship between predictor and response?
+
+5. Use algorithm to parameterize model
+
+6. Interpret results
+
+<p class="forceBreak"></p>
+\
+
+ - scripting in R
+\
+
+ - plotting basics
+ 
+ - introduction to model building
+ 	+ probability distributions
+ 	+ deterministic functions
+\
+\
+\
+
+ - introduction to inference
+
+## IBio 830, part II {.build}
+
+### Covering: 
+ * probability
+ * probability distributions
+ * likelihood
+ * likelihood-based inference
+ * Bayesian inference
+ * deterministic functions
+ * model building
+
+**Still using R, but focus won't be on the language itself!**
+
+
+## A mystery {.build}
+
+```{r,out.width="750px",echo=FALSE,fig.align="center"}
+	par(mar=c(5,6,1,1))
+	nx <- 105
+	plot(x = seq(0,1,length.out=nx),
+	     y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),type='l',
+	     lwd=5,yaxt='n',xaxt='n',xlab="",ylab="")
+	     mtext(side=1,text="time",cex=3,line=2)
+	     mtext(side=2,text="Enjoyment\nin course",cex=3,line=0.5)
+```
+
+## A mystery
+
+```{r,out.width="750px",echo=FALSE,fig.align="center"}
+	par(mar=c(5,6,1,1))
+	dl <- geosphere::daylength(42.7370,240:345)
+	dlCols <- colorRampPalette(c("yellow","darkblue"),nx)
+	plot(x = seq(0,1,length.out=nx),
+	     y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),type='l',
+	     lwd=5,yaxt='n',xaxt='n',xlab="",ylab="")
+	     mtext(side=1,text="time",cex=3,line=2)
+	     mtext(side=2,text="Enjoyment\nin course",cex=3,line=0.5)
+	points(x = seq(0,1,length.out=nx),
+	       y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),pch=19,cex=1.5,
+	       col=dlCols(nx))
+	legend(x="topright",title="hrs daylight",
+			pch=19,cex=2.5,legend=c(round(dl[1],1),
+								  round(dl[length(dl)],1)),
+			col=c(dlCols(nx)[1],dlCols(nx)[nx]))
+```
+
+## A mystery
+
+```{r,out.width="750px",echo=FALSE,fig.align="center"}
+	par(mar=c(5,6,1,1))
+	nx <- 105
+	plot(x = seq(0,1,length.out=nx),
+	     y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),type='l',
+	     lwd=5,yaxt='n',xaxt='n',xlab="",ylab="")
+	     mtext(side=1,text="time",cex=3,line=2)
+	     mtext(side=2,text="Enjoyment\nin course",cex=3,line=0.5)
+	points(x = seq(0,1,length.out=nx),
+	       y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),pch=19,cex=1.5,
+	       col=dlCols(nx))
+	text(x=0.2,y=-0.5,labels="Marge",cex=3)
+	text(x=0.8,y=-0.5,labels="Gideon",cex=3)
+```
+
+## A mystery
+
+```{r,out.width="750px",echo=FALSE,fig.align="center"}
+	par(mar=c(5,6,1,1))
+	nx <- 105
+	plot(x = seq(0,1,length.out=nx),
+	     y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),type='l',
+	     lwd=5,yaxt='n',xaxt='n',xlab="",ylab="")
+	     mtext(side=1,text="time",cex=3,line=2)
+	     mtext(side=2,text="Enjoyment\nin course",cex=3,line=0.5)
+	points(x = seq(0,1,length.out=nx),
+	       y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),pch=19,cex=1.5,
+	       col=dlCols(nx))
+	text(x=0.2,y=-0.5,labels="Just R",cex=3)
+	text(x=0.8,y=-0.5,labels="R & Stats",cex=3)
+```
+
+## 
+
+```{r, out.width="750px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/fox_marmot.jpeg")
+```
+
+## Shaping Expectations {.build}
+
+This portion of the course will, _by design and necessity_, feel like it moves a little faster.
+
+There will be math!
+
+You will be learning a new skill, using a young skill, which is hard!
+
+The material will build on itself
+
+ALSO:
+
+These Times, the coming darkness, etc.
+
+## How to take this part of the course {.build}
+
+1. take a deep breath!
+
+2. believe in yourself!
+
+3. remember that your primary goal is _present_ understanding, 
+but a solid secondary goal is _future_ understanding.
+
+4. try to stay on top of the work
+
+5. don't be afraid of office hours!
+
+## Why am I doing this to you? {.build}
+
+Many of you got into this business because of a love of nature, 
+not a love of stats and computers.
+
+Our goal is to try to translate your love of _nature_ 
+into a love of _patterns_, and give you the tools to do so!
+
+In part because the patterns are so subtle and complex, 
+biology has become a driver of quantitative methods in STEM.
+
+Also, employment!
+
+## Today's lecture - Intro to Probability! {.build}
+
+Define probability
+
+\
+
+"A measure of the likelihood that an event will occur"
+
+\
+
+How often we expect an event to happen
+
+## Today's rules of probability:  {.build}
+
+The probability of an **_outcome_** is the number of times the outcome occurs divided by the total number of trials.
+
+A **_simple event_** consists of a single experiment and has a single outcome
+
+The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
+
+The probability of a **_shared event_** is the product of the probabilities of its constitutive events, so long as they're independent.
+
+The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
+
+## Probability: Simple Events {.verybig .build}
+
+
+```{r,eval=FALSE}
+numbers <- c(1,2,3,4,5)
+```
+
+\
+\
+
+What's the probability that, if I draw a number at random, 
+I'll get a 5?
+
+This is a **_simple event_** - 
+
+* it consists of a single experiment (drawing a random number) 
+* and has a single outcome (the number drawn)
+
+
+## Probability: simulation is your friend! {.verybig}
+
+```{r,eval=FALSE}
+help(sample)
+```
+
+## Probability: simulation is your friend! {.verybig}
+
+```{r}
+numbers <- c(1,2,3,4,5)
+sample(numbers,1)
+```
+
+```{r}
+sample(numbers,1)
+```
+
+```{r}
+sample(numbers,1)
+```
+
+
+## Probability: simulation is your friend! {.verybig}
+
+```{r,eval=FALSE}
+numbers <- c(1,2,3,4,5)
+sample(numbers,1)
+```
+
+\
+
+Working in breakout rooms, figure out a way 
+to use a large-scale simulation to 
+estimate the probability of picking a 5 in the following vector:
+
+c(1,2,3,4,5)
+
+* hint - look at the documentation for `sample()`!
+
+## Probability: simulation is your friend! {.verybig .build}
+
+```{r}
+numbers <- 1:5
+nDraws <- 1e6
+mySamples <- sample(numbers,nDraws,replace=TRUE)
+```
+
+```{r}
+length(which(mySamples==5))/nDraws
+1/5
+```
+
+## Probability - some terminology {.verybig .build}
+
+We denote the probability of an event with **_p()_**.
+
+So, we can write the probability of a simple event **_e_** as:
+
+\
+
+<div class ="centered">
+$\Huge p(e)$
+</div>
+
+
+as in:
+
+<div class ="centered">
+$\Huge p(\text{drawing a }5) = \frac{1}{5}$
+</div>
+
+## Probability: simple events {.build}
+
+<div class ="centered">
+$\Large p(\text{drawing a }5) = \frac{1}{5}$
+</div>
+
+\
+
+What's the probability of drawing a 4 out of c(1,2,3,4,5)?
+
+\
+
+$\Large p(4) = p(5) = p(1) = p(2) = p(3) = \frac{1}{5}$
+
+
+## First Axiom of Probability: {.build}
+\
+\
+The Law of Total Probability:
+\
+<div class ="centered">
+$\Huge \sum\limits_{i=1}^n p(e_{i}) = 1$
+</div>
+
+The sum of the probabilities of all the outcomes of an event is 1
+
+## Probability: complex events {.build}
+
+**_Complex events_** are composites of simple events
+
+\
+
+e.g., rolling two dice and summing their values
+
+\
+
+The probability of a complex event is the sum of the probabilities 
+of the simple events that make up the complex event
+ 
+## Probability: simulating complex events {.build}
+
+```{r}
+numbers <- c(1,2,3,4,5)
+
+```
+
+\
+
+If I draw **two** numbers at once, 
+what's the probability that they sum to 6?
+
+
+```{r cache=TRUE}
+two.draws <- numeric(1e5)
+for(i in 1:1e5){
+	two.draws[i] <- sum(
+						sample(1:5,2,replace=TRUE)
+				 	)
+}
+
+length(which(two.draws==6))/1e5
+```
+
+## Probability: simulating complex events
+
+```{r}
+numbers <- c(1,2,3,4,5)
+
+```
+
+\
+
+If I draw **two** numbers at once, 
+what's the probability that they sum to 6?
+
+
+```{r cache=TRUE}
+two.draws <- replicate(1e5,
+					sum(
+						sample(1:5,2,replace=TRUE)
+				 	)
+			 )
+length(which(two.draws==6))/1e5
+```
+
+## Probability: complex events {.build}
+
+If I draw **two** numbers at once, 
+what's the probability that they sum to 6?
+
+Well, we can get a 6 with:
+
+	{(1,5),(2,4),(3,3),(4,2),(5,1)}
+	
+and the total *state space* is 5 $\times$ 5 outcomes, 
+each of which is equi-probable (1/25).
+
+
+So the probability of drawing two numbers that sum to 6 
+is the sum of the probabilities of the simple events 
+that make up that complex event.
+
+$\large p(a + b = 6) = \frac{1}{25} + \frac{1}{25} + \frac{1}{25} + \frac{1}{25} + \frac{1}{25} = \frac{1}{5}$
+
+## Quick recap: rules of probability so far
+
+The probability of an **_outcome_** is the number of times the outcome occurs divided by the total number of trials.
+
+A **_simple event_** consists of a single experiment and has a single outcome
+
+The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
+
+
+## Probability: shared events {.build}
+
+A **_shared event_** is the simultaneous occurrence of simple events
+
+The probability of a shared event is denoted p(A $\cap$ B)
+
+(read as probability of the _intersection_ of simple events A and B)
+
+E.g., probability of drawing 2 numbers and getting a 4 AND a 5
+
+the probability of a shared event is the product of the probabilities
+ of its constitutive simple events
+ 
+[As long as the simple events are **independent**, meaning that the 
+outcome of one event does not depend on the outcome of another.]
+
+
+## Probability: simulating shared events {.build}
+
+\
+
+```{r}
+numbers <- 1:5
+```
+
+What's the probability you draw the sequence (4,5), 
+in that order?
+
+
+## Probability: simulating shared events
+
+```{r,cache=TRUE}
+nDraws <- 1e5
+two.draws <- replicate(nDraws,
+					sample(numbers,2,replace=TRUE),
+			  simplify=FALSE)
+```			  
+
+```{r}
+length(
+	which(
+		unlist(
+			lapply(two.draws,
+				function(x){
+					sum(x==c(4,5))
+			})
+		)
+	==2)
+)/nDraws
+```
+
+## Probability: shared events {.build}
+
+the probability of a shared event is the product of the probabilities
+ of the simple events that make up the shared event:
+ 
+ 
+$\Large p(4 \text{ in first draw}) = \frac{1}{5}$
+$\Large p(5 \text{ in second draw}) = \frac{1}{5}$
+$\Large p(\text{sequence } (4,5) ) = \frac{1}{5} \times \frac{1}{5} = 0.04$
+
+
+
+## Rules of probability: recap {.build}
+
+The probability of an **_outcome_** is the number of times the outcome occurs divided by the total number of trials.
+
+A **_simple event_** consists of a single experiment and has a single outcome
+
+The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
+
+The probability of a **_shared event_** is the product of the probabilities of its constitutive events, so long as they're independent.
+
+The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
+
+
+## Probability: let's put on our sparkly shoes {.verybig .build}
+
+You record the hair color and shoe phenotype of all the kids in a daycare.
+
+```{r echo=FALSE}
+nTots <- 87
+brnHair <- rbinom(1, nTots,0.6)
+blkHair <- nTots - brnHair
+plnShoe <- rbinom(1, nTots,0.8)
+sprklShoe <- nTots - plnShoe
+brnpln <- round(nTots * (brnHair/nTots * plnShoe/nTots))
+brnsprkl <- brnHair - brnpln
+hair_shoe <- matrix(c(brnpln,brnsprkl,plnShoe - brnpln,sprklShoe - brnsprkl),nrow=2,ncol=2,byrow=TRUE)
+row.names(hair_shoe) <- c("black hair","brown hair")
+colnames(hair_shoe) <- c("plain","sparkly")
+```
+
+ `r knitr::kable(hair_shoe,align="c")`
+
+## Daycare example: simple event {.verybig .build}
+
+
+`r knitr::kable(rowSums(hair_shoe),align="c",col.names="number of kids")`
+ 
+ \
+ 
+ What's the probability that a randomly selected kid 
+ has black hair?
+
+## Daycare example: simple event {.verybig}
+
+\
+
+`r knitr::kable(rowSums(hair_shoe),align="c",col.names="number of kids")`
+
+
+## Daycare example: simple event {.verybig}
+
+```{r,echo=FALSE}
+hair_shoe <- cbind(hair_shoe,rowSums(hair_shoe))
+hair_shoe <- rbind(hair_shoe,colSums(hair_shoe))
+row.names(hair_shoe)[3] <- "total"
+colnames(hair_shoe)[3] <- "total"
+```
+
+\
+
+ `r knitr::kable(hair_shoe[,3]/hair_shoe[3,3],align="c",col.names=c("proportion of kids"))`
+
+
+## Daycare example: complex event {.build}
+
+`r knitr::kable(hair_shoe[1:2,1:2],align="c")`
+
+\
+
+What's the probability of having black hair?
+
+\
+
+Note that there are now **two** categories of kids with black hair: 
+the plain-shoed and the sparkle-shoed.
+
+
+## Daycare example: complex event {.build}
+
+What's the probability of having black hair?
+
+`r knitr::kable(hair_shoe[1:2,1:2],align="c")`
+
+\
+
+$\begin{align} p(\text{black hair}) = \: &p(\text{black hair AND plain shoes}) \: +\\ &p(\text{black hair AND sparkly shoes}) \end{align}$
+
+
+## Daycare example: shared event
+
+What's the probability of having black hair AND sparkly shoes?
+
+\
+
+`r knitr::kable(hair_shoe[1:2,1:2],align="c")`
+
+\
+
+
+## Daycare example: shared event
+
+What's the probability of having black hair AND sparkly shoes?
+
+\
+
+`r knitr::kable(hair_shoe[1:2,1:2]/hair_shoe[3,3],align="c")`
+
+\
+
+The probability of a **shared event** is the product 
+of the probabilities of the constitutive simple events, 
+so long as the events are independent.
+
+
+<!-- 
+## Daycare example: shared event
+
+`r knitr::kable(hair_shoe/hair_shoe[3,3],align="c")`
+\
+\
+
+$p(\text{black hair} \cap \text{sparkly shoes}) \stackrel{?}{=} p(\text{black hair}) \times p(\text{sparkly shoes})$
+
+## Kid example: shared event
+
+`r knitr::kable(hair_shoe/hair_shoe[3,3],align="c")`
+\
+\
+
+$p(\text{black hair} \cap \text{sparkly shoes}) \stackrel{?}{=} p(\text{black hair}) \times p(\text{sparkly shoes})$
+
+\
+
+`r hair_shoe[1,2]/hair_shoe[3,3]` $\stackrel{?}{=}$ `r hair_shoe[1,3]/hair_shoe[3,3]` $\times$ `r hair_shoe[3,2]/hair_shoe[3,3]`
+
+
+## Kid example: shared event
+
+`r knitr::kable(hair_shoe/hair_shoe[3,3],align="c")`
+\
+\
+
+$p(\text{black hair} \cap \text{sparkly shoes}) \stackrel{?}{=} p(\text{black hair}) \times p(\text{sparkly shoes})$
+
+\
+
+`r hair_shoe[1,2]/hair_shoe[3,3]` $\stackrel{?}{=}$ `r hair_shoe[1,3]/hair_shoe[3,3] * hair_shoe[3,2]/hair_shoe[3,3]`
+
+-->
+
+## Rules of probability: thus far {.build}
+
+1. The probability of an **_outcome_** is the number of times the outcome occurs divided by the total number of trials.
+
+2. The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
+
+3. The probability of a **_shared event_** is the product of the probabilities of its constitutive events, so long as they're independent.
+
+4. The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
+
+## Conditional probabilities
+
+`r knitr::kable(hair_shoe,align="c")`
+
+\
+\
+\
+- probability of sparkly shoes **IF** you have black hair?
+
+
+## Conditional probabilities
+
+- a **_conditional probability_** is the probability of one outcome _conditional_ on another
+
+- written as p(A | B), read as "probability of A _given_ B"
+
+- probability of the intersection of A and B, divided by the probability of B
+
+<div class ="centered">
+$\Huge \frac{p(A ~ \cap ~ B)}{p(B)}$
+</div>
+
+## Conditional probabilities
+
+`r knitr::kable(hair_shoe,align="c")`
+
+\
+\
+- probability of sparkly shoes **IF** you have black hair?
+
+## Conditional probabilities
+
+`r knitr::kable(hair_shoe,align="c")`
+
+\
+\
+- probability of sparkly shoes **IF** you have black hair?
+\
+\
+-p(A | B) = p(A $\cap$ B)/p(B) =
+
+## Conditional probabilities
+
+`r knitr::kable(hair_shoe,align="c")`
+
+\
+\
+- probability of sparkly shoes **IF** you have black hair?
+\
+\
+-p(A | B) = p(A $\cap$ B)/p(B) = `r hair_shoe[1,2]` / `r hair_shoe[1,3]` = `r hair_shoe[1,2] / hair_shoe[1,3]`
+
+
+## Conditional probabilities {.build}
+
+- recall that if A and B are independent, p( A $\cap$ B) = p(A) * p(B)
+
+- so if A and B are independent:
+
+<div class ="centered">
+
+$\Large
+\begin{aligned}
+ p(A \mid B) &= \frac{p(A ~ \cap ~ B)}{p(B)} \\
+\\
+&= \frac{p(A)p(B)}{p(B)} = p(A)
+\end{aligned}$
+</div>
+
+## Conditional probabilities {.build}
+
+`r knitr::kable(hair_shoe,align="c")`
+
+\
+
+Does a kid's hair color affect the probability that their parents will get them 
+a sweet pair of sparkly shoes?
+
+p(sparkle shoes | black hair) = `r (hair_shoe[1,2]/hair_shoe[1,3])`
+
+p(sparkle shoes) = `r (hair_shoe[3,2]/hair_shoe[3,3])`
+
+## Rules of probability: recap {.build}
+
+1. The probability of an **_outcome_** is the number of times the outcome occurs divided by the total number of trials.
+
+2. The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
+
+3. The probability of a **_shared event_** is the product of the probabilities of its constitutive events, so long as they're independent.
+
+4. The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
+
+5. A **_conditional probability_** is probability of one outcome _conditional_ on another, 
+and is equal to the probability of the intersection of the outcomes, 
+divided by the probability of the condition
+
+## {.build}
+
+You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+(1st roll in row, 2nd roll in col):
+
+```{r echo=FALSE}
+rawRolls <- lapply(1:1e2,function(i){sample(1:4,2,replace=TRUE)})
+rolls <- matrix(NA,nrow=4,ncol=4)
+for(i in 1:4){
+	for(j in 1:4){
+		rolls[i,j] <- sum(unlist(lapply(rawRolls,function(x){identical(x,c(i,j))})))
+	}
+}
+colnames(rolls) <- 1:4
+row.names(rolls) <- 1:4
+```
+
+`r knitr::kable(rolls,row.names=TRUE,align="c")`
+\
+<div class ="centered">
+**POLL** - _p_(the first roll is a "1")?
+</div>
+
+**A** - `r rolls[1,1]`/`r sum(rolls)` \
+**B** - (`r rolls[1,1]`+`r rolls[1,2]`+`r rolls[1,3]`+`r rolls[1,4]`)/`r sum(rolls)` \
+**C** - (`r rolls[1,1]`+`r rolls[2,1]`+`r rolls[3,1]`+`r rolls[4,1]`)/`r sum(rolls)` \
+**D** - `r rolls[1,1]`/(`r rolls[1,1]`+`r rolls[2,1]`+`r rolls[3,1]`+`r rolls[4,1]`) \
+
+##
+
+You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+(1st roll in row, 2nd roll in col):
+
+`r knitr::kable(rolls,row.names=TRUE,align="c")`
+\
+<div class ="centered">
+**POLL** - _p_(the first roll is a "1")?
+</div>
+
+A - `r rolls[1,1]`/`r sum(rolls)` \
+<span style="color:red">**B - (`r rolls[1,1]`+`r rolls[1,2]`+`r rolls[1,3]`+`r rolls[1,4]`)/`r sum(rolls)` ** </span>\
+C - (`r rolls[1,1]`+`r rolls[2,1]`+`r rolls[3,1]`+`r rolls[4,1]`)/`r sum(rolls)` \
+D - `r rolls[1,1]`/(`r rolls[1,1]`+`r rolls[2,1]`+`r rolls[3,1]`+`r rolls[4,1]`) \
+
+## 
+
+You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+(1st roll in row, 2nd roll in col):
+
+`r knitr::kable(rolls,row.names=TRUE,align="c")`
+\
+<div class ="centered">
+**POLL** - Expected _p_(rolling (2,2))?
+</div>
+
+**A** - $\frac{1}{4} \times \frac{1}{4}$ \
+**B** - $\frac{1}{4} + \frac{1}{4}$ \
+**C** - ${\frac{1}{4}}^{4}$
+
+## 
+
+You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+(1st roll in row, 2nd roll in col):
+
+`r knitr::kable(rolls,row.names=TRUE,align="c")`
+\
+<div class ="centered">
+**POLL** - Expected _p_(rolling (2,2))?
+</div>
+
+<span style="color:red">**A - $\frac{1}{4} \times \frac{1}{4}$ **</span> \
+B - $\frac{1}{4} + \frac{1}{4}$ \
+C - ${\frac{1}{4}}^{4}$
+
+## 
+
+You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+(1st roll in row, 2nd roll in col):
+
+`r knitr::kable(rolls,row.names=TRUE,align="c")`
+\
+<div class ="centered">
+**POLL** - Expected _p_(sum of both rolls is greater than 3)?
+</div>
+
+**A** - $\frac{1}{4} \times \frac{1}{4} \times \frac{13}{16}$ \
+**B** - $\frac{13}{16}$ \
+**C** - $\frac{1}{2}$
+
+## 
+
+You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+(1st roll in row, 2nd roll in col):
+
+`r knitr::kable(rolls,row.names=TRUE,align="c")`
+\
+<div class ="centered">
+**POLL** - Expected _p_(sum of both rolls is greater than 3)?
+</div>
+
+A - $\frac{1}{4} \times \frac{1}{4} \times \frac{13}{16}$ \
+<span style="color:red">**B** - $\frac{13}{16}$ </span>\
+C - $\frac{1}{2}$
+
+## 
+
+You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+(1st roll in row, 2nd roll in col):
+
+`r knitr::kable(rolls,row.names=TRUE,align="c")`
+\
+<div class ="centered">
+**POLL** - Expected _p_(sum of both rolls > 3 _given_ first roll is a 1)?
+</div>
+
+**A** - $\frac{1}{4} \times \frac{1}{4}$\
+**B** - $\frac{2}{16}$ \
+**C** - $\frac{1}{2}$
+
+## 
+
+You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+(1st roll in row, 2nd roll in col):
+
+`r knitr::kable(rolls,row.names=TRUE,align="c")`
+\
+<div class ="centered">
+**POLL** - Expected _p_(sum of both rolls > 3 _given_ first roll is a 1)?
+</div>
+
+A - $\frac{1}{4} \times \frac{1}{4}$\
+B - $\frac{2}{16}$ \
+<span style="color:red">**C** - $\frac{1}{2}$</span>
