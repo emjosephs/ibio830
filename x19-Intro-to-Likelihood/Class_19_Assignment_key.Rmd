@@ -1,0 +1,136 @@
+---
+title: "Intro to Likelihood: Assignment"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_19_Assignment_key.Rmd") -->
+
+#### Due by the beginning of next class (11/11)
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment19.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment19.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about probability distributions
+
+2. extrapolate from in-class exercises to apply likelihood-based inference to arbitrary distributions
+
+3. use your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+Choose which probability distribution (from the bank below) would best describe 
+the following types of data:
+
+bank: {beta, exponential, gamma, lognormal,
+	   normal, uniform, poisson, geometric, 
+	   negative binomial, bernoulli, binomial}
+	   
+1. Lengths of ribbon left over after wrapping presents
+
+**exponential** - normal or lognormal are also acceptable
+
+2. A chess grandmaster's win percentage
+
+**beta**
+
+3. Number of coding errors (bugs) in student homework assignments
+
+**poisson** - geometric or negative binomial (or even normal) are acceptable
+
+4. Deviation from the mean height in a classroom of toddlers
+
+**normal**
+
+5. Number of times you have to flip a USB drive over before you successfully put it into your computer
+
+**geometric**
+
+6. Number of games before your favorite sports team wins a game
+
+**geometric** - negative binomial is also acceptable
+
+7. Human arm length
+
+**lognormal** - normal is also acceptable
+
+8. Number of seagulls circling a fishing boat
+
+any of the following: {negative binomial, poisson, geometric}
+
+
+### Question 2
+
+What is the log product rule, and how/why is it used for likelihood-based inference?
+
+**The log product rule states that log(A $\times$ B) = log(A) + log(B).
+When we have lots of independent observations, 
+we can use the log product rule to take the sum of their log-likelihoods 
+instead of the product of their likelihoods, 
+which avoids problems with underflow.**
+
+### Question 3
+
+Use maximum likelihood inference to estimate 
+the parameter values I used to simulate data from a Poisson distribution, 
+which are saved as a .Robj file in the Class 19 folder.
+You should refer to the lecture .Rmd file for helpful reference 
+code that you can cannibalize.
+
+I've included pseudocode below to help you on your journey.
+
+```{r}
+################
+#	load in simulated dataset 
+#	hint: see the function load()
+#		don't forget to specify file paths and use quotes
+################
+
+load("poisson_data.Robj")
+
+################
+# visualize data
+#	hint: hist() is always a friend
+################
+
+hist(poisson.data)
+	abline(v=mean(poisson.data),col=2)
+
+################
+# get MLE:
+################
+
+# don't forget that the probability of a shared event 
+#	should be calculated as the sum of the logs of the 
+#	simple events that make up the shared event
+#
+
+
+# do a grid search over values of lambda
+#	extra hint: you can use the histogram to inform the upper limit 
+#				of your grid search!
+
+lamvec <- seq(0,4,length.out=1e3)
+lnL <- lapply(lamvec,function(l){sum(dpois(poisson.data,lambda=l,log=TRUE))})
+plot(lamvec,unlist(lnL))
+	abline(v=lamvec[which.max(lnL)],col=2)
+	
+# ML estimate for lambda is:
+lamvec[which.max(lnL)]
+
+```
