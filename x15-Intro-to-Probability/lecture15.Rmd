@@ -1,12 +1,13 @@
 ---
 title: "Lecture 15 - Intro to Probability"
-author: "Gideon Bradburd"
+author: "Emily Josephs adopted from Gideon Bradburd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   ioslides_presentation:
-    transition: 0.0
+    transition: 0
     background_transition: none
-    bigger: true
+    bigger: yes
+  beamer_presentation: default
 ---
 
 <style>
@@ -24,36 +25,36 @@ output:
 
 ## Hello!
 
-I am Gideon Bradburd
+I am Emily Josephs
 
-- interested in: evolution, population genetics, statistics, coding, natural history
+- interested in: evolutionary genetics, plants, triathlons, cat
 
 ## How I use R -- for work
 
-- R packages, figures, calculator, simulator, intuition builder
+- Data analysis, data exploration, R packages, figures, maps, calculator, reproducible code
 
 ## How I use R -- for fun {.build .smaller}
 
-- choose an episode of Star Trek: The Next Generation to watch AT RANDOM!
+- choose an episode of Star Trek: Deep Space Nine to watch AT RANDOM!
 
 ```{r}
-choose.TNG <- function(season=NULL){
-	tng.ep.wiki <- paste0("https://en.wikipedia.org/wiki/",
-						  "List_of_Star_Trek:_The_Next_Generation_episodes")
+choose.ds9 <- function(season=NULL){
+	ds9.ep.wiki <- paste0("https://en.wikipedia.org/wiki/",
+						  "List_of_Star_Trek:_Deep_Space_Nine_episodes")
 	ep.names <- rvest::html_text(
 					rvest::html_nodes(
-						xml2::read_html(tng.ep.wiki),
+						xml2::read_html(ds9.ep.wiki),
 						".summary"))
 	ep.names <- gsub("\"","",ep.names)
 	if(is.null(season)){
 		season <- sample(1:7,1)
 	}
-	n.eps <- c(25,22,26,26,26,26,25)
+	n.eps <- c(20,26,26,26,26,26,26)
 	episode <- sample(1:n.eps[season],1)
 	ep.name <- ep.names[sum(n.eps[1:season]) - n.eps[season] + episode]
 	return(paste0("Season ",season,", Episode ",episode,":  ",ep.name))
 }
-choose.TNG()
+choose.ds9()
 ```
 	
 ## How I use R -- for fun {.build}
@@ -95,37 +96,13 @@ animation::saveGIF({
 				polygon(hearts[[n]],col = cols[n])
 		})
 	}
-},movie.name="~/Dropbox/TEACHING/IBIO830/EEBstats_2021/Lectures/x15_Intro_to_Probability_1/figs/valengif.gif",
+},movie.name="~/Documents/ibio830/x15-Intro-to-Probability/figs/valengif.gif",
   clean=TRUE,verbose=FALSE,
   ani.height=500,ani.width=800,
   interval=0.05,loop=1,autoplay=FALSE)
 ```
 
 <iframe src="figs/valengif.gif" height="500px" width="800px" align="middle" style="border: none;"></iframe>
-
-
-## How I use probability -- for work
-
-> - model estimation with likelihood-based inference
-> - models implemented in R packages
-	- BEDASSLE, SpaceMix, and conStruct
-
-## How I use probability -- for life
-> - should I buy a lotto ticket?
-> - should I get my wisdom teeth out?
-> - when will my kid be born?
-
-## 
-
-```{r, out.width="750px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/not_stat_bio.jpeg")
-```
-
-## Gnar 'Zards
-
-```{r, out.width="350px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/bradburd_chuckwallas.jpg")
-```
 
 
 ## Need to do $\hspace{3.2cm}$      1st semester goals {.columns-2}
@@ -175,77 +152,13 @@ animation::saveGIF({
 **Still using R, but focus won't be on the language itself!**
 
 
-## A mystery {.build}
-
-```{r,out.width="750px",echo=FALSE,fig.align="center"}
-	par(mar=c(5,6,1,1))
-	nx <- 105
-	plot(x = seq(0,1,length.out=nx),
-	     y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),type='l',
-	     lwd=5,yaxt='n',xaxt='n',xlab="",ylab="")
-	     mtext(side=1,text="time",cex=3,line=2)
-	     mtext(side=2,text="Enjoyment\nin course",cex=3,line=0.5)
-```
-
-## A mystery
-
-```{r,out.width="750px",echo=FALSE,fig.align="center"}
-	par(mar=c(5,6,1,1))
-	dl <- geosphere::daylength(42.7370,240:345)
-	dlCols <- colorRampPalette(c("yellow","darkblue"),nx)
-	plot(x = seq(0,1,length.out=nx),
-	     y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),type='l',
-	     lwd=5,yaxt='n',xaxt='n',xlab="",ylab="")
-	     mtext(side=1,text="time",cex=3,line=2)
-	     mtext(side=2,text="Enjoyment\nin course",cex=3,line=0.5)
-	points(x = seq(0,1,length.out=nx),
-	       y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),pch=19,cex=1.5,
-	       col=dlCols(nx))
-	legend(x="topright",title="hrs daylight",
-			pch=19,cex=2.5,legend=c(round(dl[1],1),
-								  round(dl[length(dl)],1)),
-			col=c(dlCols(nx)[1],dlCols(nx)[nx]))
-```
-
-## A mystery
-
-```{r,out.width="750px",echo=FALSE,fig.align="center"}
-	par(mar=c(5,6,1,1))
-	nx <- 105
-	plot(x = seq(0,1,length.out=nx),
-	     y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),type='l',
-	     lwd=5,yaxt='n',xaxt='n',xlab="",ylab="")
-	     mtext(side=1,text="time",cex=3,line=2)
-	     mtext(side=2,text="Enjoyment\nin course",cex=3,line=0.5)
-	points(x = seq(0,1,length.out=nx),
-	       y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),pch=19,cex=1.5,
-	       col=dlCols(nx))
-	text(x=0.2,y=-0.5,labels="Marge",cex=3)
-	text(x=0.8,y=-0.5,labels="Gideon",cex=3)
-```
-
-## A mystery
-
-```{r,out.width="750px",echo=FALSE,fig.align="center"}
-	par(mar=c(5,6,1,1))
-	nx <- 105
-	plot(x = seq(0,1,length.out=nx),
-	     y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),type='l',
-	     lwd=5,yaxt='n',xaxt='n',xlab="",ylab="")
-	     mtext(side=1,text="time",cex=3,line=2)
-	     mtext(side=2,text="Enjoyment\nin course",cex=3,line=0.5)
-	points(x = seq(0,1,length.out=nx),
-	       y = -1/(1+exp(-(seq(-30,30,length.out=nx)))),pch=19,cex=1.5,
-	       col=dlCols(nx))
-	text(x=0.2,y=-0.5,labels="Just R",cex=3)
-	text(x=0.8,y=-0.5,labels="R & Stats",cex=3)
-```
-
 ## 
 
 ```{r, out.width="750px",echo=FALSE,fig.align="center"}
 	knitr::include_graphics("figs/fox_marmot.jpeg")
 ```
+
+
 
 ## Shaping Expectations {.build}
 
@@ -257,9 +170,11 @@ You will be learning a new skill, using a young skill, which is hard!
 
 The material will build on itself
 
+I am learning along with you!
+
 ALSO:
 
-These Times, the coming darkness, etc.
+Everything else in the world is happening
 
 ## How to take this part of the course {.build}
 
@@ -298,6 +213,22 @@ Define probability
 \
 
 How often we expect an event to happen
+
+## How I use probability {.build}
+> - should I buy a lotto ticket?
+> - when will I give birth?
+
+
+## How I use probability  {.build}
+> - should I buy a lotto ticket?
+> - when will I give birth?
+
+```{r, out.width="750px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/duedate1.png")
+```
+
+
+## 
 
 ## Today's rules of probability:  {.build}
 
