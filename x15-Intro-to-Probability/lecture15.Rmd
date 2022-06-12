@@ -3,11 +3,11 @@ title: "Lecture 15 - Intro to Probability"
 author: "Emily Josephs adopted from Gideon Bradburd"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
+  beamer_presentation: default
   ioslides_presentation:
     transition: 0
     background_transition: none
     bigger: yes
-  beamer_presentation: default
 ---
 
 <style>
