@@ -215,12 +215,10 @@ Define probability
 How often we expect an event to happen
 
 ## How I use probability {.build}
-> - should I buy a lotto ticket?
 > - when will I give birth?
 
 
 ## How I use probability  {.build}
-> - should I buy a lotto ticket?
 > - when will I give birth?
 
 ```{r, out.width="750px",echo=FALSE,fig.align="center"}
@@ -593,7 +591,7 @@ What's the probability of having black hair?
 
 \
 
-$\begin{align} p(\text{black hair}) = \: &p(\text{black hair AND plain shoes}) \: +\\ &p(\text{black hair AND sparkly shoes}) \end{align}$
+$ p(\text{black hair}) = \: &p(\text{black hair AND plain shoes}) \: +\\ &p(\text{black hair AND sparkly shoes}) \end{align}$
 
 
 ## Daycare example: shared event
