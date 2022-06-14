@@ -1,0 +1,121 @@
+---
+title: "Model building: deterministic functions"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_23_Assignment_key.Rmd") -->
+
+#### Due by the beginning of next class (12/2)
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment23.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment23.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about model building
+
+2. extrapolate from in-class exercises to simulate data and do inference with a linear model
+
+3. extrapolate from previous lecture materials to apply Bayes' Theorem to inference with a linear model
+
+4. hone your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+Explain in your own words what each of the terms in the equation below is, 
+as well as what the equation as a whole is describing.
+
+$Y_i \sim \mathcal{N}(\mu_i=f(x_i),\sigma)$
+
+ - Y_i is the $i^{\text{th}}$ response variable
+ - x_i is the $i^{\text{th}}$ predictor variable
+ - $\mu_i$ is the mean of the normal distribution from which the $i^{\text{th}}$ datum is being modeled as a draw
+ - $f$ is the function that relates the predictor variable to the expected value of its associated response variable
+ - $\sigma$ is the standard deviation of the normal distribution, which applies to all data points
+
+As a whole, this equation is saying that our data are being modeled as a function of 
+some predictor variable with normally distributed errors
+
+### Question 2
+
+1. Simulate a dataset of 1000 datapoints using a linear model 
+with Gaussian-distributed errors with the following parameter values:
+
+	- intercept = 12
+	- sigma = 10
+	- predictor effect size = -1.3
+
+You may generate values of the predictor variable however you wish.
+
+```{r}
+x <- seq(0,100,length.out=1000)
+y <- rnorm(1e3,mean=-1.3*x+12,sd=10)
+plot(x,y,xlab="predictor",ylab="response")
+	abline(a=12,b=-1.3,col=2,lwd=2)
+```
+
+
+### Question 3
+
+Use the function lm() to infer the parameter values used 
+to simulate these data.  Confirm your results by overlaying the 
+MLE parameter estimates on the real data (slope and intercept).
+
+```{r}
+mydata <- data.frame("x"=x,"y"=y)
+mod <- lm(y ~ x,data=mydata)
+mod$coefficients
+summary(mod)$sigma
+plot(mydata,xlab="predictor",ylab="response")
+	abline(a=12,b=-1.3,col=2,lwd=2)
+	abline(mod,col="blue",lwd=2,lty=2)
+	legend(x="topright",col=c(4,2),lty=c(1,2),lwd=3,legend=c("estimated","truth"))
+```
+
+### Question 4
+
+Calculate the numerator of Bayes' Theorem 
+for the dataset you simulated in Question 1 
+assuming the following:
+
+* intercept ($\alpha$) = 13
+* effect size ($\beta$) = -1
+* standard deviation ($\sigma$) = 11
+* $\alpha \sim \mathcal{N}(0,1)$
+* $\beta \sim \mathcal{N}(0,1)$
+* $\sigma \sim \text{Exp}(1)$
+
+[hint: don't forget about the log product rule]
+
+```{r,echo=FALSE}
+logLikelihood <- sum(dnorm(y,mean=13+-1*x,sd=11,log=TRUE))
+logPrior <- dnorm(13,mean=0,sd=1,log=TRUE) + dnorm(-1,mean=0,sd=1,log=TRUE) + dexp(11,rate=1,log=TRUE)
+```
+
+$\text{p}(\theta | data) \propto \text{p}(data | \theta) \times \text{p}(\theta)$
+
+$\text{log(p}(\theta | data)) \propto \text{log(p}(data | \theta)) + \text{log(p}(\theta))$
+
+$\text{p}(data | \theta) = \text{sum(dnorm(y,mean=13+-1*x,sd=11,log=TRUE))} = `r round(logLikelihood,3)`$
+
+$\text{p}(\theta) = \text{p}(\alpha = 13) \times \text{p}(\beta = -1) \times \text{p}(\sigma = 11)$
+
+$\text{log(p}(\theta)) = \text{log(p}(\alpha = 13)) + \text{log(p}(\beta = -1)) + \text{log(p}(\sigma = 11))$
+
+$\text{log(p}(\theta)) = \text{dnorm(13,mean=0,sd=1,log=TRUE) + dnorm(-1,mean=0,sd=1,log=TRUE) + dexp(11,rate=1,log=TRUE)} = `r round(logPrior,3)`$
+
+$\text{log(p}(data | \theta) \times  \text{p}(\theta)) = `r round(logLikelihood,3) + round(logPrior,3)`$

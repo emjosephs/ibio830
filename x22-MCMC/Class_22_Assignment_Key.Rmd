@@ -1,0 +1,150 @@
+---
+title: "Intro to MCMC: Assignment"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_22_Assignment_Key.Rmd") -->
+
+#### Due by the beginning of next class (11/23)
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment22.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment22.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about Bayesian inference
+
+2. extrapolate from in-class exercises to apply Bayesian inference to arbitrary distributions
+
+3. use your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+1. Explain, in your own words, the goal and steps of an MCMC algorithm.
+
+**The goal of an MCMC is to characterize the posterior probability distribution 
+of a model given some data by sampling from each position in parameter space 
+in proportion to its posterior probability**
+
+The steps of an MCMC are as follows:
+
+1. Initiate the chain with a randomly chosen parameter value
+2. Calculate the posterior probability of the model given the data 
+(the log likelihood of the data given that parameter value plus the prior probability of that parameter value)
+3. Propose an update to the current parameter value
+4. Calculate the posterior probability of the updated model given the data
+5. Calculate the ratio R of the proposed and current posterior probabilities
+6. Accept the proposed move with a probability proportional to R
+
+Repeat steps 3-6 many times.
+
+### Question 2
+
+Below is a chunk of R code that implements an MCMC algorithm 
+to estimate the rate parameter ($\lambda$) of a Poisson distribution. 
+This code is uncommented - please write a comment for each line 
+explaining what that line is doing.
+
+```{r}
+
+# function for calculating the posterior probability of the model given the data
+calcPostProb <- function(poisData,lambda){
+	# calcualte poisson log likelihood
+	lnL <- sum(dpois(x=poisData,lambda=lambda,log=TRUE))
+	# calculate log prior probability
+		# prior is normal with mean 1 and large variance
+	lnPrior <- dnorm(x=lambda,mean=1,sd=1e6,log=TRUE)
+	# sum log likelihood and log prior to get log posterior probability, and return
+	return(lnL + lnPrior)
+}
+
+# function for running an MCMC to infer the rate parameter of a Poisson distribution
+mcmcPoisson <- function(poisData, nSteps){
+	# initiate empty vector of lambda samples
+	lambdaSamples <- rep(NA,nSteps)
+	# initiate empty vector of posterior probability
+	postProbSamples <- rep(NA,nSteps)
+	# initiate chain with randomly chosen value for lambda
+	lambda <- abs(rnorm(1))
+	# calculate posterior probability of model given the data
+	postProb <- calcPostProb(poisData,lambda)
+	# log the initial value of lambda
+	lambdaSamples[1] <- lambda
+	# log the initial value of the posterior probability
+	postProbSamples[1] <- postProb
+	# do a for loop over the remaining nSteps-1 iterations of the MCMC
+	for(i in 1:nSteps){
+		# propose an update to lambda
+		lambdaPrime <- lambda + rnorm(n=1,mean=0,sd=0.3)
+		# lambda is constrained to be >0, so if the proposed value of lambda is negative, reject the move
+		if(lambdaPrime > 0){
+			# calculate the posterior probability with the proposed value of lambda
+			postProbPrime <- calcPostProb(poisData,lambdaPrime)
+			# calculate the ratio of the posterior probabilities of the proposed and current model
+			#	note that because we've calculated the log posterior probabilities, 
+			#		their ratio is the exponent of the difference between them
+			postRatio <- exp(postProbPrime - postProb)
+			# accept the propose move with a probability proportional to the ratio of the posterior probabilities
+			if(postRatio > runif(n=1,min=0,max=1)){
+				# if the move is accepted, the proposed value of lambda becomes the current value
+				lambda <- lambdaPrime
+				# if the move is accepted, the proposed value of the posterior probability becomes the current value
+				postProb <- postProbPrime
+			}
+		}
+		# log the current value of lambda
+		lambdaSamples[i] <- lambda
+		# log the current value of the posterior probability
+		postProbSamples[i] <- postProb
+	}
+	# return a list containing the estimates of lambda
+	# and the corresponding posterior probabilities
+	return(
+		list(
+			"lambdaSamples" = lambdaSamples,
+			"postProbSamples" = postProbSamples)
+	)
+}
+```
+
+
+### Question 3
+
+Use the code above to do inference on the rate parameter 
+I used to simulate the Poisson-distributed data saved in the 
+.Robj file in the Class 22 homework folder on D2L.
+
+Provide some visualizations of the results of your MCMC run
+
+```{r}
+load("poisData.Robj")
+run <- mcmcPoisson(poisData,1e3)
+layout(matrix(c(1,2,5,5,3,4,5,5),nrow=2,ncol=4,byrow=TRUE))
+	plot(run$postProbSamples,xlab="MCMC iterations",ylab="posterior probability")
+	plot(run$lambdaSamples,xlab="MCMC iterations",ylab="estimates of lambda")
+	plot(run$postProbSamples[201:1e3],xlab="MCMC iterations post burnin",ylab="posterior probability")
+	plot(run$lambdaSamples[201:1e3],xlab="MCMC iterationspost burnin",ylab="estimates of lambda")
+
+	hist(run$lambdaSamples[201:1e3],xlab="estimates of lambda",main="marginal posterior distribution of lambda\n(post burn-in)")
+		credInt <- quantile(run$lambdaSamples[201:1e3],c(0.025,0.975))
+		abline(v=credInt,col=2,lty=2,lwd=2)
+		legend(x="topleft",legend=c("95% credible interval","true value"),lty=c(2,1),lwd=c(1,2),col=c(2,4))
+		abline(v=5.5,col="blue",lwd=3)
+```
+
+
+

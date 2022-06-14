@@ -1,0 +1,680 @@
+---
+title: "Lecture 22 - Intro to MCMC"
+author: "Gideon Bradburd"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  ioslides_presentation:
+    transition: 0
+    bigger: true
+    incremental: true
+---
+<!-- To render the lecture in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("lecture22.Rmd") -->
+
+```{r, include=FALSE}
+	set.seed(123)
+	options(digits=5)
+```
+
+## Last time on Bayes of our Lives {.build}
+
+1. So how do we do inference in a Bayesian world?
+
+2. And what happened to that denominator in Bayes' Theorem that you said was so difficult to calculate and then conveniently dropped from all calculations?
+
+## Bayes' Theorem
+Recall: 
+
+<div class="centered">
+<span style="color:red">$\Huge{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$</span>
+</div>
+
+$p(\theta \; \mid \; D)$ is the _posterior probability_ (p(model given the data))
+
+$p(D \; \mid \; \theta)$ is the _likelihood_ of the data given the model
+
+$p(\theta)$ is the _prior probability_ of the model
+
+$p(D)$ is the _marginal likelihood_ or _model evidence_ of the data
+
+## Bayes' Theorem
+Recall: 
+
+<div class="centered">
+$\Huge{p(\theta \; \mid \; D) = \frac{\boldsymbol{p(D \; \mid \; \theta)} \; \times \; p(\theta)}{p(D)}}$
+</div>
+
+<span style="color:lightgray">$p(\theta \; \mid \; D)$ is the _posterior probability_ (p(model given the data))</span>
+
+$p(D \; \mid \; \theta)$ is the _likelihood_ of the data given the model
+
+<span style="color:lightgray">$p(\theta)$ is the _prior probability_ of the model</span>
+
+<span style="color:lightgray">$p(D)$ is the _marginal likelihood_ or _model evidence_ of the data</span>
+
+## Maximum Likelihood recap {.build}
+
+We can calculate the likelihood of observed data given values of the parameters of a distribution
+
+_Maximum likelihood (ML) inference_ is a method for estimating the values 
+of the parameters of a statistical model that maximize the likelihood 
+of the observed data.
+
+The _maximum likelihood estimate_ (MLE) is the parameter value
+(or, if there are multiple parameters, the vector of parameter values) 
+that maximize the likelihood of the data.
+
+## Maximum Likelihood recap
+
+```{r,echo=FALSE}
+l.binom <- function(p,n.heads){
+	binom.prob <- dbinom(x=n.heads,size=100,prob=p)
+	return(binom.prob)
+}
+p <- seq(0,1,length.out=1e3)
+n.heads <- rbinom(1,100,0.6)
+mle <- optimize(f = l.binom,n.heads=n.heads,lower=0,upper=1,maximum=TRUE)
+plot(p,dbinom(x=n.heads,size=100,p=p),
+	xlab="probability of success",ylab="p(data)",type='n',
+	"main"="One Parameter")
+	lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
+	points(mle$maximum,mle$objective,pch=8,cex=2)
+	arrows(x0 = mle$maximum - 0.15,
+		   x1 = mle$maximum - 0.03,
+		   y0=mle$objective-0.005,
+		   y1=mle$objective,length=0.15,lwd=2)
+	text(x=mle$maximum - 0.21,y=mle$objective-0.011,labels="MLE",cex=2)
+```
+
+```{r,eval=FALSE}
+	mle <- optimize(f = l.binom,lower=0,upper=1,maximum=TRUE)
+```
+
+## Maximum Likelihood recap
+
+```{r,cache=TRUE,echo=FALSE,fig.height=5,fig.width=6}
+data <- rnorm(5e3,mean=0.7,sd=1.6)
+grid.steps <- 100
+mu.seq <- seq(0,1,length.out=grid.steps)
+sd.seq <- seq(1,2,length.out=grid.steps)
+lnL <- matrix(NA,nrow=grid.steps,ncol=grid.steps)
+	for(i in 1:grid.steps){
+		for(j in 1:grid.steps){
+			lnL[i,j] <- sum(dnorm(data,
+								  mean=mu.seq[i],
+								  sd=sd.seq[j],log=TRUE))
+		}
+	}
+l.norm <- function(pars,x){
+	norm.prob <- -sum(dnorm(x=x,mean=pars[1],sd=pars[2],log=TRUE))
+	return(norm.prob)
+}
+mle.pars <- optim(par=list("mu"=1,"sigma"=1),fn=l.norm,x=data)$par
+image(z=lnL,x=mu.seq,y=sd.seq,xlab="mu",ylab="sigma","main"="Two Parameters")
+	points(0.7,1.6,pch=8,col=4)
+	points(mle.pars[1],mle.pars[2],pch=8,col=2)
+arrows(x0 = 0.55,
+	   x1 = mle.pars[1] - 0.02,
+	   y0 = 1.5,
+	   y1 = mle.pars[2] - 0.009,
+	   length=0.15,lwd=2)
+text(x=0.461,y=1.45,labels="MLE",cex=2)
+	
+```
+
+## ML vs. Bayesian inference {.build}
+
+ML inference:
+
+ - focused on finding the parameter MLEs
+ 
+ - uses a variety of algorithms to identify the parameter 
+  value (or values) that maximize the likelihood of the data
+  
+Bayesian inference:
+
+ - focused on describing the _posterior distribution_ - 
+	+ a distribution of the probability of $p(\theta \mid \text{D})$
+	over parameter values
+
+ - for complicated problems, uses a Markov chain Monte Carlo 
+   to characterize the posterior distribution
+
+## {.build}
+
+$\Huge{\text{Markov chain}}$\
+$\Huge{\text{Monte Carlo}}$
+
+ - I'm going to explain what the "MCMC" stands for...
+
+	+ [but it might not make much sense]
+ 
+ - Then illustrate what an MCMC is
+ 
+ - Then come back to the terms, and hopefully all will be clear.
+
+## {.build}
+
+$\Huge{\text{Markov chain}}$\
+$\Huge{\text{Monte Carlo}}$
+
+- A _Markov chain_ is a stochastic process that satisfies the _Markov property_, 
+	which means it is _memoryless_
+	
+## Markov chains
+
+```{r, out.width="750px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/markov_chain/markov_chain.001.jpeg")
+```
+
+## Markov chains
+
+```{r, out.width="750px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/markov_chain/markov_chain.002.jpeg")
+```
+
+## Markov chains
+
+```{r, out.width="750px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/markov_chain/markov_chain.003.jpeg")
+```
+
+## Markov chains
+
+```{r, out.width="750px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/markov_chain/markov_chain.004.jpeg")
+```
+
+## MCMC {.build}
+
+- A _Markov chain_ is a stochastic process that satisfies the _Markov property_, 
+	which means it is _memoryless_
+	
+```{r, out.width="600px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/frogmento/frogmento.001.jpeg")
+```
+
+## {.build}
+
+$\Huge{\text{Markov chain}}$\
+$\Huge{\text{Monte Carlo}}$
+
+- _Monte Carlo_ is a reference to the Monte Carlo casino in Monaco
+
+- _Monte Carlo methods_ rely on repeated random sampling to obtain numerical results
+
+## Monte Carlo methods: example {.build}
+
+Finding the area of a circle using Monte Carlo simulation:
+<div class="centered">
+```{r mc_circle_area_samples,echo=FALSE,fig.width=6,fig.height=5}
+make.circle <- function(centerX,centerY,radius,fineness){
+	# recover()
+	coords <- matrix(c(centerX,centerY),nrow=fineness,ncol=2,byrow=TRUE)
+	angles <- seq(0,2*pi,length.out=fineness)
+	for(i in 1:fineness){
+		coords[i,] <- coords[i,] + radius * c(cos(angles[i]),sin(angles[i]))
+	}
+	return(coords)
+}
+
+plot(0,xlim=c(-0.3,2.3),ylim=c(-0.3,2.3),type='n',xlab="",ylab="",asp=1,bty='n')
+	lines(make.circle(1,1,1,100),lwd=3)
+	rect(0,0,2,2,lwd=1)
+```
+</div>
+
+
+## Monte Carlo methods: example
+<div class="centered">
+```{r monte_carlo_circle,fig.show="animate",fig.width=6,fig.height=5,interval=0.5,cache=TRUE,echo=FALSE,aniopts="controls"}
+point.in.circle <- function(z,circle.center,radius){
+	pic <- ifelse(sqrt(sum((z - circle.center)^2)) < radius,
+					TRUE,
+					FALSE)
+	return(pic)
+}
+
+n.reps <- 1e5
+x.range <- c(0,2)
+y.range <- c(0,2)
+Z <- cbind(runif(n.reps,x.range[1],x.range[2]),
+		   runif(n.reps,x.range[1],x.range[2]))
+pic <- apply(Z,1,function(z){point.in.circle(z,c(1,1),1)})
+
+for(i in seq(0,n.reps,length.out=51)){
+	plot(0,xlim=c(-0.3,2.3),ylim=c(-0.3,2.3),type='n',xlab="",ylab="",asp=1,bty='n',
+			main=sprintf("Area = %s",round(4*sum(pic[1:i])/i,5)))
+		lines(make.circle(1,1,1,100),lwd=3)
+		rect(0,0,2,2,lwd=1)
+	points(Z[1:i,,drop=FALSE],col=pic[1:i]+1,pch=20,cex=0.2)
+}
+```
+</div>
+
+## Monte Carlo methods: example
+
+```{r,echo=FALSE}
+n <- 1e2
+plot(0,type='n',xlab="no. replicates",ylab="estimated circle area",xlim=c(0,n),ylim=c(2.5,4.1))
+	lines(4*cumsum(pic[1:n])/c(1:n),lwd=2)
+	abline(h=pi,col=2,lty=2)
+```
+
+
+## Monte Carlo methods: example
+
+```{r,echo=FALSE}
+n <- 5e2
+plot(0,type='n',xlab="no. replicates",ylab="estimated circle area",xlim=c(0,n),ylim=c(2.5,4.1))
+	lines(4*cumsum(pic[1:n])/c(1:n),lwd=2)
+	abline(h=pi,col=2,lty=2)
+```
+
+
+## Monte Carlo methods: example
+
+```{r,echo=FALSE}
+n <- 1e3
+plot(0,type='n',xlab="no. replicates",ylab="estimated circle area",xlim=c(0,n),ylim=c(2.5,4.1))
+	lines(4*cumsum(pic[1:n])/c(1:n),lwd=2)
+	abline(h=pi,col=2,lty=2)
+```
+
+
+## Monte Carlo methods: example
+
+```{r,echo=FALSE}
+n <- 1e4
+plot(0,type='n',xlab="no. replicates",ylab="estimated circle area",xlim=c(0,n),ylim=c(2.5,4.1))
+	lines(4*cumsum(pic[1:n])/c(1:n),lwd=2)
+	abline(h=pi,col=2,lty=2)
+```
+
+## Monte Carlo methods: example
+
+```{r,echo=FALSE}
+n <- n.reps
+plot(0,type='n',xlab="no. replicates",ylab="estimated circle area",xlim=c(0,n),ylim=c(2.5,4.1))
+	lines(4*cumsum(pic[1:n])/c(1:n),lwd=2)
+	abline(h=pi,col=2,lty=2)
+```
+
+## {.build}
+
+$\Huge{\text{Markov chain}}$\
+$\Huge{\text{Monte Carlo}}$
+
+- _Markov chain_ : memoryless stochastic process
+
+- _Monte Carlo_ : repeated random sampling
+
+- An algorithm for sampling from a probability distribution
+
+- Specifically, an algorithm for characterizing the posterior probability distribution
+
+## MCMC {.build}
+
+<div class="centered">
+<span style="color:red">$\Huge{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$</span>
+</div>
+
+## MCMC: Metropolis-Hastings algorithm {.build}
+
+1\. Initiate chain with an arbitrarily chosen value for parameter $\theta$
+2\. Calculate the numerator of Bayes' Theorem using $\theta$
+
+<div class="centered">
+$\large{p(\text{D} \; \mid \; \theta) \times p(\theta)}$
+</div>
+
+3\. Propose an updated parameter value, $\theta'$\
+4\. Calculate $p(\text{D} \; \mid \; \theta') \times p(\theta')$\
+5\. Calculate $R$
+
+<div class="centered">
+$R = \frac{\Large{p(\text{D} \; \mid \; \theta') \; \times \; p(\theta')}}{\Large{p(\text{D} \; \mid \; \theta) \; \times \; p(\theta)}}$
+</div>
+
+6\. If R $\geq$ U(0,1), accept the proposed update, ($\theta \gets \theta'$)\
+  Elsewise, $\theta \gets \theta$
+
+Repeat steps 3-6 many times.
+
+## MCMC: Metropolis-Hastings algorithm
+<span style="color:lightgray">
+1\. Initiate chain with an arbitrarily chosen value for parameter $\theta$
+2\. Calculate the numerator of Bayes' Theorem using $\theta$</span>
+
+<div class="centered">
+<span style="color:lightgray"> $\large{p(\text{D} \; \mid \; \theta) \times p(\theta)}$</span>
+</div>
+
+3\. Propose an updated parameter value, $\theta'$\
+<span style="color:lightgray">
+4\. Calculate $p(\text{D} \; \mid \; \theta') \times p(\theta')$\
+5\. Calculate $R$</span>
+
+<div class="centered">
+<span style="color:lightgray">$R = \frac{\Large{p(\text{D} \; \mid \; \theta') \; \times \; p(\theta')}}{\Large{p(\text{D} \; \mid \; \theta) \; \times \; p(\theta)}}$</span>
+</div>
+<span style="color:lightgray">
+6\. If R $\geq$ U(0,1), accept the proposed update, ($\theta' \gets \theta$)\
+  Elsewise, $\theta \gets \theta$
+
+<span style="color:lightgray">Repeat steps 3-6 many times.</span>
+
+## MCMC: Proposing parameter updates {.build}
+
+How do we propose a new parameter value?
+
+The simplest proposal mechanism is just to add a small, normally distributed random value to the current value:
+
+$\LARGE{x \sim \mathcal{N}(\mu=0,\sigma)\\ \theta' = \theta + x}$
+
+## MCMC: Metropolis-Hastings algorithm
+<span style="color:lightgray">
+1\. Initiate chain with an arbitrarily chosen value for parameter $\theta$
+2\. Calculate the numerator of Bayes' Theorem using $\theta$</span>
+
+<div class="centered">
+<span style="color:lightgray"> $\large{p(\text{D} \; \mid \; \theta) \times p(\theta)}$</span>
+</div>
+
+3\. Propose an updated parameter value, $\theta'$\
+<span style="color:lightgray">
+4\. Calculate $p(\text{D} \; \mid \; \theta') \times p(\theta')$\
+5\. Calculate $R$</span>
+
+<div class="centered">
+<span style="color:lightgray">$R = \frac{\Large{p(\text{D} \; \mid \; \theta') \; \times \; p(\theta')}}{\Large{p(\text{D} \; \mid \; \theta) \; \times \; p(\theta)}}$</span>
+</div>
+<span style="color:lightgray">
+6\. If R $\geq$ U(0,1), accept the proposed update, ($\theta \gets \theta'$)\
+  Elsewise, $\theta \gets \theta$
+
+<span style="color:lightgray">Repeat steps 3-6 many times.</span>
+
+## MCMC: Metropolis-Hastings algorithm
+<span style="color:lightgray">
+1\. Initiate chain with an arbitrarily chosen value for parameter $\theta$
+2\. Calculate the numerator of Bayes' Theorem using $\theta$</span>
+
+<div class="centered">
+<span style="color:lightgray"> $\large{p(\text{D} \; \mid \; \theta) \times p(\theta)}$</span>
+</div>
+
+<span style="color:lightgray">
+3\. Propose an updated parameter value, $\theta'$\
+4\. Calculate $p(\text{D} \; \mid \; \theta') \times p(\theta')$\
+5\. Calculate $R$</span>
+
+<div class="centered">
+$R = \frac{\Large{p(\text{D} \; \mid \; \theta') \; \times \; p(\theta')}}{\Large{p(\text{D} \; \mid \; \theta) \; \times \; p(\theta)}}$
+</div>
+<span style="color:lightgray">
+6\. If R $\geq$ U(0,1), accept the proposed update, ($\theta \gets \theta'$)\
+  Elsewise, $\theta \gets \theta$
+
+<span style="color:lightgray">Repeat steps 3-6 many times.</span>
+
+## MCMC: p(D)
+
+Notice, we're calculating only the numerator of Bayes' Theorem for $\theta$ and $\theta'$.
+
+Why aren't we calculating the denominator?  Because it cancels out!
+
+<div class="centered">
+$\large 
+\begin{align}
+R &= \frac{  \frac{p(\text{D} \; \mid \; \theta') \; \times \; p(\theta')}{p(D)}}{  \frac{p(\text{D} \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}} \\
+\\
+&= \frac{p(\text{D} \; \mid \; \theta') \; \times \; p(\theta')}{p(\text{D} \; \mid \; \theta) \; \times \; p(\theta)}
+\end{align}$
+</div>
+
+
+
+## MCMC: illustrated with coinage {.build}
+
+```{r,echo=FALSE}
+set.seed(123)
+```
+```{r}
+# simulate data
+flips <- rbinom(n=1, size=10, prob=0.7)
+```
+
+```{r}
+# define a prior log probability function
+ln.prior <- function(p){
+	return(dunif(x=p, min=0, max=1, log=TRUE))
+}
+```
+
+```{r}
+# define a log-likelihood function
+ln.L <- function(flips,n,p){
+	return(dbinom(x=flips, size=n, prob=p, log=TRUE))
+}
+```
+
+```{r}
+# define a posterior probability function
+ln.post <- function(flips,n,p){
+	return(ln.L(flips,n,p) + ln.prior(p))
+}
+```
+
+
+## MCMC: the tale of a robot explorer
+
+```{r,echo=FALSE,fig.width=7.5,fig.height=5}
+	plot(0,xlim=c(0,1),ylim=c(-15,0),type='n',ylab="posterior probability",xlab="values of p")	
+```
+
+## MCMC: the tale of a robot explorer
+
+```{r,echo=FALSE,fig.width=7.5,fig.height=5}
+	plot(0,xlim=c(0,1),ylim=c(-15,0),type='n',ylab="posterior probability",xlab="values of p")
+		p <- 0.2
+		points(p,ln.post(flips,10,p),pch=19,cex=2)
+```
+
+## MCMC: the tale of a robot explorer
+
+```{r,echo=FALSE,fig.width=7.5,fig.height=5}
+	plot(0,xlim=c(0,1),ylim=c(-15,0),type='n',ylab="posterior probability",xlab="values of p")
+		p.prime <- p + rnorm(1,0,0.1)
+		points(p,ln.post(flips,10,p),pch=19,cex=2)
+		points(p.prime,ln.post(flips,10,p.prime),pch=1,cex=2)
+		R <- exp(ln.post(flips,10,p.prime) - ln.post(flips,10,p))
+		u <- runif(1)
+```
+
+## MCMC: the tale of a robot explorer
+
+```{r,echo=FALSE,fig.width=7.5,fig.height=5}
+	mcmc.title <- sprintf("R = %s, u ~ U(0,1) = %s\n %s",round(R,4),round(u,4),ifelse(R>u,"R > u,    p <- p'","R < u,    p <- p"))
+	accept <- R > u
+	plot(0,xlim=c(0,1),ylim=c(-15,0),type='n',ylab="posterior probability",xlab="values of p",
+		main=mcmc.title)
+		points(p,ln.post(flips,10,p),pch=19,cex=2)
+		points(p.prime,ln.post(flips,10,p.prime),pch=1,cex=2)
+```
+
+## MCMC: the tale of a robot explorer
+
+```{r,echo=FALSE,fig.width=7.5,fig.height=5}
+	plot(0,xlim=c(0,1),ylim=c(-15,0),type='n',ylab="posterior probability",xlab="values of p",
+		main=mcmc.title)
+		if(!accept){
+			points(p,ln.post(flips,10,p),pch=19,cex=2)
+		} else {
+			points(p.prime,ln.post(flips,10,p.prime),pch=19,cex=2)
+		}
+	p <- ifelse(accept,p.prime,p)
+```
+
+## MCMC: the tale of a robot explorer
+
+```{r,echo=FALSE,fig.width=7.5,fig.height=5}
+	plot(0,xlim=c(0,1),ylim=c(-15,0),type='n',ylab="posterior probability",xlab="values of p")
+		p.prime <- p + rnorm(1,0,0.1)
+		points(p,ln.post(flips,10,p),pch=19,cex=2)
+		points(p.prime,ln.post(flips,10,p.prime),pch=1,cex=2)
+		R <- exp(ln.post(flips,10,p.prime) - ln.post(flips,10,p))
+		u <- runif(1)
+```
+
+## MCMC: the tale of a robot explorer
+
+```{r,echo=FALSE,fig.width=7.5,fig.height=5}
+	mcmc.title <- sprintf("R = %s, u ~ U(0,1) = %s\n %s",round(R,4),round(u,4),ifelse(R>u,"R > u,    p <- p'","R < u,    p <- p"))
+	accept <- R > u
+	plot(0,xlim=c(0,1),ylim=c(-15,0),type='n',ylab="posterior probability",xlab="values of p",
+		main=mcmc.title)
+		points(p,ln.post(flips,10,p),pch=19,cex=2)
+		points(p.prime,ln.post(flips,10,p.prime),pch=1,cex=2)
+```
+
+## MCMC: the tale of a robot explorer
+
+```{r,echo=FALSE,fig.width=7.5,fig.height=5}
+	plot(0,xlim=c(0,1),ylim=c(-15,0),type='n',ylab="posterior probability",xlab="values of p",
+		main=mcmc.title)
+		if(!accept){
+			points(p,ln.post(flips,10,p),pch=19,cex=2)
+		} else {
+			points(p.prime,ln.post(flips,10,p.prime),pch=19,cex=2)
+		}
+	p <- ifelse(accept,p.prime,p)
+```
+
+## MCMC: animated example {.build}
+
+```{r,echo=FALSE}
+binom.mcmc <- function(n.iter,flips,n,ylim,viz=TRUE){
+	p.samples <- rep(NA,n.iter)
+	if(viz){
+		par(mar=c(1,4,1,1))
+		layout(matrix(c(rep(1,5),rep(2,20)),nrow=5,ncol=5,byrow=TRUE))
+	}
+	p <- runif(1)
+	post <- ln.post(flips,n,p)
+	for(i in 1:n.iter){
+		p.prime <- p + rnorm(1,0,0.05)
+		post.prime <- -Inf
+		if(is.finite(ln.prior(p.prime))){
+			post.prime <- ln.post(flips,n,p.prime)
+		}
+		if(exp(post.prime-post) > runif(1)){
+			p <- p.prime
+		}
+		p.samples[i] <- p
+		if(viz){
+			plot(0,xlim=c(1,n.iter),ylim=c(0,1),type='n',ylab="values of p")
+				lines(1:i,p.samples[1:i])
+			plot(0,xlim=c(0,1),ylim=ylim,type='n',ylab="posterior probability",xlab="values of p")
+				points(p.samples[1:i],ln.post(flips,n,p.samples[1:i]),pch=20,col=adjustcolor(1,0.5))
+		}
+	}
+	return(p.samples)
+}
+```
+
+```{r binomial_mcmc,fig.show="animate",fig.width=6,fig.height=5,interval=0.1,cache=TRUE,echo=FALSE,aniopts="controls"}
+	tmp <- binom.mcmc(n.iter = 50,flips = flips,n = 10, ylim = c(-15,0))
+```
+
+## MCMC: animated example {.build}
+
+```{r binomial_mcmc2,fig.show="animate",fig.width=6,fig.height=5,interval=0.05,cache=TRUE,echo=FALSE,aniopts="controls"}
+	tmp <- binom.mcmc(n.iter = 500,flips = flips,n = 10, ylim = c(-15,0))
+```
+
+## MCMC: coin example
+
+```{r binomial_mcmc3, fig.width=6,fig.height=5,cache=TRUE,echo=FALSE}
+	p.samples <- binom.mcmc(n.iter = 5000,flips = flips,n = 10, ylim = c(-15,0),viz=FALSE)
+	par(mar=c(1,4,1,1))
+	layout(matrix(c(rep(1,5),rep(2,20)),nrow=5,ncol=5,byrow=TRUE))
+	plot(0,xlim=c(1,length(p.samples)),ylim=c(0,1),type='n',ylab="values of p")
+		lines(p.samples)
+	plot(0,xlim=c(0,1),ylim=c(-15,0),type='n',ylab="posterior probability",xlab="values of p")
+		points(p.samples,ln.post(flips,10,p.samples),pch=20,col=adjustcolor(1,0.01))
+```
+
+## MCMC: coin example
+
+```{r binomial_mcmc4, fig.width=6,fig.height=5,cache=TRUE,echo=FALSE}
+	p.samples <- binom.mcmc(n.iter = 5e5,flips = flips,n = 10, ylim = c(-15,0),viz=FALSE)
+	par(mar=c(1,4,1,1))
+	layout(matrix(c(rep(1,5),rep(2,20)),nrow=5,ncol=5,byrow=TRUE))
+	plot(0,xlim=c(1,length(p.samples)),ylim=c(0,1),type='n',ylab="values of p")
+		lines(p.samples)
+	plot(0,xlim=c(0,1),ylim=c(-15,0),type='n',ylab="posterior probability",xlab="values of p")
+		points(p.samples,ln.post(flips,10,p.samples),pch=20,col=adjustcolor(1,0.005))
+```
+
+## Markov chain Monte Carlo {.build}
+
+ - Where the chain goes depends _only_ on where it currently is
+	+ Markov property
+\
+\
+ - Repeated, random sampling (both in our proposal mechanism and acceptance probabilities) 
+ allows us to explore the posterior distribution
+	+ Monte Carlo method
+
+## MCMC recap: {.build}
+
+If we were to run our chain forever, it would visit each location 
+in parameter space _in proportion to_ the posterior probability of that location
+
+Assuming the analysis was successful, the distribution of parameter estimates 
+is the posterior distribution.
+
+
+## MCMC recap: {.build}
+
+```{r,echo=FALSE,fig.width=6,fig.height=5}
+	hist(p.samples,
+			xlab="parameter estimates",
+			ylab="frequency",
+			main="posterior distribution of p",breaks=1e3)
+```
+
+## MCMC recap:
+
+```{r,echo=FALSE,fig.width=6,fig.height=5}
+	hist(p.samples,
+			xlab="parameter estimates",
+			ylab="frequency",
+			main="posterior distribution of p",breaks=1e3)
+		abline(v=quantile(p.samples,c(0.025,0.975)),col="red",lwd=3)
+			text(0.15+quantile(p.samples,c(0.025,0.975))[1],100,col=2,label="95% \ncredible interval")
+		abline(v=mean(p.samples),col="blue",lwd=3)
+			text(-0.05+mean(p.samples),550,col="blue",label="mean")
+		abline(v=p.samples[which.max(ln.post(flips,10,p.samples))],col="green",lwd=3)
+			text(0.05+p.samples[which.max(ln.post(flips,10,p.samples))],550,col="green",label="MAP")
+```
+
+## Bayesian recap: {.build}
+
+As Bayesians:
+
+ - we're focused on describing the _posterior distribution_ - 
+	+ a distribution of the probability of $p(\theta \mid \text{D})$
+	over parameter values
+
+ - for complicated problems, we use a Markov chain Monte Carlo 
+   to characterize the posterior distribution
+
+MCMC: 
+
+- _Markov chain_ (memoryless stochastic process) _Monte Carlo_ (repeated random sampling)
+
+- An algorithm for sampling from a probability distribution
+
+- Specifically, an algorithm for characterizing the posterior probability distribution
