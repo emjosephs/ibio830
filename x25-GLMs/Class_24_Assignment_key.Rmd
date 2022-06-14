@@ -1,0 +1,163 @@
+---
+title: "Model Building: putting it all together"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_24_Assignment_key.Rmd") -->
+
+#### Due by the beginning of next class (12/3)
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment24.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment24.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about model building
+
+2. extrapolate from in-class exercises to simulate data and do inference with generalized linear models
+
+3. hone your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+Explain in your own words each of the terms in each of the equations below, 
+as well as what each equation is doing, and what they are all doing together.
+
+$Y_i \sim \mathcal{Pois}(\lambda_i=f(x_i))$ \
+$\lambda = \text{exp}(f(x_i))$ \
+$f(x_i) = \alpha + \beta x_i$ \
+
+ - Y_i is the $i^{\text{th}}$ response variable
+ - x_i is the $i^{\text{th}}$ predictor variable
+ - $\lambda_i$ is the rate parameter of the Poisson distribution from which the $i^{\text{th}}$ datum is being modeled as a draw
+ - $f$ is the function that relates the predictor variable to the expected value of its associated response variable (in this case, a linear model)
+
+As a whole, these equations describe a Poisson regression with the canonical log link 
+function and a linear deterministic function.
+
+### Question 2
+
+Write mle2 code blocks for the following models.
+For each, define an R function for the inverse link function and 
+the deterministic function, and write out the mle2 call 
+using a data frame with named columns "predictor" and "response".
+
+A) Binomial regression (sample size of 15)
+
+```{r,eval=FALSE}
+detFunc <- function(x,a,b){
+	return(a + b*x)
+}
+
+invLink <- function(z){
+	p <- 1/(1+exp(-z))
+	return(p)
+}
+
+mod <- mle2(response ~ dbinom(size=15,
+					   p=invLink(detFunc(predictor,a,b))
+				 ),
+			data=mydata,
+			start=list("a"=0,"b"=0))
+```
+
+B) Poisson Regression
+
+```{r,eval=FALSE}
+detFunc <- function(x,a,b){
+	return(a + b*x)
+}
+
+invLink <- function(z){
+	return(exp(z))
+}
+
+mod <- mle2(response ~ dpois(lambda=invLink(
+					   			detFunc(predictor,a,b)
+					   	 	 )
+				 	  ),
+			data=mydata,
+			start=list("a"=0,"b"=0))
+```
+
+C) Linear model (aka Normal regression)
+
+```{r,eval=FALSE}
+detFunc <- function(x,a,b){
+	return(a + b*x)
+}
+
+invLink <- function(z){
+	return(z)
+}
+
+mod <- mle2(response ~ dnorm(mean=invLink(
+					   			detFunc(predictor,a,b),
+					   			sd = s)
+				 	  ),
+			data=mydata,
+			start=list("a"=0,"b"=0,"s"=1))
+```
+
+
+### Question 3
+
+Use mle2 to infer the parameters of the model 
+I used to simulate the data saved in the "mysteryData.Robj" 
+file in the Class 24 homework folder on D2L.
+
+Plot the line from the model you fit and also 
+a histogram of the residuals (the observed data - 
+their expected value for all data points). 
+ 
+```{r,warning=FALSE}
+detFunc <- function(a,b,x){
+	return(a*x^b)
+}
+
+invLink <- function(z){
+	return(z)
+}
+
+set.seed(124)
+a <- 1.8
+b <- 0.2
+sigma <- 0.9
+predictor <- runif(500,min=0,max=1000)
+response <- rnorm(n=500,mean=invLink(detFunc(a,b,predictor)),sigma)
+
+mysteryData <- data.frame("predictor"=predictor,"response"=response)
+save(mysteryData,file="mysteryData.Robj")
+
+library(bbmle)
+mod <- mle2(response ~ dnorm(mean=invLink(detFunc(a,b,predictor)),sd=s),
+			data=mysteryData,
+			start=list("a"=rnorm(1),"b"=rnorm(1),"s"=abs(rnorm(1))))
+
+tmp.x <- seq(0,1e3,length.out=1e3)
+par(mfrow=c(1,2))
+plot(mysteryData)
+	lines(tmp.x,mod@coef[1]*tmp.x^mod@coef[2],col="red",lwd=2)
+	
+residuals <- mysteryData$response - mod@coef[1]* mysteryData$predictor^mod@coef[2]
+hist(residuals)
+```
+
+
+
+
+

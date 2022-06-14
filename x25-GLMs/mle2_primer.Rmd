@@ -1,0 +1,183 @@
+---
+title: "Inference with generalized linear models"
+output:
+  html_document:
+    toc: true
+language: R
+
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("mle2_primer.Rmd") -->
+
+```{r,echo=FALSE,message=FALSE}
+	#set any global options
+	set.seed(123)
+	options(digits=3)
+	library(bbmle)
+```
+
+## A helpful guide for doing ML inference of GLMS with mle2
+
+### Why do we need mle2?
+
+Inferring the parameters of a GLM can be tricky.
+Methods like `glm` are powerful, but not always particularly flexible, 
+and it can sometimes be challenging to do inference, 
+especially when:
+
+* the deterministic function is nonlinear 
+* you're modeling a nonstandard parameter 
+	* (e.g., the variance of a Normal)
+* or, for applications outside of the Simulation/Inference Battle, 
+	when you may want to apply non-canonical link functions
+
+In those cases, it can be useful to apply a more flexible 
+method for parameter inference that gives you more freedom 
+in specifying your model. One of the best out there is `mle2`, 
+created by Ben Bolker and implemented in the `bbmle` R package.
+
+### Getting started
+
+Below, I briefly walk through a vignette of how to use `mle2`.
+
+To begin, install the package `bbmle`:
+
+```{r,eval=FALSE}
+# install the package
+install.packages("bbmle")
+
+# load the library
+library(bbmle)
+```
+
+### What's the deal?
+
+The great thing about `mle2` is that it allows you to 
+specify your own likelihood function. Although this puts 
+a little more onus on your (the user's) shoulders, it also allows 
+you to do inference with complicated or nonstandard models.
+Here's how it works, illustrated with a simple example of a linear model.
+
+```{r warning=FALSE}
+# define a deterministic function
+#	in this case, a linear function
+detFunc <- function(x,a,b){
+	return(a + b*x)
+}
+
+# define an inverse link function
+#	in this case, the identity
+invLink <- function(z){
+	return(z)
+}
+
+# we'll simulate data to test this on
+x <- runif(5e2,0,100)
+a <- 1.3
+b <- -0.9
+s <- 7
+y <- rnorm(5e2,mean=invLink(detFunc(x,a,b)),sd=s)
+mydata <- data.frame("predictor"=x,"response"=y)
+
+# now we're going to see if we can infer the parameter values
+#	we used to simulate the data
+mod <- mle2(response ~ dnorm(mean=invLink(
+									detFunc(predictor,a,b)),
+							 sd=s),
+			data=mydata,
+			start=list("a"=1,"b"=1,"s"=1))
+
+# and we can look at the coefficients
+mod@coef
+
+plot(mydata)
+	abline(a,b,col=4,lwd=3)
+	abline(mod,col=2,lwd=3,lty=2)
+	legend(x="topright",lty=c(1,2),col=c(4,2),legend=c("true","inferred"))
+```
+
+
+Ok so far so good, but we could have done that easily using `lm` or `glm`. 
+Let's try another example that's more complicated.
+
+```{r warning=FALSE}
+# define a logistic
+#	in this case, a
+detFunc <- function(x,a,b){
+	return(exp(a+b*x)/(1+exp(a+b*x)))
+}
+
+# define an inverse link function
+#	in this case, the exponent
+#	because our data are going to be Poisson-distributed
+invLink <- function(z){
+	return(exp(z))
+}
+
+# we'll simulate data to test this on
+x <- runif(5e3,0,100)
+a <- -5
+b <- 0.3
+y <- rpois(5e3,lambda=invLink(detFunc(x,a,b)))
+mydata <- data.frame("predictor"=x,"response"=y)
+
+# now we're going to see if we can infer the parameter values
+#	we used to simulate the data
+mod <- mle2(response ~ dpois(lambda=invLink(
+									detFunc(predictor,a,b))),
+			data=mydata,
+			start=list("a"=1,"b"=1))
+
+# and we can look at the coefficients
+mod@coef
+
+plot(mydata)
+	lines(seq(0,100,length.out=100),
+		invLink(detFunc(seq(0,100,length.out=100),a,b)),
+		col=4,lwd=3)
+	lines(seq(0,100,length.out=100),
+		invLink(detFunc(seq(0,100,length.out=100),mod@coef[1],mod@coef[2])),
+		col=2,lwd=3,lty=2)
+	legend(x="topleft",lty=c(1,2),col=c(4,2),legend=c("true","inferred"))
+
+# note that the mean of the Poisson is lambda, 
+# so we can look at model fit just by plotting the 
+# inverse link of the deterministic function
+#	(which is how we specify lambda)
+```
+
+
+## Troubleshooting
+
+As with all analyses, we need to be make sure 
+the inference algorithm has behaved well. 
+There are a lot of things that can go wrong - 
+too many to list here, but not too many to google 
+if/when they happen to you! 
+A few things to be careful about are:
+
+* you want to make sure that you get the same result 
+no matter what starting values you specify for the `mle2` 
+inference algorithm.
+	* try starting from lots of different starting values to make 
+	sure you're not getting "stuck"
+	* if you get different answers with different runs, you can compare them 
+	by looking at their log likelihoods
+* if you're getting an error, make sure that the model _can_ be evaluated 
+at the starting parameter values you've specified.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

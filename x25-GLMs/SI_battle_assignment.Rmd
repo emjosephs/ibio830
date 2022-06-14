@@ -1,0 +1,123 @@
+---
+title: "Simulation/Inference Battle Assignment!"
+author: "Gideon Bradburd"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    toc: true
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("SI_battle_assignment.Rmd") -->
+
+```{r,echo=FALSE}
+	#set any global options
+	options(digits=3)
+	set.seed(123)
+```
+
+## Simulation/Inference battles!!!
+
+The goal of this assignment is to demonstrate the power of inference. 
+Your team will simulate a secret dataset that will be handed off to another team, 
+and their challenge will be to infer the parameters you used to simulate your data. 
+Likewise, you will receive another team's dataset 
+with the same goal of inferring the parameters of 
+the model they used to simulate their dataset.
+At the end, you will present your results to the class, 
+and the group that does the best job inferring the parameters the 
+opposing team used to simulate their data will win **_eternal glory_**.
+
+### Organization
+
+ - Students divide into groups
+ 	+ come up with an awesome, stats-inspired team name: 
+ 		+ e.g., "Poisson of a Preacher Man"
+
+ - [Group sign up here](https://docs.google.com/spreadsheets/d/1WqvmgePxDVAa0PkrhvwvsqwDNdtnTBV_EybxLpRX_t8/edit?usp=sharing)
+
+### Simulation
+
+ - Each team picks a **probability distribution** from the following list:
+ 	  1. normal
+ 	  2. exponential
+ 	  3. binomial
+ 	  4. poisson
+
+ - and a **deterministic function** from the following list:
+ 	  1. linear
+ 	  2. exponential decay
+ 	  3. logistic
+ 	  4. power-law
+ 
+ - students **must** specify the **appropriate link function** for their distribution
+
+ - simulate 1000 data points (that's 1000 responses and 1000 associated predictors)
+ 	+ make a data frame, 
+ 	with one column for the predictor and one for the response 
+ 	(see example below).
+ 	
+ 	+ **hand data off to the other team**
+ 		+ data should consist of:
+		 	1. make a **.csv file** containing 2 columns, labeled "predictor" and "response"
+ 			2. a **realistic and well-motivated writeup** of a biological scenario 
+ 	explaining what the question is and what data were collected to answer it.
+ 
+ 	+ **Make an Rmarkdown document** that contains 
+ 	the code used to simulate the data and the written scenario and a plot of the output
+ 		+ this will be sent to the instructors for approval (see schedule below).
+ 	
+ ```{r echo=FALSE}
+ n.samples <- 1e3
+ predictor <- runif(n.samples)
+ alpha <- 3
+ beta <- -10
+ mu <- 1.4
+ response <- rnorm(n.samples,mean=mu,sd=exp(alpha+beta*predictor))
+ data <- data.frame(predictor,response)
+ data[1:5,]
+ ```
+
+### Inference
+
+ - Once you have the data, infer the parameters of the model 
+ used to simulate the data
+ 
+ - This means you'll have to make choices about what distribution, 
+ deterministic function, and possibly link function to use
+ 
+ - Do inference on all parameters of the model
+ 	+ at most 3 params:
+ 		+ 2 for the deterministic function
+ 		+ up to 1 other: e.g.,
+ 			+ $y_i \sim \mathcal{N}(\mu_i = \alpha + \beta x_i, \sigma)$
+ 		+ or
+ 			+ $y_i \sim \mathcal{N}(\mu, \sigma_i = \alpha + \beta x_i)$
+ 
+### Presentation
+ 
+ - Prepare a brief (<5 min) presentation:
+ 	+ plot of raw data (predictor v. response)
+ 	+ briefly explain modeling choices
+ 		+ what distribution, what deterministic function, what link function, why
+ 	+ present parameter estimates
+ 	+ show model fit on raw data
+ - Presentation should be prepared as an Rmarkdown document and submitted to instructors
+ 
+ - Other team will reveal true answer
+ 
+### Timeline
+
+ - Dec 2 - make groups, start to plan
+
+ - Dec 2-5 - work withIN groups to simulate data
+ 
+ - Dec 6 - by 9am, email simulation scenario to me and Meaghan to get the green light
+ 
+ 	+ teams with problems in their simulation code/scenario will have until 12/6 at 5pm to get their simulations cleared by instructors
+
+ - Dec 7 - data handoff between teams
+
+ - Dec 9 - presentations
+ 
+ 	+ **Presentations must be submitted to the D2L dropbox by by 9am** 

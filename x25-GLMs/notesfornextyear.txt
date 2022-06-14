@@ -1,0 +1,7 @@
+change inverse link function to Z
+fix typo on leaf height -> plant height
+
+for SI battles, have them send .csv file (and confirm they can read it before sending)
+standardize naming of mystery files
+set seed
+parameter bounds (-500 to 500?)
