@@ -1,0 +1,155 @@
+---
+title: "Intro to Probability 2: Assignment"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_16_Assignment.Rmd") -->
+
+#### Due by the beginning of next class (11/2)
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment16.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment16.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about probability
+
+2. use simulations to build intuition
+
+3. use your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+Define the following terms: 
+
+1a) random variable
+ 
+ Some variable that is the outcome of a random/stochastic process
+ \
+ \
+ \
+ 
+1b) probability distribution function
+ 
+ This function describes the probability of outcomes across the sample space
+ \
+ \
+ \
+
+
+### Question 2
+\
+<div class="centered">
+$\Large {{n}\choose{k}}p^k (1-p)^{n-k}$
+</div>
+
+2a) Using your own words, break down the equation above and 
+describe what each part means (or is doing).
+
+This equation describes the probability distribution function of coin flipping (or similar processes).
+n is the number of trials (or flips)
+k is the number of successes
+and p is the probability of success
+
+It is the combination of two smaller expression.
+$p^{k} (1-p)^{n-k}$ is the probability of getting k successes and n-k failures given a certain underlying probability k. This expression is the product of all the probabilities of success (p) and all the probabilities of failure (1-p).
+${n}\choose{k}$ is the number of permutations that will give you k successes
+
+2b) Using the function of this equation that you coded up in class, calculate the probability of 
+seeing 71 successes out of 531 trials, where the probability of success is 0.12345.
+
+```{r, echo=T}
+coinFlipProb <- function(n,k,p){
+  myprob = choose(n,k)*p^k*(1-p)^(n-k)
+  return(myprob)
+}
+
+coinFlipProb(531,71,.12345)
+
+```
+
+### Question 3
+
+October in the Northern Hemisphere marks the start of flu season.
+If our class were meeting in person, what is the probability 
+that no one in the classroom would have an active case of the flu?
+
+\
+\
+
+For the purposes of this calculation, assume the following:
+
+-there are 55 people in our class\
+-each of us can be treated as a random draw from Ingham County\
+-there are ~280,000 people in Ingham County\
+-over the last 5 days, the average per-day number of newly detected flu cases in Ingham County is 40\
+-someone infected with the flu is infectious for 5 days\
+-only 1 in every 3 flu infections is detected.\
+
+3a) What is the analytical probability that no one in our classroom 
+has an active flu infection?
+
+First -- how many people have the flu?
+40 per day * 5 days * 3 cases per detected case = 600
+P(Infection in Ingham County) = 600/280000 = 0.002142857
+P(Not infected in Ingham County) = 1 - 600/280000 = 0.9978571
+
+P(No one has flu) = P(Each person doesn't have the flu)^(Number of people)
+= (0.9978571)^55
+= 0.8887085
+
+3b) What is the probability at least one person in the room **_does_** have an active 
+flu infection
+
+P(Someone has the flu) = 1 - P(no one has the flu) = 0.1112915
+
+3c) What is probability 2 people in the room are infected?
+
+Now we can use our equation from above
+
+```{r, echo=T}
+
+coinFlipProb(55,2,0.002142857)
+
+```
+
+
+
+3d) Write a function for simulating this problem for gatherings of arbitrary size.
+The arguments of the function should be the number of people in the room 
+and the probability that a randomly selected person in the county has an active flu infection,
+and it should return the probability (from simulations), 
+that no one in the room has an active flu infection.
+
+```{r, echo=T}
+myN = 55
+myP = 0.002142857
+
+fluClass <- function(myN, myP){
+  myRuns = sapply(1:1e4,function(x){
+  myclass = sample(c(1,0),myN, replace=T, prob = c(myP, 1-myP))
+  mysick = sum(myclass) > 0
+  return(mysick)})
+  probFlu = sum(myRuns)/1e4
+  return(probFlu)
+}
+
+fluClass(55, 0.002142857)
+
+```
+
+

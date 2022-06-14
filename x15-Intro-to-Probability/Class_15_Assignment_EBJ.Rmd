@@ -98,24 +98,60 @@ The argument of the function should be the number of people in the room,
 and it should return the probability (from simulations), that two or more 
 share a birthday.
 
-\
-\
-\
-\
+
+
+```{r}
+
+## function for just one run
+birthdaySharing <- function(myN){
+  birthdays = sample(1:365, myN, replace=T) ##REPLACE is very important
+  if (sum(duplicated(birthdays))>0) { myOut = TRUE} else {myOut = FALSE}
+  return(myOut)
+}
+
+## do it many times
+birthdaySim <- function(myP){
+myOut = sapply(1:1e5,function(x){birthdaySharing(myP)})
+  return(sum(myOut)/1e5)}
+
+birthdaySim(10)
+
+
+
+```
 
 3b) Using this function, determine how many people must be in a room for 
 there to be > 50% probability that _at least_ two of them share a birthday
 
-\
-\
-\
-\
+
+```{r}
+
+which(sapply(1:30,function(n){birthdaySim(n)}) > 0.5)[1]
+
+```
+
 
 3c) Suppose humans colonize Mars.  How many people have to be in a room 
 on Mars for there to be a >50% probability that at least 2 of them share 
 a **Martian** birthday?
 
 \
-\
-\
-\
+
+
+```{r}
+## Martian year has 687 days
+
+birthdaySharingMars <- function(myN){
+  birthdays = sample(1:687, myN, replace=T) ##REPLACE is very important
+  if (sum(duplicated(birthdays))>0) { myOut = TRUE} else {myOut = FALSE}
+  return(myOut)
+}
+
+## do it many times
+birthdaySimMars <- function(myP){
+myOut = sapply(1:1e5,function(x){birthdaySharingMars(myP)})
+  return(sum(myOut)/1e5)}
+
+which(sapply(1:60,function(n){birthdaySimMars(n)}) > 0.5)[1]
+
+```

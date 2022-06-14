@@ -126,6 +126,23 @@ sim.bday <- function(N){
 
 ```
 
+## An alternative solution {.build}
+```{r, echo=TRUE}
+## function for just one run
+birthdaySharing <- function(myN){
+  birthdays = sample(1:365, myN, replace=T) ##REPLACE is very important
+  if (sum(duplicated(birthdays))>0) { myOut = TRUE} else {myOut = FALSE}
+  return(myOut)
+}
+
+## do it many times
+birthdaySim <- function(myP){
+myOut = sapply(1:1e5,function(x){birthdaySharing(myP)})
+  return(sum(myOut)/1e5)}
+
+
+```
+
 ##
 <div class ="centered">
 ```{r,echo=FALSE,cache=TRUE,fig.height=6,fig.width=7.5}
@@ -177,7 +194,7 @@ sim.mars.bday <- function(N){
 ```
 <div class ="centered">
 ```{r,echo=FALSE,cache=TRUE,fig.height=6,fig.width=7.5}
-mars.twinsies.probs <- sapply(1:40,function(n){sim.mars.bday(n)})
+mars.twinsies.probs <- sapply(1:40,function(n){ sim.mars.bday(n)})
 plot(twinsies.probs,xlab="N",ylab="p(birthday twinsies)",main="Birthday Problem",pch=19,ylim=c(0,1),col=4,xlim=c(1,40))
 	abline(h=0.5,col=1,lty=2)
 	points(which(twinsies.probs > 0.5)[1],
@@ -225,6 +242,7 @@ p(A') &= \frac{365}{365} \times \frac{364}{365} \times \ldots  \times \frac{365-
 \end{aligned}$
 </div>
 
+
 ## Birthday problem - analytical
 <div class ="centered">
 ```{r,echo=FALSE,fig.width=7,fig.height=5}
@@ -261,6 +279,9 @@ and count the number of heads that you get.
 Working in groups, 
 write an R function that uses `sample()` 
 to simulate these flips.
+
+## Another example: coin-flipping {.build}
+
 
 ```{r}
 flips <- function(nFlips){
