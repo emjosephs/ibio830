@@ -1,0 +1,713 @@
+---
+title: "Lecture 19 - Introduction to Likelihood"
+author: "Gideon Bradburd"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  ioslides_presentation:
+    transition: 0.001
+    bigger: true
+    incremental: true
+---
+<!-- To render the lecture in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("lecture19.Rmd") -->
+
+```{r,echo=FALSE}
+	#set any global options
+	options(digits=3)
+	set.seed(123)
+```
+
+## Today:
+
+ * Probability distribution recap
+ * Law of large numbers
+ * Introduction to likelihood
+
+## Probability Distributions: recap {.build}
+
+1. A probability distribution gives the probabilities of 
+the outcomes of some stochastic process
+
+2. Many natural processes are well described by some 
+commonly used distributions, which can be categorized 
+as discrete or continuous
+
+3. Given the parameters of the distribution, we can 
+calculate the probability of each outcome of a process
+
+4. For a continuous distribution, this is actually the 
+_relative_ probability
+
+5. R has built-in functions for using these distributions (e.g., rnorm() and dnorm())
+
+6. **D**istributions **R**ule **E**verything **A**round **M**e!
+
+
+## The Law of Large Numbers {.build}
+
+```{r,echo=FALSE}
+par(mfrow=c(1,2))
+	x1 <- rbinom(5,size=100,prob=0.3)
+	x2 <- rbinom(5e6,size=100,prob=0.3)
+		hist(x1,col="slateblue",main=sprintf("5 samples\nE[X] - mean(X) = %s",signif(30-mean(x1),3)),xlim=c(0,100))
+			abline(v=mean(x1),col="red",lwd=2)
+			abline(v=100*0.3,col="green",lwd=2)
+		hist(x2,col="slateblue",main=sprintf("5e6 samples\nE[X] - mean(X) = %s",signif(30-mean(x2),3)),xlim=c(0,100))
+			abline(v=mean(x2),col="red",lwd=2)
+			abline(v=100*0.3,col="green",lwd=2)
+		legend(x="topright",lty=1,col=c("red","green"),legend=c("sample mean","expectation"),cex=0.7)
+```
+
+These data are drawn from the same distribution, \
+so what's the deal?
+
+## The Law of Large Numbers {.build}
+
+The _law of large numbers_ (LLN) states that as the number of samples 
+from some process increases, the sample average converges on the 
+expected value.
+
+```{r,echo=FALSE,cache=TRUE}
+	draw.running.mean <- function(r,n){
+		replicate(r,{
+			x1 <- rnorm(n,mean=0,sd=0.5)
+			x1.mean <- cumsum(x1)/(1:n)
+			lines(1:n,x1.mean,col=adjustcolor(1,0.2))
+		})
+		return(invisible(0))
+	}
+	n <- 1e2
+	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
+			xlab="number of draws from a normal",
+			ylab="running mean")
+		draw.running.mean(r = 100,n = n)
+		abline(h=0,col=2)
+```
+
+## The Law of Large Numbers {.build}
+
+Say I give you a coin that flips heads with a probability of 1/2.
+
+Now you flip the coin 20 times, and get a heads **every** time!
+
+Which has a higher probability of happening on the 21st flip: heads or tails?
+
+
+## Beware the gambler's fallacy!
+
+Say I give you a coin that flips heads with a probability of 1/2.
+
+Now you flip the coin 20 times, and get a heads **every** time!
+
+Which has a higher probability of happening on the 21st flip: heads or tails?
+
+Probability is the same, because the flips are independent!
+
+$p(21 \text{ heads in 21 flips}) = {{n=21}\choose{k=21}} \times (0.5)^{21} = `r choose(21,21) * (0.5)^{21}`$
+
+$p(21 \text{ heads} \; | \; 20 \text{ heads}) = 0.5$
+
+## Law of Large Numbers recap:
+
+1. As the number of samples drawn from a distribution 
+increases, the sample average converges on the expected value
+(and more broadly, the more the sample distribution 
+starts to resemble the generating distribution)
+
+2. But if the process is stochastic and has no "memory," 
+the probability of subsequent outcomes is independent of 
+previous outcomes
+
+
+## Introduction to Likelihood {.build}
+
+The **likelihood** of the data is the probability of the 
+data as a function of some unknown parameters.
+
+
+## Introduction to Likelihood
+
+The **likelihood** of the data is the probability of the 
+data as a function of some unknown parameters.
+
+<div class="centered">
+\
+\
+\
+\
+Likelihood is probability...in reverse!
+</div>
+
+## Introduction to Likelihood {.build}
+
+ - First, let's start with the difference between probability and statistics:
+ 	+ In probability, we think about some stochastic process, 
+ 		and figure out ways to calculate the probability of possible outcomes
+ 	+ In statistics, we start with some observed outcomes, 
+ 		and try to figure out the underlying process.
+
+
+## Introduction to Likelihood {.build}
+
+probability says: given that the coin is fair, what's the probability of getting 46 heads out of 100 flips?
+
+statistics says: given some flip data, can we figure out the fairness of the coin?
+
+In calculating probabilities, we consider a single parameter value 
+and describe the probabilities of all possible outcomes of a 
+process parameterized by that value.
+
+In calculating likelihoods, we consider a single outcome (or set of outcomes)  
+and many possible parameter values that could best explain it.
+
+In formulating the problem this way, 
+we are treating the observed data ($k=46$) as a _known_, 
+and treating $p$ as an unknown **_parameter_** of the model.
+
+## Parametric Statistics {.build}
+
+In parametric inference, 
+we treat observed data as draws from 
+an underlying process or **_population_**, 
+and we try to learn about that population from our sample.
+
+```{r, out.width="450px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/x-files.jpg")
+```
+
+## Parameters - what's the deal? {.build}
+
+A **_statistical parameter_** is a value that tells you something 
+about a **_population_**.
+
+- e.g., the _true_ mean height of toddlers in my kid's classroom, 
+or the _true_ frequency of a genetic variant in a species.
+
+\
+\
+
+We rarely get to know the truth 
+
+(by, e.g., censusing everyone in a population, 
+or repeating a random process an infinite number of times) 
+
+but we can take _samples_ to try to learn about --  
+or **_estimate_** -- parameters.  
+
+
+## Calculating likelihood {.build}
+
+Someone hands us a coin and we flip it 100 times and get 46 heads. 
+What is the _most likely_ probability of flipping heads?
+
+```{r, echo=FALSE}
+n.heads <- 46
+```
+
+<div class="centered">
+$\Large X \sim B(n,p)$
+</div>
+
+<div class="centered">
+$\Large X \sim B(n=100,p=??)$
+</div>
+
+<div class="centered">
+$\Large prob(X=46 \mid p)$
+</div>
+
+\
+\
+
+There is some _true_ probability of flipping heads (_p_),
+and we get $n$ observations of the process.
+
+How do we go about figuring out what $p$ is?
+
+## Calculating likelihood
+
+point-values: p = 0.1
+
+```{r,echo=FALSE}
+	# calculate likelihood of the data if p = 0.1
+	p <- 0.1
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.1),main="prob(46 heads | p)",
+		xlab="probability of heads (p)",ylab="p(data)",
+		pch=20,col=2)
+```
+
+## Calculating likelihood
+
+point-values: p = c(0.1,0.5)
+
+```{r,echo=FALSE}
+	# calculate likelihood of the data if p = 0.1
+	p <- c(0.1,0.5)
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.1),main="prob(46 heads | p)",
+		xlab="probability of heads (p)",ylab="p(data)",
+		pch=20,col=2)
+```
+
+## Calculating likelihood
+
+haphazard search: p = runif(15,min=0,max=1)
+
+```{r,echo=FALSE}
+	# calculate likelihood of the data if p = 0.1
+	p <- runif(15,min=0,max=1)
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.1),main="prob(46 heads | p)",
+		xlab="probability of heads (p)",ylab="p(data)",
+		pch=20,col=2)
+```
+
+## Calculating likelihood
+
+grid/exhaustive search: p = seq(0,1,length.out=1e3)
+
+```{r,echo=FALSE}
+	# calculate likelihood of the data if p = 0.1
+	p <- seq(0,1,length.out=1e3)
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.1),main="prob(46 heads | p)",
+		xlab="probability of heads (p)",ylab="p(data)",
+		pch=20,col=2)
+	arrows(x0=0.46,x1=0.46,y0=0.092,y1=0.085,length=0.1)
+	text(x=0.46,y=0.097,labels="most likely")
+```
+
+## Maximum likelihood {.build}
+
+_Maximum likelihood (ML) inference_ is a method for estimating the values 
+of the parameters of a statistical model that maximize the likelihood 
+of the observed data.
+
+The _maximum likelihood estimate_ (MLE) is the parameter value
+(or, if there are multiple parameters, the vector of parameter values) 
+that maximize the likelihood of the data.
+
+The MLE is our best guess at the true value of the unknown 
+**_population_** (or process) parameter.
+
+
+## How do we find the MLE? {.build}
+
+Haphazard and grid searches are inefficient and often impractical (e.g., the mean of a normal distribution).
+
+There are a number of sophisticated algorithms for doing 
+ML inference, many of which leverage classic techniques for 
+finding the maximum of an arbitary function.
+\
+\
+$\text{max}(f(x)) \text{ happens when } f'(x) = 0 \text{ and } f''(x) < 0$
+
+## How do we find the MLE?
+
+```{r,echo=FALSE,fig.height=5.5,fig.width=6}
+	# calculate likelihood of the data if p = 0.1
+	p <- seq(0,1,length.out=1e3)
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.08),
+		xlab="probability of success",ylab="p(data)",
+		type='n')
+		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
+	 points(0.3,dbinom(x=n.heads,size=100,p=0.3),pch=19)
+	 arrows(x0 = 0.3-0.03,x1 = 0.3 + 0.015,
+	 		y0 = dbinom(x=n.heads,size=100,p=0.3) + 0.002,
+	 		y1 = dbinom(x=n.heads,size=100,p=0.3) + 0.004,length=0.1)
+```
+
+## How do we find the MLE?
+
+```{r,echo=FALSE,fig.height=5.5,fig.width=6}
+	# calculate likelihood of the data if p = 0.1
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.08),
+		xlab="probability of success",ylab="p(data)",
+		type='n')
+		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
+	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
+	 points(0.6,dbinom(x=n.heads,size=100,p=0.6),pch=19)
+	 arrows(x0 = 0.6,x1 = 0.6 + 0.03,
+	 		y0 = dbinom(x=n.heads,size=100,p=0.6) + 0.004,
+	 		y1 = dbinom(x=n.heads,size=100,p=0.6) + 0.001,length=0.1)
+```
+
+## How do we find the MLE?
+
+```{r,echo=FALSE,fig.height=5.5,fig.width=6}
+	# calculate likelihood of the data if p = 0.1
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.08),
+		xlab="probability of success",ylab="p(data)",
+		type='n')
+		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
+	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
+	 points(0.6,dbinom(x=n.heads,size=100,p=0.6))
+	 points(0.4,dbinom(x=n.heads,size=100,p=0.4),pch=19)
+	 arrows(x0 = 0.4-0.03,x1 = 0.4 - 0.025,
+	 		y0 = dbinom(x=n.heads,size=100,p=0.4) - 0.001,
+	 		y1 = dbinom(x=n.heads,size=100,p=0.4) + 0.003,length=0.1)
+```
+
+## How do we find the MLE?
+
+```{r,echo=FALSE,fig.height=5.5,fig.width=6}
+	# calculate likelihood of the data if p = 0.1
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.08),
+		xlab="probability of success",ylab="p(data)",
+		type='n')
+		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
+	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
+	 points(0.6,dbinom(x=n.heads,size=100,p=0.6))
+	 points(0.4,dbinom(x=n.heads,size=100,p=0.4))
+	 points(0.5,dbinom(x=n.heads,size=100,p=0.5),pch=19)
+	 arrows(x0 = 0.5+0.025,x1 = 0.5 + 0.03,
+	 		y0 = dbinom(x=n.heads,size=100,p=0.5) + 0.003,
+	 		y1 = dbinom(x=n.heads,size=100,p=0.5) - 0.001,length=0.1)
+```
+
+## How do we find the MLE?
+
+```{r,echo=FALSE,fig.height=5.5,fig.width=6}
+	# calculate likelihood of the data if p = 0.1
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.08),
+		xlab="probability of success",ylab="p(data)",
+		type='n')
+		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
+	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
+	 points(0.6,dbinom(x=n.heads,size=100,p=0.6))
+	 points(0.4,dbinom(x=n.heads,size=100,p=0.4))
+	 points(0.5,dbinom(x=n.heads,size=100,p=0.5))
+	 points(0.46,dbinom(x=n.heads,size=100,p=0.46),pch=19)
+	 arrows(x0 = 0.46-0.03,x1 = 0.46 + 0.03,
+	 		y0 = dbinom(x=n.heads,size=100,p=0.46) + 0.002,
+	 		y1 = dbinom(x=n.heads,size=100,p=0.46) + 0.002,length=0.1)
+```
+
+## How do we find the MLE? {.build}
+
+Working in your breakout groups, 
+do a grid search to find the MLE of $p$ 
+when you observe $k=37$ heads out of $n=57$ flips.
+
+You will need: 
+```{r,eval=FALSE}
+help(seq)
+help(dbinom)
+help(which.max)
+```
+
+## How do we find the MLE?
+
+```{r}
+p <- seq(0,1,length.out=1000)
+likelihoods <- dbinom(x=37,size=57,p=p)
+p[which.max(likelihoods)]
+```
+<div class="centered">
+```{r,fig.width=4,fig.height=3,echo=FALSE}
+plot(p,likelihoods,xlab="p(heads)",ylab="p(data)")
+	abline(v=p[which.max(likelihoods)],col=2)
+	legend(x="topleft",lty=1,col=2,legend="MLE")
+```
+</div>
+## How do we find the MLE? {.build}
+
+```{r,eval=FALSE}
+	help(optimize)
+```
+
+```{r,echo=FALSE}
+	l.binom <- function(p){
+		binom.prob <- dbinom(x=46,size=100,prob=p)
+		return(binom.prob)
+	}
+	mle <- optimize(f = l.binom,lower=0,upper=1,maximum=TRUE)
+```
+
+```{r,echo=FALSE}
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		 xlab="probability of success",ylab="p(data)",type='n')
+	lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
+	points(mle$maximum,mle$objective,pch=8,cex=2)
+```
+
+## Now hang on... {.build}
+
+Calculating the probability of some possible outcome makes sense...
+
+But calculating the probability of something that has _already happened_ seems **bananas**!
+
+
+## Maximum Likelihood - not bananas* {.build}
+
+But, that's not really what we're doing - 
+
+We're calculating the probability of the observed data as a draw from some distribution,
+**_given_** the values of the parameters of that distribution
+
+<div class="centered">
+$\huge X \sim f(\theta)$
+\
+\
+$\huge p(X \; \mid \; \theta)$
+</div>
+
+## Maximum Likelihood - not bananas*
+
+"Things that happened were more likely to happen than things that didn't."
+
+     -Will Wetzel
+
+## Maximum Likelihood - not bananas*
+
+"Things that happened were more likely to happen than things that didn't."
+
+     -Will Wetzel
+\
+\
+\
+\
+\
+\
+(*) maybe a _little bit_ bananas - we'll come back to this when we talk about Bayesian inference.
+
+## Maximum Likelihood: recap
+
+**_Maximum likelihood (ML) inference_** is a method for estimating the values 
+of the parameters of a statistical model that maximize the likelihood 
+of the observed data.
+
+The **_maximum likelihood estimate_** (**MLE**) is the parameter value
+(or, if there are multiple parameters, the vector of parameter values) 
+that maximize the likelihood of the data.
+
+There are efficient algorithms that estimate the parameter values 
+that maximize the likelihood of the data, and we can use them to do 
+inference!
+
+## Multiple observations {.build}
+
+So we know how to take the likelihood of a single observation:
+
+<div class="centered">
+$\Large X \sim B(n=100,p=0.5)$\
+\
+$\large 
+\begin{aligned}
+p(X=46) &= {{n}\choose{k}}p^k (1-p)^{n-k} \\ 
+\\
+&= {{100}\choose{46}}(0.5)^{46} (0.5)^{54}
+\end{aligned}$
+</div>
+
+What about if we have _multiple observations_?
+
+## Calculating the likelihood of multiple observations {.build}
+
+Assuming the observations are independent and identically distributed (i.i.d.), 
+their probabilities can be computed as a single **shared event**.
+
+<div class="centered">
+$\Large p(A \; \cap \; B) = p(A) \times p(B)$
+\
+\
+$\large
+\begin{aligned}
+p(\vec{X}=\{46,47,48\}) =& \; p(X_1=46) \\
+&\times p(X_2=47) \\ 
+&\times p(X_3=48)
+\end{aligned}$
+</div>
+
+## Calculating the likelihood of multiple observations {.build}
+
+$p(X={46,47,48}) = p(X=46) \times p(X=47) \times p(X=48)$
+```{r,echo=FALSE}
+n.heads <- c(46,47,48)
+```
+
+If _p_(heads)=0.5 and _n_=100, what is $p(X={46,47,48})$? 
+
+Poll: \
+
+A - `r sum(dbinom(x=n.heads,size=100,prob=0.5))` \
+B - `r prod(dbinom(x=n.heads,size=100,prob=0.5))` \
+C - `r dbinom(n.heads[1],size=100,prob=0.5)` \
+D - `r prod(dnorm(n.heads,mean=50,sd=1))` \
+
+## Calculating the likelihood of multiple observations
+
+$p(X={46,47,48}) = p(X=46) \times p(X=47) \times p(X=48)$
+
+If _p_(heads)=0.5 and _n_=100, what is $p(X={46,47,48})$? 
+
+Poll: \
+
+A - `r sum(dbinom(x=n.heads,size=100,prob=0.5))` \
+**B - `r prod(dbinom(x=n.heads,size=100,prob=0.5))`** \
+C - `r dbinom(n.heads[1],size=100,prob=0.5)` \
+D - `r prod(dnorm(n.heads,mean=50,sd=1))` \
+
+## Calculating the likelihood of multiple observations {.build}
+
+$p(X={46,47,48}) = p(X=46) \times p(X=47) \times p(X=48)$
+
+If _p_(heads)=0.5 and _n_=100, what is $p(X={46,47,48})$? 
+
+```{r}
+n.heads <- c(46,47,48)
+dbinom(x=n.heads[1],size=100,prob=0.5) * 
+dbinom(x=n.heads[2],size=100,prob=0.5) * 
+dbinom(x=n.heads[3],size=100,prob=0.5)
+prod(dbinom(x=n.heads,size=100,prob=0.5))
+```
+
+## Calculating the likelihood of multiple observations {.build}
+
+```{r}
+	prod(
+		dbinom(
+			x = rbinom(10,size=20,prob=0.5),
+			size = 20,
+			prob = 0.5
+		)
+	)
+```
+
+## Calculating the likelihood of multiple observations {.build}
+
+```{r}
+prod(dbinom(x=rbinom(10,size=100,prob=0.5),size=100,prob=0.5))
+```
+
+What might go wrong here?
+
+```{r}
+prod(dbinom(x=rbinom(100,size=100,prob=0.5),size=100,prob=0.5))
+```
+
+```{r}
+prod(dbinom(x=rbinom(500,size=100,prob=0.5),size=100,prob=0.5))
+```
+
+## What went wrong?
+
+<div class="centered">
+![](figs/comp_on_fire.jpg)
+</div>
+
+## What went wrong? {.build}
+
+### Underflow
+
+<div class="centered">
+$\Large \text{If } \vec{X} \; < \; 1 \text{, then } 
+\prod\limits_{i=1}^n X_i < 1$
+</div>
+
+\
+
+<div class="centered">
+$\Large \text{if } n \text{ is large, } \prod\limits_{i=1}^n X_i << 1$
+</div>
+
+## So how can we calculate the likelihood of multiple observations? {.build}
+
+<iframe src="figs/log_lady.gif" height="610px" width="800px" align="middle" style="border: none;"></iframe>
+
+## Logs!
+
+Recall that:
+<div class="centered">
+$$ \large \text{log}(A \times B \times C) = \text{log}(A) + \text{log}(B) + \text{log}(C)$$
+</div>
+
+\
+\
+and more generally:
+
+<div class="centered">
+$\Large \text{log}\left(\prod\limits_{i=1}^n X_i \right) = \sum\limits_{i=1}^n \text{log}(X_i)$
+</div>
+
+## Log Likelihood (twin peaks!)
+
+```{r,echo=FALSE}
+heads <- rbinom(10,size=100,prob=0.5)
+probs <- seq(0,1,length.out=50)
+likelihood <- unlist(lapply(probs,function(p){prod(dbinom(heads,100,p))}))
+log.likelihood <- unlist(lapply(probs,function(p){sum(dbinom(heads,100,p,log=TRUE))}))
+
+par(mfrow=c(1,2))
+	plot(probs,likelihood,main="likelihood",pch=20,xlab="p(heads)",ylab="likelihood")
+	plot(probs,log.likelihood,main="log likelihood",pch=20,xlab="p(heads)",ylab="log likelihood")
+```
+
+## Likelihood and number of observations {.build}
+
+What do you think will happen to the likelihood as 
+we increase the number of observations?
+
+Poll:\
+
+A - the slopes of the likelihood peak will become steeper \
+B - the slopes of the likelihood peak will become less steep \
+C - nothing will change \
+
+
+```{r,echo=FALSE}
+n.heads <- rbinom(n=1e4,size=100,prob=0.7)
+probs <- seq(0.001,0.999,length.out=50)
+lnL1 <- sapply(probs,function(p){
+			sum(dbinom(n.heads[1:100],100,p,log=TRUE))})
+
+lnL2 <- sapply(probs,function(p){
+			sum(dbinom(n.heads[1:1000],100,p,log=TRUE))})
+
+lnL3 <- sapply(probs,function(p){
+			sum(dbinom(n.heads[1:10000],100,p,log=TRUE))})
+```
+
+## Likelihood and number of observations
+
+```{r,echo=FALSE,fig.width=7,fig.height=5.5}
+plot(probs,lnL1,ylab="log likelihood",ylim=c(-2e5,5e4),type='n')
+	abline(v=0.7,col=1,lty=2)
+legend(x="topleft",lty=1,lwd=3,
+		col=c("blue","purple","red"),
+		legend=c("n=1e2","n=1e3","n=1e4"))
+```
+
+## Likelihood and number of observations
+
+```{r,echo=FALSE,fig.width=7,fig.height=5.5}
+plot(probs,lnL1,ylab="log likelihood",ylim=c(-2e5,5e4),type='n')
+	abline(v=0.7,col=1,lty=2)
+	lines(probs,lnL1,col="blue")
+	lines(probs,lnL2,col="purple")
+	lines(probs,lnL3,col="red")
+legend(x="topleft",lty=1,lwd=3,
+		col=c("blue","purple","red"),
+		legend=c("n=1e2","n=1e3","n=1e4"))
+```
+
+## Likelihood recap {.build}
+
+We can calculate the likelihood of observed data given values of the parameters of a distribution
+
+**_Maximum likelihood (ML) inference_** is a method for estimating the values 
+of the parameters of a statistical model that maximize the likelihood 
+of the observed data.
+
+The **_maximum likelihood estimate_** (MLE) is the parameter value
+(or, if there are multiple parameters, the vector of parameter values) 
+that maximize the likelihood of the data.
+
+When we have multiple observations, we calculate their likelihood as the 
+product of their individual likelihoods, or (better) the sum of their **_log likelihoods_**.
