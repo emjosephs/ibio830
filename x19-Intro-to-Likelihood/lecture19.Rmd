@@ -171,10 +171,6 @@ we treat observed data as draws from
 an underlying process or **_population_**, 
 and we try to learn about that population from our sample.
 
-```{r, out.width="450px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/x-files.jpg")
-```
-
 ## Parameters - what's the deal? {.build}
 
 A **_statistical parameter_** is a value that tells you something 
