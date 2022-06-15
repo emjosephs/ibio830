@@ -43,25 +43,42 @@ bank: {beta, exponential, gamma, lognormal,
 	   
 1. Lengths of ribbon left over after wrapping presents
 
+
+
 2. A chess grandmaster's win percentage
+
+
 
 3. Number of coding errors (bugs) in student homework assignments
 
+normal
+
 4. Deviation from the mean height in a classroom of toddlers
+
+normal
 
 5. Number of times you have to flip a USB drive over before you successfully put it into your computer
 
+binomial
+
 6. Number of games before your favorite sports team wins a game
+
+binomial
 
 7. Human arm length
 
+normal
+
 8. Number of seagulls circling a fishing boat
 
+poisson
 
 ### Question 2
 
 What is the log product rule, and how/why is it used for likelihood-based inference?
 
+The log product rule is that log(A x B) = log(A) + log(B). 
+It's important for likelihood-based inference because it allows you to calculate the likelihood of multiple events.
 
 
 ### Question 3
@@ -81,11 +98,14 @@ I've included pseudocode below to help you on your journey.
 #		don't forget to specify full file paths and use quotes
 ################
 
+setwd('~/Documents/ibio830/x19-Intro-to-Likelihood/')
+load('poisson_data.Robj')
+
 ################
 # visualize data
 #	hint: hist() is always a friend
 ################
-
+hist(poisson.data)
 
 ################
 # get MLE:
@@ -96,11 +116,28 @@ I've included pseudocode below to help you on your journey.
 #	simple events that make up the shared event
 #
 
+x=1
+
+##write a function to get the likelihood for a given lambda
+
+myLikelihood <- function(x){
+myPs = dpois(poisson.data, lambda=x) ## get the probability
+myLogPs = log(myPs) ##log it
+mySum = sum(myLogPs) ## sum it
+return(mySum)
+}
 
 # do a grid search over values of lambda
 #	extra hint: you can use the histogram to inform the upper limit 
 #				of your grid search!
 
+plot(seq(0,10,by=.1),sapply(seq(0,10,by=.1), myLikelihood), xlab = "lambda",bty="n", ylab = "log likelihood")
+
+
+mle <- optimize(f = myLikelihood,lower=0,upper=10,maximum=TRUE)
+mle$maximum
+
+abline(v = mle$maximum)
 
 # ML estimate for lambda is:
 

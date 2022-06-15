@@ -533,7 +533,6 @@ If _p_(heads)=0.5 and _n_=100, what is $p(X={46,47,48})$?
 Poll: \
 
 A - `r sum(dbinom(x=n.heads,size=100,prob=0.5))` \
-B - `r prod(dbinom(x=n.heads,size=100,prob=0.5))` \
 C - `r dbinom(n.heads[1],size=100,prob=0.5)` \
 D - `r prod(dnorm(n.heads,mean=50,sd=1))` \
 
@@ -632,7 +631,7 @@ and more generally:
 $\Large \text{log}\left(\prod\limits_{i=1}^n X_i \right) = \sum\limits_{i=1}^n \text{log}(X_i)$
 </div>
 
-## Log Likelihood (twin peaks!)
+## Log Likelihood
 
 ```{r,echo=FALSE}
 heads <- rbinom(10,size=100,prob=0.5)
