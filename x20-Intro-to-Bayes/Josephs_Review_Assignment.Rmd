@@ -229,7 +229,7 @@ cookieMonster = function(){
   myN = sample(1:2, size=1)
   myBowl = bowldf[,myN]
   myCookie = sample(myBowl, size=1)
-  return(myCookie)
+  return(c(myCookie, myN))
 }
 
 # simulate that process many times
@@ -237,6 +237,17 @@ cookieMonster = function(){
 myCookies = replicate(1e4,cookieMonster())
 
 # think about how to interpret the results!
+
+## pull out all the ones where I got a snickerdoodle
+myCookiesdf = data.frame(t(myCookies)) ##easier in a dataframe
+library(dplyr)
+mySnickerdoodles = dplyr::filter(myCookiesdf, X1 == "snickerdoodle")
+
+## how often is it bowl 1?
+myPropBowl1 = nrow(dplyr::filter(mySnickerdoodles, X2 == 1))/nrow(mySnickerdoodles)
+
+myPropBowl1
+
 
 ```
 
