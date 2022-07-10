@@ -1,0 +1,145 @@
+---
+title: "Skills & Concept Review Homework: Assignment"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Review_Assignment.Rmd") -->
+
+#### Due by the beginning of next class (11/18)
+
+Save this Rmarkdown script as a file named “YourlastName_ReviewAssignment.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_ReviewAssignment.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about probability, likelihood, probability distributions, and Bayesian statistics
+
+2. use your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+You are at a county fair playing a game of chance. 
+The rules are: you roll two 6-sided dice then flip two coins.
+If you roll a 7 AND both coins come up heads, you win the prize: 
+a large stuffed teddy bear.
+
+1a. Assuming the dice and coins are fair, 
+what is the probability that you win the teddy bear?
+
+
+
+1b. Write a function that simulates this game, and use it to confirm 
+the analytical probability you calculated in part 1a. I've included 
+pseudocode to help guide your function-writing.
+
+
+
+```{r}
+
+# [twist: the function doesn't require you to pass
+#		it any arguments]
+
+# first, roll two six-sided dice and add them together
+#		(hint: sample)
+
+# next, flip two coins
+#		(hint: rbinom)
+
+# use a logic statement to determine 
+#	whether the outcome is a win or a loss
+
+# call the function many times and determine  
+#	the probability of winning from the 
+#	outcome of the simulations (number of times you won
+#	out of total number of simulations)
+
+```
+
+1c. Suppose that the rules of the game have now changed 
+and you win the teddy bear if you roll a 7 OR if you flip 
+two heads (or if you do both).  Edit the function you wrote in part 1b to 
+simulate the probability of winning under this new game.
+
+
+### Question 2
+
+Use maximum likelihood inference to estimate the parameter values 
+I used to simulate data from a Normal distribution, 
+which are saved as a .Robj file in the Review folder.
+Note that you will have to estimate BOTH the mean and the 
+standard deviation.
+
+```{r,cache=TRUE}
+
+# use mean(normData) and sd(normData)
+# to inform the parameter ranges within 
+# which you do your grid search
+
+
+# use seq() to define the increments at which you'll 
+#	evaluate the likelihood of your data
+
+# create an empty matrix in which to store the log-likelihood
+#	of the data for each parameter combination
+
+
+# calculate the log likelihood of the data 
+#	given every possible parameter combination
+
+# look at it!
+
+
+# report the MLEs
+
+```
+
+### Question 3
+
+Suppose there are two full bowls of cookies. 
+Bowl #1 has 10 chocolate chip and 30 snickerdoodles, 
+while bowl #2 has 20 of each. 
+Our friend Cookiemonster picks a bowl at random, and then picks a cookie at random. 
+We have no reason to believe Cookiemonster treats one bowl differently from another, 
+likewise for the cookies. 
+The cookie turns out to be a snickerdoodle.
+
+ 
+3a. Use Bayes Theorem to calculate the analytical probability that 
+Cookiemonster picked it out of Bowl #1?
+
+
+
+
+3b. Write R code to simulate this problem to see 
+if your answer from 3a was correct.
+
+
+```{r}
+# define the cookies in bowl 1
+
+
+# define the cookies in bowl 2
+
+# define a function to sample a bowl at random
+#	then sample a cookie from that bowl
+
+# simulate that process many times
+
+# think about how to interpret the results!
+
+```
+

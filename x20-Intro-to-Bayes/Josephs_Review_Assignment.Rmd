@@ -1,0 +1,242 @@
+---
+title: "Skills & Concept Review Homework: Assignment"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Review_Assignment.Rmd") -->
+
+#### Due by the beginning of next class (11/18)
+
+Save this Rmarkdown script as a file named “YourlastName_ReviewAssignment.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_ReviewAssignment.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about probability, likelihood, probability distributions, and Bayesian statistics
+
+2. use your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+You are at a county fair playing a game of chance. 
+The rules are: you roll two 6-sided dice then flip two coins.
+If you roll a 7 AND both coins come up heads, you win the prize: 
+a large stuffed teddy bear.
+
+1a. Assuming the dice and coins are fair, 
+what is the probability that you win the teddy bear?
+
+Answer:
+P(roll 7) = number of ways to get 7 / number of possible rolls
+
+number of possible rolls = 6x6 = 36
+
+number of ways to get 7: 1:6, 2:5, 3:4, 4:3, 5:2, 6:1 = 6
+
+P(roll 7) = 1/6
+
+P(2 heads) = P(head) x P(head) = 1/2 x 1/2 = 1/4
+
+P(win) = P(roll 7) x P(2 heads) = 1/6 x 1/4 = 1/24
+
+1b. Write a function that simulates this game, and use it to confirm 
+the analytical probability you calculated in part 1a. I've included 
+pseudocode to help guide your function-writing.
+
+
+```{r}
+
+# [twist: the function doesn't require you to pass
+#		it any arguments]
+
+carnivalGame <- function(){
+  
+
+# first, roll two six-sided dice and add them together
+#		(hint: sample)
+
+myDice = sum(sample(1:6, size=2, replace=T))
+
+# next, flip two coins
+#		(hint: rbinom)
+
+myCoins = rbinom(n=1, size=2,prob=0.5)
+
+# use a logic statement to determine 
+#	whether the outcome is a win or a loss
+
+didIWin = 0 #start with not winning
+if (myDice == 7 && myCoins == 2){didIWin <- 1}
+return(didIWin)
+}
+
+# call the function many times and determine  
+#	the probability of winning from the 
+#	outcome of the simulations (number of times you won
+#	out of total number of simulations)
+
+manySims <- sapply(1:1e5, function(x){carnivalGame()})
+
+probWin = sum(manySims)/1e5
+probWin
+
+```
+
+1c. Suppose that the rules of the game have now changed 
+and you win the teddy bear if you roll a 7 OR if you flip 
+two heads (or if you do both).  Edit the function you wrote in part 1b to 
+simulate the probability of winning under this new game.
+
+```{r}
+
+
+carnivalGame2 <- function(){
+myDice = sum(sample(1:6, size=2, replace=T))
+myCoins = rbinom(n=1, size=2,prob=0.5)
+didIWin = 0 #start with not winning
+if (myDice == 7 || myCoins == 2){didIWin <- 1}
+return(didIWin)
+}
+
+manySims <- sapply(1:1e5, function(x){carnivalGame2()})
+
+probWin = sum(manySims)/1e5
+probWin
+
+```
+
+
+### Question 2
+
+Use maximum likelihood inference to estimate the parameter values 
+I used to simulate data from a Normal distribution, 
+which are saved as a .Robj file in the Review folder.
+Note that you will have to estimate BOTH the mean and the 
+standard deviation.
+
+```{r,cache=TRUE}
+load("normData.Robj")
+
+# use mean(normData) and sd(normData)
+# to inform the parameter ranges within 
+# which you do your grid search
+
+mean(normData)
+sd(normData)
+
+meanRange <- mean(normData) + c(-abs(mean(normData))/10,abs(mean(normData))/10)
+sdRange <- sd(normData) + c(-sd(normData)/10,sd(normData)/10)
+
+
+# use seq() to define the increments at which you'll 
+#	evaluate the likelihood of your data
+
+nSteps = 1e2
+myMean = seq(meanRange[1], meanRange[2], length.out = nSteps)
+mySD = seq(sdRange[1], sdRange[2], length.out=nSteps)
+
+# create an empty matrix in which to store the log-likelihood
+#	of the data for each parameter combination
+
+myMatrix = matrix(data=NA, nrow = nSteps, ncol=nSteps)
+
+# calculate the log likelihood of the data 
+#	given every possible parameter combination
+for(i in 1:nSteps){
+	for(j in 1:nSteps){
+		myMatrix[i,j] <- sum(dnorm(x=normData,mean=myMean[i],sd=mySD[j],log=TRUE))
+	}
+}
+
+
+# look at it!
+image(myMatrix, axes=FALSE)
+axis(1, at=seq(0,1,length.out=10),labels = round(seq(meanRange[1], meanRange[2], length.out=10), digits=1))
+axis(2, at=seq(0,1,length.out=10),labels = round(seq(sdRange[1], sdRange[2], length.out=10), digits=1))
+
+
+# report the MLEs
+myMean[which(myMatrix==max(myMatrix),arr.ind=TRUE)[1,1]]
+mySD[which(myMatrix==max(myMatrix),arr.ind=TRUE)[1,2]]
+
+```
+
+### Question 3
+
+Suppose there are two full bowls of cookies. 
+Bowl #1 has 10 chocolate chip and 30 snickerdoodles, 
+while bowl #2 has 20 of each. 
+Our friend Cookiemonster picks a bowl at random, and then picks a cookie at random. 
+We have no reason to believe Cookiemonster treats one bowl differently from another, 
+likewise for the cookies. 
+The cookie turns out to be a snickerdoodle.
+
+ 
+3a. Use Bayes Theorem to calculate the analytical probability that 
+Cookiemonster picked it out of Bowl #1?
+
+
+$\normalsize p(bowl1 \mid snickerdoodle) = \frac{p(snickerdoodle \mid bowl  1) \times p(bowl1)}{p(snickerdoodle)}$
+
+$\normalsize p(bowl 1) = 1/2$
+
+$\normalsize p(snickerdoodle \mid bowl) = 3/4$
+
+$\normalsize p(snickerdoodle) = p(bowl 1) \times p(snickerdoodle \mid bowl 1) + p(bowl 2) \times p(snickerdoodle \mid bowl2)$
+$\normalsize p(snickerdoodle) = 1/2 \times 3/4 + 1/2 \times 1/2 = 5/8$
+
+
+$\normalsize p(bowl  1 \mid snickerdoodle) =  \frac{3/4 \times 1/2}{5/8}$
+
+```{r}
+((3/4)*(1/2))/(5/8)
+```
+
+
+
+3b. Write R code to simulate this problem to see 
+if your answer from 3a was correct.
+
+
+```{r}
+# define the cookies in bowl 1
+bowl1 = c(rep('chocolatechip', 10), rep('snickerdoodle',30))
+
+# define the cookies in bowl 2
+bowl2 = c(rep('chocolatechip', 20), rep('snickerdoodle',20))
+
+##I'm gonna stick them in a dataframe to make life easier
+bowldf = data.frame(bowl1, bowl2)
+
+# define a function to sample a bowl at random
+#	then sample a cookie from that bowl
+
+cookieMonster = function(){
+  myN = sample(1:2, size=1)
+  myBowl = bowldf[,myN]
+  myCookie = sample(myBowl, size=1)
+  return(myCookie)
+}
+
+# simulate that process many times
+
+myCookies = replicate(1e4,cookieMonster())
+
+# think about how to interpret the results!
+
+```
+
