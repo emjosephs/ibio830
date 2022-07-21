@@ -1,0 +1,136 @@
+---
+title: "Intro to MCMC: Assignment"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_22_Assignment.Rmd") -->
+
+#### Due by the beginning of next class (11/23)
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment22.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment22.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about Bayesian inference
+
+2. extrapolate from in-class exercises to apply Bayesian inference to arbitrary distributions
+
+3. use your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+1. Explain, in your own words, the goal and steps of an MCMC algorithm.
+
+The goal of an MCMC algorithm is to estimate a parameter describing a dataset. This is done by randomly sampling a parameter, testing the posterior probability of the data given that parameter, and then resampling a nearby paramater to see if this new parameter has a higher probability. Over many steps the algorithm can describe the posterior distribution and find the best parameter estimate.
+
+### Question 2
+
+Below is a chunk of R code that implements an MCMC algorithm 
+to estimate the rate parameter ($\lambda$) of a Poisson distribution. 
+This code is uncommented - please write a comment for each line 
+explaining what that line is doing.
+
+```{r}
+
+poisData = rpois(500, 5)
+lambda = 2
+
+#function that takes the data and an estimate of Lambda
+calcPostProb <- function(poisData,lambda){
+  ##calculate the log likelihood of poisData given the estimate of Lambda
+	lnL <- sum(dpois(x=poisData,lambda=lambda,log=TRUE))
+	# calculate the likeligood of the prior data
+	lnPrior <- dnorm(x=lambda,mean=1,sd=1e6,log=TRUE)
+	#sum them together (multiply but it's logs) to get the numerator of the Bayes equation
+	return(lnL + lnPrior) 
+}
+
+nSteps = 100
+
+## a function to run th mcmc
+mcmcPoisson <- function(poisData, nSteps){
+  ## make a vector to stick samples in
+	lambdaSamples <- rep(NA,nSteps)
+	## make a vector to stick the posterior probabilities in 
+	postProbSamples <- rep(NA,nSteps)
+	#sample an initial lambda
+	lambda <- abs(rnorm(1))
+	#calculate the posterior probability for that lambda
+	postProb <- calcPostProb(poisData,lambda)
+	# stick the lambda in lambda samples, and stick the posterior prob there as well
+	lambdaSamples[1] <- lambda
+	postProbSamples[1] <- postProb
+	## now for each step
+	for(i in 1:nSteps){
+	    ## get a new lambda sample
+	  	lambdaPrime <- lambda + rnorm(n=1,mean=0,sd=0.3)
+	  	## i th esample is greater than 0
+		if(lambdaPrime > 0){
+		  ## calculate the posterior prob for th esample
+			postProbPrime <- calcPostProb(poisData,lambdaPrime)
+			## calculate R 
+			postRatio <- exp(postProbPrime - postProb)
+			## if it's good
+			if(postRatio > runif(n=1,min=0,max=1)){
+			  ## update to the new lambdas and posterior prime samples
+				lambda <- lambdaPrime
+				postProb <- postProbPrime
+			}
+		}
+	  	## save the values
+		lambdaSamples[i] <- lambda
+		postProbSamples[i] <- postProb
+	}
+	return(
+		list(
+			"lambdaSamples" = lambdaSamples,
+			"postProbSamples" = postProbSamples)
+	)
+}
+```
+
+
+### Question 3
+
+Use the code above to do inference on the rate parameter 
+I used to simulate the Poisson-distributed data saved in the 
+.Robj file in the Class 22 homework folder on D2L.
+
+Provide some visualizations of the results of your MCMC run.
+Use your imagination here - if you were a data scientist, 
+what plots would you want to show your client to convince 
+them you had done a good job?
+
+```{r}
+
+load('poisData.Robj')
+
+myMCMC = mcmcPoisson(poisData, 500)
+
+plot(myMCMC$lambdaSamples, xlab = "steps", ylab = "lambda estimate")
+plot(myMCMC$postProbSamples, xlab = "steps", ylab = "posterior probability")
+
+hist(myMCMC$lambdaSamples, xlab = "lambda", col = "darkgray", border="white", breaks=100)
+
+plot(myMCMC$lambdaSamples, myMCMC$postProbSamples, xlab = "lambda", ylab = "posterior probability", bty="n")
+
+```
+
+
+
+      

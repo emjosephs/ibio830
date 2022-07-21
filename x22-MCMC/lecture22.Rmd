@@ -87,7 +87,7 @@ plot(p,dbinom(x=n.heads,size=100,p=p),
 ```
 
 ```{r,eval=FALSE}
-	mle <- optimize(f = l.binom,lower=0,upper=1,maximum=TRUE)
+	mle <- optimize(f = l.binom,n.heads = rbinom(1,100,0.6),lower=0,upper=1,maximum=TRUE)
 ```
 
 ## Maximum Likelihood recap
@@ -164,25 +164,25 @@ $\Huge{\text{Monte Carlo}}$
 ## Markov chains
 
 ```{r, out.width="750px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/markov_chain/markov_chain.001.jpeg")
+	knitr::include_graphics("figs/markov_chain.001.jpeg")
 ```
 
 ## Markov chains
 
 ```{r, out.width="750px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/markov_chain/markov_chain.002.jpeg")
+	knitr::include_graphics("figs/markov_chain.002.jpeg")
 ```
 
 ## Markov chains
 
 ```{r, out.width="750px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/markov_chain/markov_chain.003.jpeg")
+	knitr::include_graphics("figs/markov_chain.003.jpeg")
 ```
 
 ## Markov chains
 
 ```{r, out.width="750px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/markov_chain/markov_chain.004.jpeg")
+	knitr::include_graphics("figs/markov_chain.004.jpeg")
 ```
 
 ## MCMC {.build}
@@ -191,7 +191,7 @@ $\Huge{\text{Monte Carlo}}$
 	which means it is _memoryless_
 	
 ```{r, out.width="600px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/frogmento/frogmento.001.jpeg")
+	knitr::include_graphics("figs/frogmento.001.jpeg")
 ```
 
 ## {.build}
@@ -462,7 +462,7 @@ ln.L <- function(flips,n,p){
 ```{r}
 # define a posterior probability function
 ln.post <- function(flips,n,p){
-	return(ln.L(flips,n,p) + ln.prior(p))
+	return(ln.L(flips,n,p) + ln.prior(p)) ##note that we can add because it's logs
 }
 ```
 
