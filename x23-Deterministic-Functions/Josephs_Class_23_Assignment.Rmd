@@ -113,3 +113,25 @@ assuming the following:
 * $\sigma \sim \text{Exp}(1)$
 
 [hint: don't forget about the log product rule]
+
+```{r}
+
+## we want P(D|theta) x P(theta) = P(D|Alpha, Beta, Sigma) x p(Alpha, beta, sigma)
+      
+## calculate a log likelood for a given set of parameters and data
+ln.L <- function(myY,myX,myAlpha,myBeta,mySigma){
+    return(sum(
+        dnorm(myY,mean=myAlpha + myBeta * myX,sd=mySigma,log=TRUE)
+    ))
+}
+
+## this is the first part
+firstPart = ln.L(myY = myResponse, myX = myPredictors, myAlpha = 13, myBeta = -1, mySigma=11)
+
+## this is the second part
+secondPart = dnorm(13, mean=0, sd=1, log=T) + dnorm(-1, mean=0, sd=1, log=T) + dexp(11, rate=1, log=T)
+
+firstPart*secondPart
+
+```
+
