@@ -1,6 +1,6 @@
 ---
 title: "Lecture 16 - Intro to Probability, pt. II"
-author: "Gideon Bradburd"
+author: "Emily Josephs"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   ioslides_presentation:
@@ -22,7 +22,7 @@ output:
 	set.seed(123)
 ```
 
-## Homework Digest - Definitions {.build}
+## Homework Review - Definitions {.build}
 
 probability - **how often we expect an event to happen**
 
@@ -36,7 +36,7 @@ conditional probability - **the probability of one outcome _conditional_ on anot
  
 statistical independence - **events are independent when their outcomes do not affect each other**
 
-## Homework Digest - Probability logic {.build}
+## Homework Review - Probability logic {.build}
 
 Suppose a process has two possible outcomes: A and B.
 If the probability of A ($p(A)$) is 0.2, what is p(B)?
@@ -52,7 +52,7 @@ one of which is A, what is the probability of _not_ A?
 $1-p(A)$
 
 
-## Homework Digest - birthday twinsies
+## Homework Review - birthday twinsies
 
 **The Birthday Problem** is a classic problem in probability:
 
@@ -60,7 +60,7 @@ how many people must be in a room for there to be > 50% probability
 that _at least_ two of them share a birthday?
 
 
-## Homework Digest - birthday twinsies {.build}
+## Homework Review - birthday twinsies {.build}
 
 Write a function for simulating the birthday problem. 
 The argument of the function should be the number of people in the room, 
@@ -69,149 +69,89 @@ share a birthday.
 
 \
 
-When in doubt, start w/ the pseudocode!
+When in doubt, start w/ the pseudocode
 
-## Homework Digest - birthday twinsies {.build}
+## Homework Review - birthday twinsies {.build}
 
-\
 
-```{r,echo=TRUE}
-
-# function with argument N (no. of people)
-
-# people's birthdays are drawn at random from the year
-#	(with replacement!)
-
-# a "birthday twinsies" event happens when there are 
-#	fewer birthdays than people
-
-# we want to replicate this simulation many times
-#	and return the proportion of sims that contain 
-#	at least one "birthday twinsies" event
-```
-
-## Homework Digest - birthday twinsies
+## Homework Review - birthday twinsies
 
 \
 
 ```{r,echo=TRUE}
 
-# for each simulation replicate:
+# Write a function with argument N (number of people)
 
 	# draw N birthdays from the year (w/ replacement!)
 
-	# count number of unique birthdays
-	#	if < N, log as a "bday twinsies" event
+	# if the total number of birthdays is < N
+	#	log as a "bday twinsies" event
 
-# divide total number of "bday twinsies" events by 
-#	total number of sim. replicates and return
+# Run this function for each simulation
+#	return the proportion of simulations with birthday twinsies
 ```
 \
-\
 
-## Homework Digest - birthday twinsies {.build}
 
-```{r,echo=TRUE}
-sim.bday <- function(N){
-	prop.twinsies <- sum(
-					replicate(1e5,
-						length(
-							unique(
-								sample(1:365,N,replace=TRUE)
-							)
-						) < N)
-				   )/1e5
-	return(prop.twinsies)
-}
-
-```
-
-## An alternative solution {.build}
+## My solution {.build}
 ```{r, echo=TRUE}
-## function for just one run
+
+# Write a function where you
 birthdaySharing <- function(myN){
-  birthdays = sample(1:365, myN, replace=T) ##REPLACE is very important
-  if (sum(duplicated(birthdays))>0) { myOut = TRUE} else {myOut = FALSE}
+  # draw N birthdays from the year (w/ replacement!)
+  birthdays = sample(1:365, myN, replace=T)
+  	# if the total number of birthdays is < N
+  if (sum(duplicated(birthdays))>0) { 
+    		#	log as a "bday twinsies" event
+    myOut = TRUE} else {myOut = FALSE}
   return(myOut)
 }
 
-## do it many times
+
 birthdaySim <- function(myP){
+# Run the function for each simulation for a given P
 myOut = sapply(1:1e5,function(x){birthdaySharing(myP)})
+#	return the proportion of simulations with birthday twinsies
   return(sum(myOut)/1e5)}
 
 
 ```
 
-##
-<div class ="centered">
-```{r,echo=FALSE,cache=TRUE,fig.height=6,fig.width=7.5}
-twinsies.probs <- sapply(1:40,function(n){sim.bday(n)})
-plot(twinsies.probs,xlab="N",ylab="p(birthday twinsies)",pch=19,ylim=c(0,1),col=4,main="Birthday Problem")
-```
-</div>
+
+## Homework Review - birthday twinsies ON MARS {.build}
 \
-\
-
-##
-<div class ="centered">
-```{r,echo=FALSE,cache=TRUE,fig.height=6,fig.width=7.5}
-twinsies.probs <- sapply(1:40,function(n){sim.bday(n)})
-plot(twinsies.probs,xlab="N",ylab="p(birthday twinsies)",pch=19,ylim=c(0,1),col=4,main="Birthday Problem")
-	abline(h=0.5,col=1,lty=2)
-	points(which(twinsies.probs > 0.5)[1],
-			twinsies.probs[which(twinsies.probs > 0.5)[1]],
-			col=4,pch=8,cex=3)
-	abline(v=which(twinsies.probs > 0.5)[1],col=4)
-	text(x=which(twinsies.probs > 0.5)[1],y=0.9,col=4,labels=which(twinsies.probs > 0.5)[1],cex=2)
-
+```{r, out.width="400px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/martian.png")
 ```
-</div>
 
 
-## Homework Digest - birthday twinsies ON MARS {.build}
+## Homework Review - birthday twinsies ON MARS {.build}
 3c) Suppose humans colonize Mars.  How many people have to be in a room 
 on Mars for there to be a >50% probability that at least 2 of them share 
 a **Martian** birthday?
 
-\
-
 The Martian year is 687 days long.
 
 ##
-```{r,cache=TRUE,echo=FALSE}
-sim.mars.bday <- function(N){
-	prop.twinsies <- sum(
-					replicate(1e5,
-						length(
-							unique(
-								sample(1:687,N,replace=TRUE)
-							)
-						) < N)
-				   )/1e5
-	return(prop.twinsies)
-}
-```
-<div class ="centered">
-```{r,echo=FALSE,cache=TRUE,fig.height=6,fig.width=7.5}
-mars.twinsies.probs <- sapply(1:40,function(n){ sim.mars.bday(n)})
-plot(twinsies.probs,xlab="N",ylab="p(birthday twinsies)",main="Birthday Problem",pch=19,ylim=c(0,1),col=4,xlim=c(1,40))
-	abline(h=0.5,col=1,lty=2)
-	points(which(twinsies.probs > 0.5)[1],
-			twinsies.probs[which(twinsies.probs > 0.5)[1]],
-			col=4,pch=8,cex=3)
-	abline(v=which(twinsies.probs > 0.5)[1],col=4)
-	points(mars.twinsies.probs,col=2,pch=19)
-	points(which(mars.twinsies.probs > 0.5)[1],
-			mars.twinsies.probs[which(mars.twinsies.probs > 0.5)[1]],
-			col=2,pch=8,cex=3)
-	abline(v=which(mars.twinsies.probs > 0.5)[1],col=2)
-	legend(x="topleft",col=c(4,2),pch=19,pt.cex=1.5,legend=c("Earth","Mars"))
-	text(x=which(twinsies.probs > 0.5)[1],y=0.9,col=4,labels=which(twinsies.probs > 0.5)[1],cex=2)
-	text(x=which(mars.twinsies.probs > 0.5)[1],y=0.9,col=2,labels=which(mars.twinsies.probs > 0.5)[1],cex=2)	
+```{r, echo=TRUE}
+
+# Write a function where you
+birthdaySharingMars <- function(myN){
+  # draw N birthdays from the year (w/ replacement!)
+  birthdays = sample(1:687, myN, replace=T)
+  	# if the total number of birthdays is < N
+  if (sum(duplicated(birthdays))>0) { 
+    		#	log as a "bday twinsies" event
+    myOut = TRUE} else {myOut = FALSE}
+  return(myOut)}
+
+birthdaySimMars <- function(myP){
+# Run the function for each simulation for a given P
+myOut = sapply(1:1e5,function(x){birthdaySharingMars(myP)})
+#	return the proportion of simulations with birthday twinsies
+  return(sum(myOut)/1e5)}
 
 ```
-</div>
 
 ## The birthday problem!
 ### Analytical solution
@@ -251,24 +191,13 @@ p(A') &= \frac{365}{365} \times \frac{364}{365} \times \ldots  \times \frac{365-
 		prob.match <- 1 - exp(log.prob.match)
 		return(prob.match)
 	}
-plot(twinsies.probs,type='n',xlab="N",ylab="p(birthday twinsies)",main="Birthday Problem",pch=19,ylim=c(0,1),col=4,xlim=c(1,40))
+plot(-2,-2,type='n',xlab="N",ylab="p(birthday twinsies)",main="Birthday Problem",pch=19,ylim=c(0,1),col=4,xlim=c(1,40))
 	legend(x="topleft",col=c(4,2),lty=1,lwd=2,legend=c("Earth","Mars"),title="analytical")
 	lines(1:40,sapply(1:40,function(i){birthday.problem(i,365)}),lwd=2,col=4)
 	lines(1:40,sapply(1:40,function(i){birthday.problem(i,687)}),lwd=2,col=2)
 ```
 </div>
 
-## Birthday problem - analytical
-<div class ="centered">
-```{r,echo=FALSE,fig.width=7,fig.height=5}
-plot(twinsies.probs,xlab="N",ylab="p(birthday twinsies)",main="Birthday Problem",pch=19,ylim=c(0,1),col=4,xlim=c(1,40))
-	lines(1:40,sapply(1:40,function(i){birthday.problem(i,365)}),lwd=2,col=4)
-	lines(1:40,sapply(1:40,function(i){birthday.problem(i,687)}),lwd=2,col=2)
-	points(mars.twinsies.probs,col=2,pch=19)
-	legend(x="topleft",col=c(4,2),lty=1,lwd=2,legend=c("Earth","Mars"),title="analytical")
-	legend(x="bottomright",col=c(4,2),pch=19,pt.cex=1.5,legend=c("Earth","Mars"),title="simulated")
-```
-</div>
 
 
 ## Another example: coin-flipping {.build}

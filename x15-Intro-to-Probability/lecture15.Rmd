@@ -1,6 +1,6 @@
 ---
 title: "Lecture 15 - Intro to Probability"
-author: "Emily Josephs adopted from Gideon Bradburd"
+author: "Emily Josephs"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   ioslides_presentation:
@@ -29,37 +29,17 @@ I am Emily Josephs
 
 - interested in: evolutionary genetics, plants, triathlons, cat
 
-## How I use R -- for work
+## Hello!
 
-- Data analysis, data exploration, R packages, figures, maps, calculator, reproducible code
+I am Emily Josephs
 
-## How I use R -- for fun {.build .smaller}
+- interested in: evolutionary genetics, plants, triathlons, cat
 
-- choose an episode of Star Trek: Deep Space Nine to watch AT RANDOM!
-
-```{r}
-choose.ds9 <- function(season=NULL){
-	ds9.ep.wiki <- paste0("https://en.wikipedia.org/wiki/",
-						  "List_of_Star_Trek:_Deep_Space_Nine_episodes")
-	ep.names <- rvest::html_text(
-					rvest::html_nodes(
-						xml2::read_html(ds9.ep.wiki),
-						".summary"))
-	ep.names <- gsub("\"","",ep.names)
-	if(is.null(season)){
-		season <- sample(1:7,1)
-	}
-	n.eps <- c(20,26,26,26,26,26,26)
-	episode <- sample(1:n.eps[season],1)
-	ep.name <- ep.names[sum(n.eps[1:season]) - n.eps[season] + episode]
-	return(paste0("Season ",season,", Episode ",episode,":  ",ep.name))
-}
-choose.ds9()
+```{r, out.width="500px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/kittykitty.jpg")
 ```
-	
-## How I use R -- for fun {.build}
 
-## Need to do $\hspace{3.2cm}$      1st semester goals {.columns-2}
+## 1st semester goals $ 
 
 1. Data into spreadsheet
 
@@ -75,22 +55,23 @@ choose.ds9()
 
 6. Interpret results
 
-<p class="forceBreak"></p>
-\
 
- - scripting in R
-\
+## 1st semester goals $ 
 
- - plotting basics
- 
- - introduction to model building
- 	+ probability distributions
- 	+ deterministic functions
-\
-\
-\
+1. ~~Data into spreadsheet~~
 
- - introduction to inference
+2. ~~Wrangle data into R~~
+
+3. ~~Visualize data~~
+
+4. Build a model
+	+ how are data distributed?
+	+ relationship between predictor and response?
+
+5. Use algorithm to parameterize model
+
+6. Interpret results
+
 
 ## IBio 830, part II {.build}
 
@@ -116,32 +97,32 @@ choose.ds9()
 
 ## Shaping Expectations {.build}
 
-This portion of the course will, _by design and necessity_, feel like it moves a little faster.
+This part of the course may feel like it moves a little faster.
 
 There will be math!
 
 You will be learning a new skill, using a young skill, which is hard!
 
-The material will build on itself
+The material will build on itself.
 
-I am learning along with you!
+I am learning along with you!!!
 
 ALSO:
 
-Everything else in the world is happening
+Everything else in the world is happening!!!
 
 ## How to take this part of the course {.build}
 
 1. take a deep breath!
 
-2. believe in yourself!
+2. believe in yourself!!!
 
 3. remember that your primary goal is _present_ understanding, 
 but a solid secondary goal is _future_ understanding.
 
-4. try to stay on top of the work
+4. try to stay on top of the work.
 
-5. don't be afraid of office hours!
+5. don't be afraid of office hours!!
 
 ## Why am I doing this to you? {.build}
 
@@ -151,8 +132,8 @@ not a love of stats and computers.
 Our goal is to try to translate your love of _nature_ 
 into a love of _patterns_, and give you the tools to do so!
 
-In part because the patterns are so subtle and complex, 
-biology has become a driver of quantitative methods in STEM.
+Biology has become a driver of quantitative methods in STEM 
+because interesting patterns are sublte and complicated.
 
 Also, employment!
 
@@ -171,9 +152,24 @@ How often we expect an event to happen ('degree of belief')
 ## How I use probability  {.build}
 > - when will I give birth?
 
-```{r, out.width="750px",echo=FALSE,fig.align="center"}
+```{r, out.width="600px",echo=FALSE,fig.align="center"}
 	knitr::include_graphics("figs/duedate1.png")
 ```
+
+\
+
+Which definition matches the probability of giving birth on a specific day?
+
+## How I use probability  {.build}
+> - Will it rain today?
+
+```{r, out.width="600px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/weatherprobability.png")
+```
+
+\
+
+Which definition matches the probability of giving birth on a specific day?
 
 
 ## Today's rules of probability:  {.build}
@@ -187,8 +183,6 @@ The probability of a **_complex event_** is the sum of the probabilities of its 
 The probability of a **_shared event_** is the product of the probabilities of its constitutive events, so long as they're independent.
 
 The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
-
-
 
 
 ## Notation note {.build}
@@ -274,21 +268,21 @@ length(which(mySamples==5))/nDraws
 
 ## Probability - some terminology {.verybig .build}
 
-We denote the probability of an event with **_p()_**.
+We denote the probability of an event with **_P()_**.
 
 So, we can write the probability of a simple event **_e_** as:
 
 \
 
 <div class ="centered">
-$\Huge p(e)$
+$\Huge P(e)$
 </div>
 
 
 as in:
 
 <div class ="centered">
-$\Huge p(\text{drawing a }5) = \frac{1}{5}$
+$\Huge P(\text{drawing a }5) = \frac{1}{5}$
 </div>
 
 ## Probability: simple events {.build}
@@ -491,7 +485,7 @@ The probability of a **_shared event_** is the product of the probabilities of i
 The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
 
 
-## Probability: let's put on our sparkly shoes {.verybig .build}
+## Probability: sparkly shoes {.big .build}
 
 You record the hair color and shoe phenotype of all the kids in a daycare.
 
@@ -510,15 +504,6 @@ colnames(hair_shoe) <- c("plain","sparkly")
 
  `r knitr::kable(hair_shoe,align="c")`
 
-## Daycare example: simple event {.verybig .build}
-
-
-`r knitr::kable(rowSums(hair_shoe),align="c",col.names="number of kids")`
- 
- \
- 
- What's the probability that a randomly selected kid 
- has black hair?
 
 ## Daycare example: simple event {.verybig}
 
@@ -526,6 +511,9 @@ colnames(hair_shoe) <- c("plain","sparkly")
 
 `r knitr::kable(rowSums(hair_shoe),align="c",col.names="number of kids")`
 
+\
+
+How many kids have black hair?
 
 ## Daycare example: simple event {.verybig}
 
@@ -540,6 +528,7 @@ colnames(hair_shoe)[3] <- "total"
 
  `r knitr::kable(hair_shoe[,3]/hair_shoe[3,3],align="c",col.names=c("proportion of kids"))`
 
+There is a 0.517 probability of picking a kid with black hair.
 
 ## Daycare example: complex event {.build}
 
@@ -557,14 +546,15 @@ the plain-shoed and the sparkle-shoed.
 
 ## Daycare example: complex event {.build}
 
-What's the probability of having black hair?
-
 `r knitr::kable(hair_shoe[1:2,1:2],align="c")`
 
 \
 
-$ p(\text{black hair}) = \: &p(\text{black hair AND plain shoes}) \: +\\ &p(\text{black hair AND sparkly shoes}) \end{align}$
+What's the probability of having black hair?
+\
 
+p(black hair) = 
+p(black hair AND plain shoes) + p(black hair AND sparkly shoes)
 
 ## Daycare example: shared event
 
@@ -657,7 +647,17 @@ $p(\text{black hair} \cap \text{sparkly shoes}) \stackrel{?}{=} p(\text{black ha
 - probability of the intersection of A and B, divided by the probability of B
 
 <div class ="centered">
-$\Huge \frac{p(A ~ \cap ~ B)}{p(B)}$
+$\Huge p(A|B) = \frac{p(A ~ \cap ~ B)}{p(B)}$
+</div>
+
+## Conditional probabilities
+
+```{r, out.width="500px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/conditionalprob.jpg")
+```
+
+<div class ="centered">
+$\Huge p(A|B) = \frac{p(A ~ \cap ~ B)}{p(B)}$
 </div>
 
 ## Conditional probabilities

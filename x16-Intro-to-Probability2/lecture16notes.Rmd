@@ -1,0 +1,50 @@
+---
+title: "lecture16notes"
+output:
+  html_document:
+    keep_md: yes
+date: "2022-08-04"
+---
+
+These are my simplified lecture notes for lecture 16, Intro to Probability 2
+
+
+# Probability distributions
+
+A **_probability distribution_** is a function that provides 
+the probability of each outcome in the sample space.
+
+Probability distributions treats the outcome of 
+the process (in this case, coin-flipping) as a **_random variable_**.
+
+A **_random variable_** is a variable whose value is the 
+outcome of a **_stochastic_** (or random) **_process_**.
+
+# Coin flipping example
+
+If we want to know the probability of getting heads a certain number of times in a set of coin flips:
+
+_n_ = number of trials \
+_k_ = number of successes \
+_p_ = probability of success (for coin flips, we've assumed 1/2) \
+
+
+Part 1: what's the probability of the **shared event** comprised of _k_ successes and _n_-_k_ failures?
+
+<div class="centered">
+$\large p^k \times (1-p)^{n-k}$
+</div>
+
+Part 2: how many permutations of _n_ events give _k_ successes?
+
+The binomial coefficient:
+$\large {{n}\choose{k}} = \frac{n!}{k!(n-k)!}$
+
+
+So, all together, the probability of getting _k_ successes for _n_ trials, if the underlying probability of heads is _p_ is:
+
+$\large {{n}\choose{k}}p^k (1-p)^{n-k}$
+
+This is the binomial distribution.
+
+

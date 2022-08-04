@@ -1,0 +1,108 @@
+---
+title: "lecture15-notes"
+output:
+  html_document:
+    keep_md: yes
+date: "2022-08-04"
+---
+
+These are my simplified lecture notes for lecture 15, Intro to Probability 1.
+
+# What is probability?
+
+There are a couple definitions of probability:
+
+* "A long-term frequency"
+
+* "A measure of the likelihood that an event will occur"
+
+* How often we expect an event to happen ('degree of belief')
+
+The frequency definition is easiest to think about (for me), but for some cases (like the weather), we may not have multiple trials to measure frequencies.
+
+## Notation note
+
+A **set** is an unordered set of objects.
+
+S = {1,2,3,4,5}
+
+S = {1,2,3,4,5} = {4,3,2,5,1}
+
+The intersection of two sets is all the elements that appear in **both** sets.
+
+{1,2,3} $\cap$ {2,3,4} = {2,3}
+
+The union of two sets is every element that appears in **either** set.
+
+{1,2,3} $\cup$ {2,3,4} = {1,2,3,4}
+
+# Rules of probability
+
+The probability of an **_outcome_** is the number of times the outcome occurs divided by the total number of trials.
+
+A **_simple event_** consists of a single experiment and has a single outcome
+
+The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
+
+The probability of a **_shared event_** is the product of the probabilities of its constitutive events, so long as they're independent.
+
+The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
+
+# Simple events
+
+A **_simple event_** consists of a single experiment and have a single outcome.
+
+# Notation note
+
+We denote the probability of an event with **_P()_**.
+
+So, we can write the probability of a simple event **_e_** as: $\large P(e)$
+
+
+# The Law of Total Probability
+
+*This is the first axiom of probability*
+
+$\large \sum\limits_{i=1}^n P(e_{i}) = 1$
+
+The sum of the probabilities of all the outcomes of an event is 1
+
+# Complex events
+
+A **_complex event_** is a combination of multiple simple events (also called a 'compound event')
+
+In general,
+
+$\large P(E_{1} + E_{2}) = P(E_{1}) + P(E_{2})$
+
+If $E_{1}$ and $E_{2}$ are mutually exclusive events
+
+(This is also an axiom)
+
+# Shared events
+
+A **_shared event_** is the simultaneous occurrence of simple events
+
+The probability of a shared event is denoted P(A $\cap$ B)
+
+E.g., probability of drawing 2 numbers and getting a 4 AND a 5
+
+the probability of a shared event is the product of the probabilities
+ of its constitutive simple events.
+ 
+(As long as the simple events are **independent**, meaning that the 
+outcome of one event does not depend on the outcome of another.)
+
+# Conditional probabilities
+
+a **_conditional probability_** is the probability of one outcome _conditional_ on another.
+
+It is written as p(A | B), read as "probability of A _given_ B"
+
+$\large p(A|B) =\frac{p(A ~ \cap ~ B)}{p(B)}$
+
+
+
+
+
+
