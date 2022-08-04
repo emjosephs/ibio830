@@ -1,0 +1,37 @@
+---
+title: "scraps"
+output: html_document
+date: "2022-08-04"
+---
+
+Stuff I've cut from other lectures that I may want to reuse.
+
+## How I use R -- for work
+
+- Data analysis, data exploration, R packages, figures, maps, calculator, reproducible code
+
+## How I use R -- for fun {.build .smaller}
+
+- choose an episode of Star Trek: Deep Space Nine to watch AT RANDOM!
+
+```{r}
+choose.ds9 <- function(season=NULL){
+	ds9.ep.wiki <- paste0("https://en.wikipedia.org/wiki/",
+						  "List_of_Star_Trek:_Deep_Space_Nine_episodes")
+	ep.names <- rvest::html_text(
+					rvest::html_nodes(
+						xml2::read_html(ds9.ep.wiki),
+						".summary"))
+	ep.names <- gsub("\"","",ep.names)
+	if(is.null(season)){
+		season <- sample(1:7,1)
+	}
+	n.eps <- c(20,26,26,26,26,26,26)
+	episode <- sample(1:n.eps[season],1)
+	ep.name <- ep.names[sum(n.eps[1:season]) - n.eps[season] + episode]
+	return(paste0("Season ",season,", Episode ",episode,":  ",ep.name))
+}
+choose.ds9()
+```
+	
+## How I use R -- for fun {.build}
