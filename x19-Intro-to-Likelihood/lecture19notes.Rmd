@@ -49,6 +49,8 @@ Instead can take _samples_ to try to learn about --  or **_estimate_** -- parame
 ## Likelihood
 
 Likelihood is the probability of observing an outcome or outcomes given a set of parameters.
+ 
+$\Large Likelihood(Parameters | Data) = p(Data | Parameters)$
 
 _Maximum likelihood (ML) inference_ is a method for estimating the values  of the parameters of a statistical model that maximize the likelihood  of the observed data.
 
@@ -60,9 +62,9 @@ We can find the MLE by:
 
 * Haphazard search
 * Grid search
-* Algorithms!
+* Calculus
   - For example, if $f(x)$ is the likelihood function, maximum $f(x)$ happens when $f'(x) = 0$ and $f''(x) < 0$
-  - More on algorithms in future lectures
+* More in future lectures
   
 ## Philosophy break
 Is it bananas to calculate the probability of something that has already happened? Maybe

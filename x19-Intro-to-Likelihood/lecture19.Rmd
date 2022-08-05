@@ -563,9 +563,10 @@ If _p_(heads)=0.5 and _n_=100, what is $p(X={46,47,48})$?
 
 Poll: \
 
-A - `r sum(dbinom(x=n.heads,size=100,prob=0.5))` \
-C - `r dbinom(n.heads[1],size=100,prob=0.5)` \
-D - `r prod(dnorm(n.heads,mean=50,sd=1))` \
+A - sum(dbinom(x=c(46,47,48), size=100, prob=0.5)) \
+B - prod(dbinom(x=c(46,47,48), size=100, prob=0.5)) \
+C - dbinom(46, size=100, prob=0.5) \
+D - prod(dnorm(c(46,47,48), mean=50, sd=1)) \
 
 ## Calculating the likelihood of multiple observations
 
@@ -575,10 +576,10 @@ If _p_(heads)=0.5 and _n_=100, what is $p(X={46,47,48})$?
 
 Poll: \
 
-A - `r sum(dbinom(x=n.heads,size=100,prob=0.5))` \
-**B - `r prod(dbinom(x=n.heads,size=100,prob=0.5))`** \
-C - `r dbinom(n.heads[1],size=100,prob=0.5)` \
-D - `r prod(dnorm(n.heads,mean=50,sd=1))` \
+A - sum(dbinom(x=c(46,47,48), size=100, prob=0.5)) \
+**B - prod(dbinom(x=c(46,47,48), size=100, prob=0.5))** \
+C - dbinom(46, size=100, prob=0.5) \
+D - prod(dnorm(c(46,47,48), mean=50, sd=1)) \
 
 ## Calculating the likelihood of multiple observations {.build}
 
@@ -587,39 +588,30 @@ $p(X={46,47,48}) = p(X=46) \times p(X=47) \times p(X=48)$
 If _p_(heads)=0.5 and _n_=100, what is $p(X={46,47,48})$? 
 
 ```{r}
-n.heads <- c(46,47,48)
-dbinom(x=n.heads[1],size=100,prob=0.5) * 
-dbinom(x=n.heads[2],size=100,prob=0.5) * 
-dbinom(x=n.heads[3],size=100,prob=0.5)
-prod(dbinom(x=n.heads,size=100,prob=0.5))
+dbinom(x=46, size=100, prob=0.5) * 
+dbinom(x=47, size=100, prob=0.5) * 
+dbinom(x=48, size=100, prob=0.5)
+prod(dbinom(x=c(46,47,48) ,size=100, prob=0.5))
 ```
 
 ## Calculating the likelihood of multiple observations {.build}
 
+What if we want to know the likelihood of 10 observations?
 ```{r}
-	prod(
-		dbinom(
-			x = rbinom(10,size=20,prob=0.5),
-			size = 20,
-			prob = 0.5
-		)
-	)
+myObservations = rbinom(10,size=100,prob=0.5)
+prod(dbinom(x=myObservations,size=100,prob=0.5))
 ```
 
-## Calculating the likelihood of multiple observations {.build}
+What about 50 observations? What might go wrong here?
 
 ```{r}
-prod(dbinom(x=rbinom(10,size=100,prob=0.5),size=100,prob=0.5))
-```
-
-What might go wrong here?
-
-```{r}
-prod(dbinom(x=rbinom(100,size=100,prob=0.5),size=100,prob=0.5))
+myObservations = rbinom(50,size=100,prob=0.5)
+prod(dbinom(x=myObservations,size=100,prob=0.5))
 ```
 
 ```{r}
-prod(dbinom(x=rbinom(500,size=100,prob=0.5),size=100,prob=0.5))
+myObservations = rbinom(500,size=100,prob=0.5)
+prod(dbinom(x=myObservations,size=100,prob=0.5))
 ```
 
 ## What went wrong?
@@ -645,7 +637,6 @@ $\Large \text{if } n \text{ is large, } \prod\limits_{i=1}^n X_i << 1$
 
 ## So how can we calculate the likelihood of multiple observations? {.build}
 
-<iframe src="figs/log_lady.gif" height="610px" width="800px" align="middle" style="border: none;"></iframe>
 
 ## Logs!
 
