@@ -736,7 +736,7 @@ divided by the probability of the condition
 
 ## {.build}
 
-You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+You roll a pair of 4-sided dice 100 times in a row and record the combination of numbers you get 
 (1st roll in row, 2nd roll in col):
 
 ```{r echo=FALSE}
@@ -764,7 +764,7 @@ row.names(rolls) <- 1:4
 
 ##
 
-You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+You roll a pair of 4-sided dice 100 times in a row and record the combination of numbers you get 
 (1st roll in row, 2nd roll in col):
 
 `r knitr::kable(rolls,row.names=TRUE,align="c")`
@@ -780,7 +780,7 @@ D - `r rolls[1,1]`/(`r rolls[1,1]`+`r rolls[2,1]`+`r rolls[3,1]`+`r rolls[4,1]`)
 
 ## 
 
-You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+You roll a pair of 4-sided dice 100 times in a row and record the combination of numbers you get 
 (1st roll in row, 2nd roll in col):
 
 `r knitr::kable(rolls,row.names=TRUE,align="c")`
@@ -789,13 +789,13 @@ You roll a pair of 4-sided dice 1e2 times in a row and record the combination of
 **POLL** - Expected _p_(rolling (2,2))?
 </div>
 
-**A** - $\frac{1}{4} \times \frac{1}{4}$ \
+**A** - $\frac{1}{4} \times \frac{1}{4}$          
 **B** - $\frac{1}{4} + \frac{1}{4}$ \
-**C** - ${\frac{1}{4}}^{4}$
+**C** - ${(\frac{1}{4}})^{4}$
 
 ## 
 
-You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+You roll a pair of 4-sided dice 100 times in a row and record the combination of numbers you get 
 (1st roll in row, 2nd roll in col):
 
 `r knitr::kable(rolls,row.names=TRUE,align="c")`
@@ -806,11 +806,11 @@ You roll a pair of 4-sided dice 1e2 times in a row and record the combination of
 
 <span style="color:red">**A - $\frac{1}{4} \times \frac{1}{4}$ **</span> \
 B - $\frac{1}{4} + \frac{1}{4}$ \
-C - ${\frac{1}{4}}^{4}$
+C - ${(\frac{1}{4}})^{4}$
 
 ## 
 
-You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+You roll a pair of 4-sided dice 100 times in a row and record the combination of numbers you get 
 (1st roll in row, 2nd roll in col):
 
 `r knitr::kable(rolls,row.names=TRUE,align="c")`
@@ -825,7 +825,7 @@ You roll a pair of 4-sided dice 1e2 times in a row and record the combination of
 
 ## 
 
-You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+You roll a pair of 4-sided dice 100 times in a row and record the combination of numbers you get 
 (1st roll in row, 2nd roll in col):
 
 `r knitr::kable(rolls,row.names=TRUE,align="c")`
@@ -840,7 +840,7 @@ C - $\frac{1}{2}$
 
 ## 
 
-You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+You roll a pair of 4-sided dice 100 times in a row and record the combination of numbers you get 
 (1st roll in row, 2nd roll in col):
 
 `r knitr::kable(rolls,row.names=TRUE,align="c")`
@@ -855,7 +855,7 @@ You roll a pair of 4-sided dice 1e2 times in a row and record the combination of
 
 ## 
 
-You roll a pair of 4-sided dice 1e2 times in a row and record the combination of numbers you get 
+You roll a pair of 4-sided dice 100 times in a row and record the combination of numbers you get 
 (1st roll in row, 2nd roll in col):
 
 `r knitr::kable(rolls,row.names=TRUE,align="c")`

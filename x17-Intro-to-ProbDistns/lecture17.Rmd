@@ -1,6 +1,6 @@
 ---
 title: "Lecture 17 - Introduction to Probability Distributions"
-author: "Gideon Bradburd"
+author: "Emily Josephs"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   ioslides_presentation:
@@ -155,7 +155,7 @@ $\Large {{n}\choose{k}} \times \left( p^k \times (1-p)^{n-k}	\right)$
 ## 
 ```{r,fig.width=6.5,fig.height=5,fig.align="center",echo=FALSE}
 	plot(0,type='n',xlim=c(0,25),ylim=c(0,0.2),
-			xlab="successes",ylab="probability",main="Recreate Me!")
+			xlab="successes",ylab="probability",main="")
 		lines(0:25,coin.flip.prob(n=25,k=0:25,p=0.3),lwd=3,col="blue")
 		lines(0:25,coin.flip.prob(n=25,k=0:25,p=0.5),lwd=3,col="purple")
 		lines(0:25,coin.flip.prob(n=25,k=0:25,p=0.7),lwd=3,col="red")
@@ -237,6 +237,8 @@ $\Large \mathbb{V}ar(X) = np(1-p)$
 
 ## Probability distributions: the binomial {.build}
 
+Simulating a coin toss matches the binomial distribution
+
 <div class="centered">
 ```{r,echo=FALSE,fig.height=5,fig.width=6}
 	viz.binom.stats <- function(n,p){
@@ -283,7 +285,7 @@ the world around us!
 Random variables come in two flavors: **_discrete_** and **_continuous_**
 
 - **Discrete** random variables are things that can be counted
-	+ heads in a coinflip experiment, fish in a lake
+	+ heads in a coinflip experiment, fish in a lake, flowers on a plant
 \
 \
 
@@ -292,8 +294,6 @@ Random variables come in two flavors: **_discrete_** and **_continuous_**
 
 \
 \
-
-Fun fact: continuous RVs are kind of discrete?!
 
 ## Distributions and Random Variables {.build}
 

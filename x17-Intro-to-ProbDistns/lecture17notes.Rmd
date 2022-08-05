@@ -1,0 +1,60 @@
+---
+title: "lecture17notes"
+output:
+  html_document:
+    keep_md: yes
+date: "2022-08-05"
+---
+
+## The binomial distribution (aka the coin flip distribution)
+
+If a random variable **_X_** is binomially distributed, we write:
+
+$\Large X \sim B(n,p)$
+
+Read as: "_X_ is a draw from a binomial distribution 
+with parameters _n_ and _p_"
+
+\
+And, if **_X_** is a drawn from a binomial distribution, 
+we can use the **_binomial probability distribution function_** 
+to calculate the probability for any value of **_X_**, given **_n_** and **_p_**.
+
+We can also calcuate the man and variance.
+
+If $X \sim B(n,p)$, we know:
+
+$\Large \mathbb{E}[X] = np$
+
+and
+
+$\Large \mathbb{V}ar(X) = np(1-p)$
+
+##  Random variables 
+
+**Discrete** random variables are things that can be counted
+
+* heads in a coinflip experiment
+* number of flowers on a plant
+	
+**Continuous** random variables are things that can be measured
+
+* height 
+* color
+
+Discrete probability distributions have 
+**_probability mass functions_**
+that give the probability that the discrete random variable is exactly a certain value.
+
++ e.g., what's the probability of getting _exactly_ 43 heads out of 100 coin flips
+
+## Probability density functions 
+
+A continuous variable can take 
+an infinite possible number of values, 
+**the probability of any specific value is 0**.
+ 
+So, a pdf measures the _relative_ probability 
+of a given value.
+
+
