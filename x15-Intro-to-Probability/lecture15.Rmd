@@ -169,7 +169,7 @@ Which definition matches the probability of giving birth on a specific day?
 
 \
 
-Which definition matches the probability of giving birth on a specific day?
+Which definition matches the probability of rain at a specific time?
 
 
 ## Today's rules of probability:  {.build}

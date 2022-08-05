@@ -1,6 +1,6 @@
 ---
 title: "Lecture 19 - Introduction to Likelihood"
-author: "Gideon Bradburd"
+author: "Emily Josephs"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   ioslides_presentation:
@@ -63,26 +63,10 @@ so what's the deal?
 
 ## The Law of Large Numbers {.build}
 
-The _law of large numbers_ (LLN) states that as the number of samples 
-from some process increases, the sample average converges on the 
+As the number of samples increases, the sample average converges on the 
 expected value.
 
-```{r,echo=FALSE,cache=TRUE}
-	draw.running.mean <- function(r,n){
-		replicate(r,{
-			x1 <- rnorm(n,mean=0,sd=0.5)
-			x1.mean <- cumsum(x1)/(1:n)
-			lines(1:n,x1.mean,col=adjustcolor(1,0.2))
-		})
-		return(invisible(0))
-	}
-	n <- 1e2
-	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
-			xlab="number of draws from a normal",
-			ylab="running mean")
-		draw.running.mean(r = 100,n = n)
-		abline(h=0,col=2)
-```
+Discovered by our friend Jacob/James/Jaccques Bernoulli!
 
 ## The Law of Large Numbers {.build}
 
@@ -107,16 +91,62 @@ $p(21 \text{ heads in 21 flips}) = {{n=21}\choose{k=21}} \times (0.5)^{21} = `r 
 
 $p(21 \text{ heads} \; | \; 20 \text{ heads}) = 0.5$
 
-## Law of Large Numbers recap:
+## Visualizing the Law of Large Numbers
 
-1. As the number of samples drawn from a distribution 
-increases, the sample average converges on the expected value
-(and more broadly, the more the sample distribution 
-starts to resemble the generating distribution)
+```{r,echo=FALSE,cache=TRUE}
+	draw.running.mean <- function(r,n){
+		replicate(r,{
+			x1 <- rnorm(n,mean=0,sd=0.5)
+			x1.mean <- cumsum(x1)/(1:n)
+			lines(1:n,x1.mean,col=adjustcolor(1,0.2))
+		})
+		return(invisible(0))
+	}
+	n <- 1e2
+	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
+			xlab="number of draws from a normal",
+			ylab="running mean")
+		draw.running.mean(r = 1,n = 100)
+		abline(h=0,col=2)
+```
 
-2. But if the process is stochastic and has no "memory," 
-the probability of subsequent outcomes is independent of 
-previous outcomes
+
+## Visualizing the Law of Large Numbers
+
+```{r,echo=FALSE,cache=TRUE}
+	draw.running.mean <- function(r,n){
+		replicate(r,{
+			x1 <- rnorm(n,mean=0,sd=0.5)
+			x1.mean <- cumsum(x1)/(1:n)
+			lines(1:n,x1.mean,col=adjustcolor(1,0.2))
+		})
+		return(invisible(0))
+	}
+	n <- 1e2
+	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
+			xlab="number of draws from a normal",
+			ylab="running mean")
+		draw.running.mean(r = 1,n = 100)
+		abline(h=0,col=2)
+```
+
+
+## Visualizing the Law of Large Numbers {.build}
+
+```{r,echo=FALSE,cache=TRUE}
+
+	n <- 1e2
+	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
+			xlab="number of draws from a normal",
+			ylab="running mean")
+		draw.running.mean(r = 100,n = n)
+		abline(h=0,col=2)
+```
+
+
+
+How would this look different if there was memory?
+
 
 
 ## Introduction to Likelihood {.build}
@@ -171,12 +201,12 @@ we treat observed data as draws from
 an underlying process or **_population_**, 
 and we try to learn about that population from our sample.
 
-## Parameters - what's the deal? {.build}
+## Parameters {.build}
 
 A **_statistical parameter_** is a value that tells you something 
 about a **_population_**.
 
-- e.g., the _true_ mean height of toddlers in my kid's classroom, 
+- e.g., the _true_ mean height of students in our class, 
 or the _true_ frequency of a genetic variant in a species.
 
 \
@@ -290,14 +320,15 @@ The MLE is our best guess at the true value of the unknown
 
 ## How do we find the MLE? {.build}
 
-Haphazard and grid searches are inefficient and often impractical (e.g., the mean of a normal distribution).
+Haphazard and grid searches are inefficient and often impractical.
 
 There are a number of sophisticated algorithms for doing 
 ML inference, many of which leverage classic techniques for 
 finding the maximum of an arbitary function.
 \
-\
-$\text{max}(f(x)) \text{ happens when } f'(x) = 0 \text{ and } f''(x) < 0$
+
+For example, if $f(x)$ is the likelihood function,
+maximum $f(x)$ happens when $f'(x) = 0$ and $f''(x) < 0$
 
 ## How do we find the MLE?
 

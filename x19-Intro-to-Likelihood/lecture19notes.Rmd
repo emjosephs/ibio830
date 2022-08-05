@@ -1,0 +1,73 @@
+---
+title: "lecture19notes"
+output:
+  html_document:
+    keep_md: yes
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+
+## The Law of Large Numbers
+
+As the number of samples increases, the sample average converges on the 
+expected value.
+
+This law results from the fact that each sample is independent from the previous one (aka gambler's fallacy)
+
+
+## Introduction to Likelihood
+
+The **likelihood** of the data is the probability of the 
+data as a function of some unknown parameters.
+
+In probability, we calculated the probability of possible outcomes of a stochastic process.
++ What's the probability of flipping a coin 100 times and getting heads 46 times?
+
+In statistics, we start with some observed outcomes, and try to figure out the underlying process.
++ If we flip a coin 100 times and get heads 46 times, is the coin fair?
++ we are treating the observed data ($k=46$) as a _known_, 
+and treating $p$ as an unknown **_parameter_** of the model.
+
+## Parametric Statistics
+
+In parametric inference,we treat observed data as draws from 
+an underlying process or **_population_**, and we try to learn about that population from our sample.
+
+So if $X$ is an outcome of a distribution (say bionimial), such that $X \sim B(n,p)$, we want to figure out what $p$ is.
+
+
+## Parameters 
+
+A **_statistical parameter_** is a value that tells you something 
+about a **_population_**.
+- e.g., the _true_ mean height of a group of toddlers, or the _true_ frequency of a genetic variant in a species.
+
+Determining the _truth_ would require  censusing everyone in a population,  or repeating a random process an infinite number of times.
+
+Instead can take _samples_ to try to learn about --  or **_estimate_** -- parameters.  
+
+## Likelihood
+
+Likelihood is the probability of observing an outcome or outcomes given a set of parameters.
+
+_Maximum likelihood (ML) inference_ is a method for estimating the values  of the parameters of a statistical model that maximize the likelihood  of the observed data.
+
+The _maximum likelihood estimate_ (MLE) is the parameter value (or, if there are multiple parameters, the vector of parameter values)  that maximize the likelihood of the data.
+
+The MLE is our best guess at the true value of the unknown  **_population_** (or process) parameter.
+
+We can find the MLE by:
+
+* Haphazard search
+* Grid search
+* Algorithms!
+  - For example, if $f(x)$ is the likelihood function, maximum $f(x)$ happens when $f'(x) = 0$ and $f''(x) < 0$
+  - More on algorithms in future lectures
+  
+## Philosophy break
+Is it bananas to calculate the probability of something that has already happened? Maybe
+
+## Multiple observations
+Assuming the observations are independent and identically distributed (i.i.d.), their probabilities can be computed as a single shared event.
+
+

@@ -1,6 +1,6 @@
 ---
 title: "Binomial distribution"
-author: "Gideon Bradburd"
+author: "Emily Josephs"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   ioslides_presentation:
@@ -20,10 +20,10 @@ output:
 
 ## Brief history {.build}
 
- - First derived by James (aka Jacques?!) Bernoulli in 1713.
+ - First derived by Jacob/James/Jaccques Bernoulli.
  
- - Fun fact
-	+ James wanted the words "Although changed, I rise again the same" inscribed on his tombstone
+ - Fun facts
+	+ He wanted a logarithmic spiral on his tombstone, but instead there is an Archimedean spiral.
  
 ## Notation, parameters, bounds
 
@@ -54,7 +54,7 @@ $\Large \mathbb{E}[X] = np$
 \
 
 ### Intuition:
-A larger number of trials will increase the overall expected number of successes (more flips = more heads).
+If you conduct more trials, you expect more successes (more flips = more heads).
 
 A higher probability of success ($p$) will increase the expected number of successes (higher chance of heads = more heads).
 
@@ -71,10 +71,9 @@ $\Large \mathbb{V}ar(X) = np(1-p)$
 \
 
 ### Intuition:
-A larger number of trials increases the variance (more possible outcomes)
+A larger number of trials increases the variance (more possible outcomes).
 
-Extreme values of $p$ give lower variances because outcomes start to get 
-squished up against the hard bounds of the distribution.
+Extreme values of $p$ give lower variances because most outcomes will be the same type.
 
 When $p$ is 0 or 1, there is no variance, because all outcomes are failures or successes, respectively.
 
@@ -84,9 +83,7 @@ When $p$ is 0 or 1, there is no variance, because all outcomes are failures or s
  
  - allele frequencies
  
- - public opinion (from polls)
- 
- - wins/losses (e.g., for a team)
+ - seed germination 
 
 ##
 ```{r, echo=FALSE}
@@ -120,7 +117,7 @@ renderPlot({
 							round(mean(x),1),
 							input$n*input$p)
   	# visualize simulated data as a histogram
-    hist(x, col="darkblue", border = "white",
+    hist(x, col="mediumpurple3", border = "white",
          xlab = "Number of successes",
          xlim=c(0,input$n),
          main = plot.title,
