@@ -1,0 +1,81 @@
+---
+title: "Lecture 20 Notes"
+output:
+  html_document:
+    keep_md: yes
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+## Bird's eye view
+We want to be able to make a model to say something quantitative and object about how a predictor affects a response variable. To do this we have been thinking about running models where we estimate parameters with the highest likelihoods (based on our understandings of probability distributions, probability, and random variables).
+
+Now, we are going to talk about a slightly different approach using Bayes theorem, instead of maximum likelihood, to estimate model parameters.
+
+## Bayes theorem
+
+Bayes Theorem allows us to assess the probability of a hypothesis ($A$) given some data ($B$), rather than the other way around, as in frequentist statistics.
+
+## Deriving Bayes theorem
+
+Recall (from the definition of conditional probabilities):
+
+<div class="centered">
+$\Large{p(A \; \mid \; B) = \frac{p(A \cap B)}{p(B)}}$
+</div>
+
+and 
+
+<div class="centered">
+$\Large{p(B \; \mid \; A) = \frac{p(B \cap A)}{p(A)}}$
+</div>
+
+and 
+
+<div class="centered">
+$\Large{p(B \cap A) = p(A \cap B)}$
+</div>
+
+so
+
+$\Large{p(A \; \mid \; B) \times p(B) = p(B \; \mid \; A) \; \times \; p(A)}$
+
+
+
+$\Huge{p(A \; \mid \; B) = \frac{p(B \; \mid \; A) \; \times \; p(A)}{p(B)}}$
+
+## Definitions of the parts of Bayes theorem
+
+$p(A \; \mid \; B)$ is the _posterior probability_ (p(A given B))
+
+$p(B \; \mid \; A)$ is the _likelihood_ of B given A
+
+$p(A)$ is the _prior probability_ of A
+
+$p(B)$ is the _marginal likelihood_ or _model evidence_ of B
+
+It might help to think of $A$ as being a set of data and $B$ being a model with one or more parameters.
+
+## An example
+
+* The proportion of people who develop thyroid cancer is 0.0001.
+* The probability of a biopsy correctly identifying cancer is 90%.
+* The probability of a biopsy false positive is 0.001
+
+What's the probability that someone with a positive biopsy actually has cancer? ($p(Cancer | Pos)$)
+
+$p(Pos | Cancer) = 0.9$
+
+$p(Cancer) = 0.0001$
+
+$p(Pos) = p(Cancer) \times p(Pos|Cancer) + p(no Cancer) \times p(Pos | no Cancer)$
+$p(Pos) = 0.0001 \times 0.9 + (1-0.0001) \times 0.001 = 0.00109$
+
+$P(Cancer | Pos) = 0.08258$
+
+##Priors
+
+
+
+
+
+

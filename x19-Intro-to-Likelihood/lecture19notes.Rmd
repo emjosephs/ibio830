@@ -72,4 +72,5 @@ Is it bananas to calculate the probability of something that has already happene
 ## Multiple observations
 Assuming the observations are independent and identically distributed (i.i.d.), their probabilities can be computed as a single shared event.
 
+But the product of many small probabilities gets to be very very small, so it's easier to use the natural log (aka 'Log Likelihood') to sum the logs of the probabilities.
 

@@ -1,12 +1,11 @@
 ---
 title: "Lecture 20 - Intro to Bayesian Statistics"
-author: "Gideon Bradburd"
+author: "Emily Josephs"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   ioslides_presentation:
     transition: 0.001
     bigger: true
-    incremental: true
 ---
 <!-- To render the lecture in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("lecture20.Rmd") -->
@@ -288,21 +287,6 @@ $p(B \; \mid \; A)$ is the _likelihood_ of B given A
 $p(A)$ is the _prior probability_ of A
 
 $p(B)$ is the _marginal likelihood_ or _model evidence_ of B
-
-
-## Bayes Theorem
-
-<div class="centered">
-<span style="color:red">$\Huge{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$</span>
-</div>
-
-$p(\theta \; \mid \; D)$ is the _posterior probability_ (p(model given the data))
-
-$p(D \; \mid \; \theta)$ is the _likelihood_ of the data given the model
-
-$p(\theta)$ is the _prior probability_ of the model
-
-$p(D)$ is the _marginal likelihood_ or _model evidence_ of the data
 
 ## Bayes Theorem {.build}
 
