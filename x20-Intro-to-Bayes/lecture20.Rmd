@@ -203,18 +203,18 @@ Step 1: be able to do stuff in R
 
 ## Bird's-eye view
 
-Step 8: say something _quantitative_ and _objective_ about 
+Step 7: say something _quantitative_ and _objective_ about 
 the effect of a predictor on a response.
 
-Step 7: run model (use likelihood-based 
+Step 6: run model (use likelihood-based 
 inference and an algorithm to estimate values of parameters of the model)
 
-Step 6: build **Bayesian** model (make choices about how we think our data are distributed 
+Step 5: build **Bayesian** model (make choices about how we think our data are distributed 
 and the nature of the relationship between predictor and response)
 
-Step 5: know about prob. distributions and deterministic functions 
+Step 4: know about prob. distributions and deterministic functions 
 
-Step 4: **learn about Bayes Theorem**
+Step 3.5: **learn about Bayes Theorem**
 
 Step 3: understand the concept of likelihood
 
