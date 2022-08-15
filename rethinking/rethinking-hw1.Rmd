@@ -1,0 +1,46 @@
+---
+title: "rethinking_hw1"
+output:
+html_document:default
+pdf_document: default
+date: "2022-08-15"
+---
+
+
+1. Suppose the globe tossing data (Chapter 2) had turned out to be 4 water and 11 land. Construct the posterior distribution, using grid approximation. Use the same flat prior as in the book.
+
+```{r}
+
+#define grid
+pgrid <- seq(from=0, to=1, length.out=20)
+
+#define prior
+prior <- rep(1,20)
+
+#compute likeligood for the grid
+likelihood <- dbinom(4, size=15, prob=pgrid)
+
+unstd.posterior <- likelihood*prior
+
+posterior <- unstd.posterior/sum(unstd.posterior)
+
+plot(pgrid,posterior)
+
+```
+
+
+Now suppose the data are 4 water and 2 land. Compute the posterior
+again, but this time use a prior that is zero below p = 0.5 and a constant
+above p = 0.5. This corresponds to prior information that a majority of the
+Earth’s surface is water.
+
+```{r}
+newprior <- c(rep(0, length.out=10), rep(2,length=10))
+
+likelihood <- dbinom(4, size=6, prob=pgrid)
+unstd.posterior <- likelihood*newprior
+posterior <- unstd.posterior/sum(unstd.posterior)
+plot(pgrid,posterior)
+
+
+```
