@@ -203,33 +203,60 @@ Step 1: be able to do stuff in R
 
 ## Bird's-eye view
 
-Step 8: say something _quantitative_ and _objective_ about 
+Step 7: say something _quantitative_ and _objective_ about 
 the effect of a predictor on a response.
 
-Step 7: run model (use likelihood-based 
+Step 6: run model (use likelihood-based 
 inference and an algorithm to estimate values of parameters of the model)
 
-Step 6: build **Bayesian** model (make choices about how we think our data are distributed 
+Step 5: build **Bayesian** model (make choices about how we think our data are distributed 
 and the nature of the relationship between predictor and response)
 
-Step 5: know about prob. distributions and deterministic functions 
+Step 4: know about prob. distributions and deterministic functions 
 
-Step 4: **learn about Bayes Theorem**
+Step 3.5: **learn about Bayes Theorem**
 
 Step 3: understand the concept of likelihood
 
 Step 2: understand the rules of probability
 
+## Deriving Bayes Theorem {.build}
+
+Say we have a hypothesis $\theta$ that the probability that a given coin flips heads is 0.5.
+
+And we have observed data $D$ of a large number of flips from that coin.
+
+## Deriving Bayes Theorem {.build}
+
+We might be interested in the  conditional probability of our data $D$ given hypothesis $\theta$.
+
+<div class="centered">
+$\Large{p(D \mid \theta) = \frac{P(\theta \  \cap \ D)}{P(\theta)}}$
+</div>
+
+We also know, based on how conditional probabilities work, the conditional probability of our hypothesis $\theta$ given our data $D$.
+
+<div class="centered">
+$\Large{p(\theta \mid D) = \frac{P(D \  \cap \ \theta)}{P(D)}}$
+</div>
+
+We can combine these two equations and rearrange.
+
+## Deriving Bayes Theorem {.build}
+
+$p(\theta \mid D) = \frac{P(D \  \cap \ \theta)}{P(D)}$ and $p(D \mid \theta) = \frac{P(\theta \  \cap \ D)}{P(\theta)}$ 
+
+$p(\theta \mid D) = \frac{P(D \  \cap \ \theta)}{P(D)}$ and $P(\theta \  \cap \ D) = p(D \mid \theta) \times P(\theta)$ 
+
+
+<div class="centered">
+$\Huge{p(\theta \mid D) = \frac{P(D \  \mid \ \theta) \times P(\theta)}{P(D)}}$
+</div>
 
 ## Bayes Theorem {.build}
 
-Say we have some hypothesis **$\theta$**, often expressed as the belief a parameter takes a particular value 
-(e.g., that the probability that a given coin flips Heads is 0.4)
-
-And we also have some observed data **$D$** (e.g., some number of flips from that coin)
-
 <div class="centered">
-<span style="color:red">$\Huge{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$</span>
+$\Huge{p(\theta \mid D) = \frac{P(D \  \mid \ \theta) \times P(\theta)}{P(D)}}$
 </div>
 
 Bayes Theorem allows us to assess the probability of a hypothesis given some data, 
@@ -239,59 +266,22 @@ as in frequentist statistics.
 
 ## Bayes Theorem {.build}
 
-Recall (from the definition of conditional probabilities):
-
 <div class="centered">
-$\Large{p(A \; \mid \; B) = \frac{p(A \cap B)}{p(B)}}$
+$\Huge{p(\theta \mid D) = \frac{P(D \  \mid \ \theta) \times P(\theta)}{P(D)}}$
 </div>
 
-and 
+$p(\theta \; \mid \; D)$ is the _posterior probability_ 
 
-<div class="centered">
-$\Large{p(B \; \mid \; A) = \frac{p(B \cap A)}{p(A)}}$
-</div>
+$p(D \; \mid \; \theta)$ is the _likelihood_ of $D$ given $\theta$
 
-and 
+$p(\theta)$ is the _prior probability_ of $\theta$
 
-<div class="centered">
-$\Large{p(B \cap A) = p(A \cap B)}$
-</div>
-
-## Bayes Theorem {.build}
-
-$\Large{p(A \cap B) = p(A \; \mid \; B) \; \times \; p(B)}$
-
-$\Large{p(B \cap A) = p(B \; \mid \; A) \; \times \; p(A)}$
-
-$\Large{p(A \cap B) = p(B \cap A)}$
-
-so
-
-$\Large{p(A \; \mid \; B) \times p(B) = p(B \; \mid \; A) \; \times \; p(A)}$
-
-\
-
-<span style="color:red">$\Huge{p(A \; \mid \; B) = \frac{p(B \; \mid \; A) \; \times \; p(A)}{p(B)}}$</span>
-
+$p(D)$ is the _marginal likelihood_ or _model evidence_ of D
 
 ## Bayes Theorem {.build}
 
 <div class="centered">
-<span style="color:red">$\Huge{p(A \; \mid \; B) = \frac{p(B \; \mid \; A) \; \times \; p(A)}{p(B)}}$</span>
-</div>
-
-$p(A \; \mid \; B)$ is the _posterior probability_ (p(A given B))
-
-$p(B \; \mid \; A)$ is the _likelihood_ of B given A
-
-$p(A)$ is the _prior probability_ of A
-
-$p(B)$ is the _marginal likelihood_ or _model evidence_ of B
-
-## Bayes Theorem {.build}
-
-<div class="centered">
-<span style="color:red">$\Huge{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$</span>
+$\Huge{p(\theta \mid D) = \frac{P(D \  \mid \ \theta) \times P(\theta)}{P(D)}}$
 </div>
 
 Allows us to assess the probability of a hypothesis given some data, 
