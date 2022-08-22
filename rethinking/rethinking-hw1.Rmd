@@ -12,10 +12,10 @@ date: "2022-08-15"
 ```{r}
 
 #define grid
-pgrid <- seq(from=0, to=1, length.out=20)
+pgrid <- seq(from=0, to=1, length.out=1000)
 
 #define prior
-prior <- rep(1,20)
+prior <- rep(1,1000)
 
 #compute likeligood for the grid
 likelihood <- dbinom(4, size=15, prob=pgrid)
@@ -35,7 +35,7 @@ above p = 0.5. This corresponds to prior information that a majority of the
 Earth’s surface is water.
 
 ```{r}
-newprior <- c(rep(0, length.out=10), rep(2,length=10))
+newprior <- c(rep(0, length.out=500), rep(2,length=500))
 
 likelihood <- dbinom(4, size=6, prob=pgrid)
 unstd.posterior <- likelihood*newprior
@@ -44,3 +44,19 @@ plot(pgrid,posterior)
 
 
 ```
+
+For the posterior distribution from 2, compute 89% percentile and HPDI
+intervals. Compare the widths of these intervals. Which is wider? Why? If
+you had only the information in the interval, what might you misunderstand
+about the shape of the posterior distribution?
+
+
+```{r}
+mysamples <- sample(pgrid, prob=posterior, size=1e4, replace=T)
+
+hist(mysamples, xlim=c(0,1))
+
+quantile(samples(c(0.)))
+
+```
+

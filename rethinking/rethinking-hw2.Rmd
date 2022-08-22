@@ -1,0 +1,48 @@
+---
+title: "rethinking_hw2"
+output:
+html_document:default
+pdf_document: default
+date: "2022-08-22"
+---
+
+
+Construct a linear regression of weight as predicted by height, using the adults (age 18 or greater) from the Howell1 dataset. The heights listed below were recorded in the !Kung census, but weights were not recorded for these individuals. Provide predicted weights and 89% compatibility intervals for each of these individuals. That is, fill in the table below, using model-based predictions.
+
+```{r}
+library(rethinking)
+
+data( Howell1 )
+
+#rename to make code easier
+d <- Howell1
+
+#get just the adults
+d2 <- d[ d$age >= 18 , ]
+
+#get the means
+Hbar <- mean(d2$height)
+
+#make a list of the data
+dat <- list(W=d2$weight,H=d2$height,Hbar=Hbar)
+
+m1 <- quap(
+    alist(
+        W ~ dnorm( mu , sigma ) ,
+        mu <- a + b*( H - Hbar ) ,
+        a ~ dnorm( 60 , 10 ) ,
+        b ~ dlnorm( 0 , 1 ) ,
+        sigma ~ dunif( 0 , 10 )
+    ) , data=dat )
+
+dat2 <- list( H=c(140,160,175,100) , Hbar=Hbar )
+h_sim <- sim( m1 , data=dat2 )
+Ew <- apply(h_sim,2,mean)
+h_ci <- apply(h_sim,2,PI,prob=0.89)
+
+datr <- cbind( H=c(140,160,175) , Ew , L89=h_ci[1,] , U89=h_ci[2,] )
+round(datr,1)
+
+
+
+```
