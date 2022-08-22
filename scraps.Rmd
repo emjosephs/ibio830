@@ -34,4 +34,6 @@ choose.ds9 <- function(season=NULL){
 choose.ds9()
 ```
 	
-## How I use R -- for fun {.build}
+
+Richard McElreath "Probability is just calculus for counting" (pg 10 of rethinking statistics)
+
