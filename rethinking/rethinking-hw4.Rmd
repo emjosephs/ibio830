@@ -1,0 +1,31 @@
+---
+title: "rethinking_hw4"
+output:
+html_document:default
+pdf_document: default
+date: "2022-08-22"
+---
+
+Revisit the marriage, age, and happiness collider bias example from Chapter 6. Run models m6.9 and m6.10 again (pages 178–179). Compare these two models using both PSIS and WAIC. Which model is expected to make better predictions, according to these criteria? On the basis of the causal model, how should you interpret the parameter estimates from the model preferred by PSIS and WAIC?
+
+```{r}
+library(rethinking)
+d <- sim_happiness( seed=1977 , N_years=1000 )
+precis(d)
+
+d2 <- d[ d$age>17 , ] # only adults
+d2$A <- ( d2$age - 18 ) / ( 65 - 18 )#standardize
+
+d2$mid <- d2$married + 1 #make a categorical variable
+m6.9 <- quap(
+    alist(
+        happiness ~ dnorm( mu , sigma ),
+        mu <- a[mid] + bA*A,
+        a[mid] ~ dnorm( 0 , 1 ),
+        bA ~ dnorm( 0 , 2 ),
+        sigma ~ dexp(1)
+    ) , data=d2 )
+
+precis(m6.9)
+
+```

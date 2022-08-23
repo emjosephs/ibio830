@@ -1,0 +1,7 @@
+---
+title: "rethinking_hw3"
+output:
+html_document:default
+pdf_document: default
+date: "2022-08-22"
+---
