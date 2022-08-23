@@ -26,6 +26,7 @@ Hbar <- mean(d2$height)
 #make a list of the data
 dat <- list(W=d2$weight,H=d2$height,Hbar=Hbar)
 
+#run the model
 m1 <- quap(
     alist(
         W ~ dnorm( mu , sigma ) ,
@@ -35,7 +36,10 @@ m1 <- quap(
         sigma ~ dunif( 0 , 10 )
     ) , data=dat )
 
+#make the table
 dat2 <- list( H=c(140,160,175,100) , Hbar=Hbar )
+
+# simulate the data using the  using the rethinking package
 h_sim <- sim( m1 , data=dat2 )
 Ew <- apply(h_sim,2,mean)
 h_ci <- apply(h_sim,2,PI,prob=0.89)
@@ -44,5 +48,98 @@ datr <- cbind( H=c(140,160,175) , Ew , L89=h_ci[1,] , U89=h_ci[2,] )
 round(datr,1)
 
 
+
+```
+
+
+From the Howell1 dataset, consider only the people younger than 13 year old. Estimate the causal association between age and weight. Assume that age influences weight through two paths. First, age influences height, and height influences weight. Second, age directly influences weight through age-related changes in muscle growth and body proportions. All of this implies this causal model (DAG):
+
+Use a linear regression to estimate the total (not just direct) causal effect of each year of growth on weight. Be sure to carefully consider the priors. Try using prior predictive simulation to assess what they imply.
+
+```{r}
+
+## pull out under thirteens
+d3 <- d[ d$age < 13 , ]
+
+# sim from priors
+n <- 10
+a <- rnorm(n,5,1)
+b <- rlnorm(n,0,1)
+# blank(bty="n")
+plot( NULL , xlim=range(d3$age) , ylim=range(d3$weight) )
+for ( i in 1:n ) abline( a[i] , b[i] , lwd=3 , col=2, xlab = 'age', ylab = 'weight')
+
+
+#make a list of the data
+dat <- list(W=d3$weight,H=d3$height,A=d3$age,Abar=mean(d3$age))
+
+#run the model
+m2 <- quap(
+    alist(
+        W ~ dnorm( mu , sigma ) , #prior for weight
+        mu <- a + b*A , # formula for predicting weight from age
+        a ~ dnorm( 5 , 1 ) , # prior for intercept
+        b ~ dlnorm( 0 , 1 ) , #prior for relationship
+        sigma ~ dexp(1) #noise
+    ) , data=dat)
+
+precis(m2)
+
+
+plot( d3$age , d3$weight , lwd=3, col=2 )
+post <- extract.samples(m2)
+for ( i in 1:10 ) abline( post$a[i] , post$b[i] , lwd=3 , col=1 )
+
+```
+
+
+Now suppose the causal association between age and weight might be different for boys and girls. Use a single linear regression, with a categorical variable for sex, to estimate the total causal effect of age on weight separately for boys and girls. How do girls and boys differ? Provide one or more posterior contrasts as a summary.
+
+
+```{r}
+dat <- list(W=d3$weight,H=d3$height,A=d3$age,S=d3$male+1)
+
+
+m3 <- quap(
+    alist(
+        W ~ dnorm( mu , sigma ),
+        mu <- a[S] + b[S]*A,
+        a[S] ~ dnorm(5,1),
+        b[S] ~ dlnorm(0,1),
+        sigma ~ dexp(1)
+    ), data=dat )
+
+precis(m3, depth=2)
+
+plot( d$age , d$weight , lwd=3, col=ifelse(d$male==1,4,2) , xlab="age (years)" , ylab="weight (kg)" )
+Aseq <- 0:12
+
+# girls
+muF <- link(m3,data=list(A=Aseq,S=rep(1,13)))
+shade( apply(muF,2,PI,0.99) , Aseq , col=col.alpha(2,0.5) )
+lines( Aseq , apply(muF,2,mean) , lwd=3 , col=2 )
+
+# boys
+muM <- link(m3,data=list(A=Aseq,S=rep(2,13)))
+shade( apply(muM,2,PI,0.99) , Aseq , col=col.alpha(4,0.5) )
+lines( Aseq , apply(muM,2,mean) , lwd=3 , col=4 )
+
+
+# contrast at each age
+Aseq <- 0:12
+
+#simulate the mean based on the model
+mu1 <- sim(m3,data=list(A=Aseq,S=rep(1,13))) #female
+mu2 <- sim(m3,data=list(A=Aseq,S=rep(2,13))) #male
+mu_contrast <- mu1
+for ( i in 1:13 ) mu_contrast[,i] <- mu2[,i] - mu1[,i]
+plot( NULL , xlim=c(0,13) , ylim=c(-15,15) , xlab="age" , ylab="weight difference (boys-girls)" )
+
+for ( p in c(0.5,0.67,0.89,0.99) )
+shade( apply(mu_contrast,2,PI,prob=p) , Aseq )
+
+abline(h=0,lty=2,lwd=2)
+
+for ( i in 1:13 ) points( mu_contrast[1:1000,i] , col=ifelse(mu_contrast[1:1000,i]>0,4,2) , lwd=3 )
 
 ```
