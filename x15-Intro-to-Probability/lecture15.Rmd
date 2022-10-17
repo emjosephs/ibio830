@@ -1,7 +1,7 @@
 ---
 title: "Lecture 15 - Intro to Probability"
 author: "Emily Josephs"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "October 20, 2022"
 output:
   ioslides_presentation:
     transition: 0
@@ -39,7 +39,7 @@ I am Emily Josephs
 	knitr::include_graphics("figs/kittykitty.jpg")
 ```
 
-## 1st semester goals $ 
+## 1st semester goals 
 
 1. Data into spreadsheet
 
@@ -56,7 +56,7 @@ I am Emily Josephs
 6. Interpret results
 
 
-## 1st semester goals $ 
+## 1st semester goals 
 
 1. ~~Data into spreadsheet~~
 
@@ -139,18 +139,28 @@ Also, employment!
 
 ## Today's lecture - Intro to Probability! {.build}
 
-Define probability
+How do you define probability?
 
 \
 
-"A measure of the likelihood that an event will occur"
+A measure of the likelihood that an event will occur
 
-"A long-term frequency"
+A long-term frequency
 
 How often we expect an event to happen ('degree of belief')
 
 ## How I use probability  {.build}
-> - when will I give birth?
+ Will I get to Park Place?
+
+```{r, out.width="600px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/monopoly.png")
+```
+
+\
+Which definition matches the probability of landing on Park Place?
+
+## How I use probability  {.build}
+When will I give birth?
 
 ```{r, out.width="600px",echo=FALSE,fig.align="center"}
 	knitr::include_graphics("figs/duedate1.png")
@@ -161,15 +171,17 @@ How often we expect an event to happen ('degree of belief')
 Which definition matches the probability of giving birth on a specific day?
 
 ## How I use probability  {.build}
-> - Will it rain today?
+Who will win the election?
 
-```{r, out.width="600px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/weatherprobability.png")
+```{r, out.width="300px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/electiondial.png")
 ```
 
 \
 
-Which definition matches the probability of rain at a specific time?
+Which definition matches the probability of an election outcome?
+
+
 
 
 ## Today's rules of probability:  {.build}
@@ -266,7 +278,7 @@ length(which(mySamples==5))/nDraws
 1/5
 ```
 
-## Probability - some terminology {.verybig .build}
+## Probability - some terminology {.big .build}
 
 We denote the probability of an event with **_P()_**.
 
@@ -275,14 +287,14 @@ So, we can write the probability of a simple event **_e_** as:
 \
 
 <div class ="centered">
-$\Huge P(e)$
+$\Large P(e)$
 </div>
 
 
 as in:
 
 <div class ="centered">
-$\Huge P(\text{drawing a }5) = \frac{1}{5}$
+$\Large P(\text{drawing a }5) = \frac{1}{5}$
 </div>
 
 ## Probability: simple events {.build}
@@ -302,14 +314,15 @@ $\Large P(4) = P(5) = P(1) = P(2) = P(3) = \frac{1}{5}$
 
 ## First Axiom of Probability: {.build}
 \
-\
 The Law of Total Probability:
 \
 <div class ="centered">
-$\Huge \sum\limits_{i=1}^n P(e_{i}) = 1$
+$\Large \sum\limits_{i=1}^n P(e_{i}) = 1$
 </div>
 
 The sum of the probabilities of all the outcomes of an event is 1
+
+$\Large P(4) + P(5) + P(1) + P(2) + P(3) = 1$
 
 ## Probability: complex events {.build}
 
