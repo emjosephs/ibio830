@@ -113,7 +113,7 @@ there to be > 50% probability that _at least_ two of them share a birthday
 
 3c) Suppose humans colonize Mars.  How many people have to be in a room 
 on Mars for there to be a >50% probability that at least 2 of them share 
-a **Martian** birthday?
+a **Martian** birthday? (Hint: a Martian year has 687 days)
 
 \
 \
