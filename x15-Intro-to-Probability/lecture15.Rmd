@@ -39,6 +39,23 @@ I am Emily Josephs
 	knitr::include_graphics("figs/kittykitty.jpg")
 ```
 
+## Fun around Lansing: Hawk Island Park
+
+```{r, out.width="500px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/hawkisland.jpg")
+```
+
+
+## Fun around Lansing: Hawk Island Park
+
+```{r, out.width="300px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/hawkislandmap.jpg")
+```
+
+\
+
+Free parking at the Scott's Woods entrance
+
 ## 1st semester goals 
 
 1. Data into spreadsheet
@@ -190,9 +207,11 @@ The probability of an **_outcome_** is the number of times the outcome occurs di
 
 A **_simple event_** consists of a single experiment and has a single outcome
 
-The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
+The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
 
 The probability of a **_shared event_** is the product of the probabilities of its constitutive events, so long as they're independent.
+
+The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
 
 The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
 
@@ -324,6 +343,85 @@ The sum of the probabilities of all the outcomes of an event is 1
 
 $\Large P(4) + P(5) + P(1) + P(2) + P(3) = 1$
 
+
+## Rules of probability: recap {.build}
+
+The probability of an **_outcome_** is the number of times the outcome occurs divided by the total number of trials.
+
+A **_simple event_** consists of a single experiment and has a single outcome
+
+The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
+
+## Probability: shared events {.build}
+
+A **_shared event_** is the simultaneous occurrence of simple events
+
+The probability of a shared event is denoted P(A $\cap$ B)
+
+(read as probability of the _intersection_ of simple events A and B)
+
+E.g., probability of drawing 2 numbers and getting a 4 AND a 5
+
+the probability of a shared event is the product of the probabilities
+ of its constitutive simple events
+ 
+[As long as the simple events are **independent**, meaning that the 
+outcome of one event does not depend on the outcome of another.]
+
+
+## Probability: simulating shared events {.build}
+
+\
+
+```{r}
+numbers <- 1:5
+```
+
+What's the probability you draw the sequence (4,5), 
+in that order?
+
+
+## Probability: simulating shared events
+
+```{r,cache=TRUE}
+nDraws <- 1e5
+## sample two dice rolls for nDraws times.
+two.draws <- replicate(nDraws,
+					sample(numbers,2,replace=TRUE),
+			  simplify=FALSE)
+```			  
+
+```{r}
+## get the proportion of draws that are equal to 
+length(	which(	unlist(
+			lapply(two.draws,	function(x){sum(x==c(4,5))}))==2)
+)/nDraws
+```
+
+## Probability: shared events {.build}
+
+the probability of a shared event is the product of the probabilities
+ of the simple events that make up the shared event:
+ 
+ 
+$\Large p(4 \text{ in first draw}) = \frac{1}{5}$
+$\Large p(5 \text{ in second draw}) = \frac{1}{5}$
+$\Large p(\text{sequence } (4,5) ) = \frac{1}{5} \times \frac{1}{5} = 0.04$
+
+
+
+## Rules of probability: recap
+
+The probability of an **_outcome_** is the number of times the outcome occurs divided by the total number of trials.
+
+A **_simple event_** consists of a single experiment and has a single outcome
+
+The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
+
+The probability of a **_shared event_** is the product of the probabilities of its constitutive events, so long as they're independent.
+
+The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
+
 ## Probability: complex events {.build}
 
 **_Complex events_** are composites of simple events
@@ -413,89 +511,18 @@ If $E_{1}$ and $E_{2}$ are mutually exclusive events
 
 (This is also an axiom)
 
-## Quick recap: rules of probability so far
+## Rules of probability: recap
 
 The probability of an **_outcome_** is the number of times the outcome occurs divided by the total number of trials.
 
 A **_simple event_** consists of a single experiment and has a single outcome
 
-The probability of a **_complex event_** is the sum of the probabilities of its constitutive events, if these events are independent.
-
-
-## Probability: shared events {.build}
-
-A **_shared event_** is the simultaneous occurrence of simple events
-
-The probability of a shared event is denoted P(A $\cap$ B)
-
-(read as probability of the _intersection_ of simple events A and B)
-
-E.g., probability of drawing 2 numbers and getting a 4 AND a 5
-
-the probability of a shared event is the product of the probabilities
- of its constitutive simple events
- 
-[As long as the simple events are **independent**, meaning that the 
-outcome of one event does not depend on the outcome of another.]
-
-
-## Probability: simulating shared events {.build}
-
-\
-
-```{r}
-numbers <- 1:5
-```
-
-What's the probability you draw the sequence (4,5), 
-in that order?
-
-
-## Probability: simulating shared events
-
-```{r,cache=TRUE}
-nDraws <- 1e5
-two.draws <- replicate(nDraws,
-					sample(numbers,2,replace=TRUE),
-			  simplify=FALSE)
-```			  
-
-```{r}
-length(
-	which(
-		unlist(
-			lapply(two.draws,
-				function(x){
-					sum(x==c(4,5))
-			})
-		)
-	==2)
-)/nDraws
-```
-
-## Probability: shared events {.build}
-
-the probability of a shared event is the product of the probabilities
- of the simple events that make up the shared event:
- 
- 
-$\Large p(4 \text{ in first draw}) = \frac{1}{5}$
-$\Large p(5 \text{ in second draw}) = \frac{1}{5}$
-$\Large p(\text{sequence } (4,5) ) = \frac{1}{5} \times \frac{1}{5} = 0.04$
-
-
-
-## Rules of probability: recap {.build}
-
-The probability of an **_outcome_** is the number of times the outcome occurs divided by the total number of trials.
-
-A **_simple event_** consists of a single experiment and has a single outcome
-
-The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
+The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
 
 The probability of a **_shared event_** is the product of the probabilities of its constitutive events, so long as they're independent.
 
-The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
+The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
+
 
 
 ## Probability: sparkly shoes {.big .build}
@@ -503,7 +530,7 @@ The sum of the probabilities of **_all possible outcomes_** of an event is equal
 You record the hair color and shoe phenotype of all the kids in a daycare.
 
 ```{r echo=FALSE}
-nTots <- 87
+nTots <- 100
 brnHair <- rbinom(1, nTots,0.6)
 blkHair <- nTots - brnHair
 plnShoe <- rbinom(1, nTots,0.8)
@@ -516,19 +543,14 @@ colnames(hair_shoe) <- c("plain","sparkly")
 ```
 
  `r knitr::kable(hair_shoe,align="c")`
+ \
+If you pick a kid at random, what is the probability they have black hair and sparkly shoes?
 
 
-## Daycare example: simple event {.verybig}
 
-\
+## Daycare example: simple event {.build}
 
-`r knitr::kable(rowSums(hair_shoe),align="c",col.names="number of kids")`
-
-\
-
-How many kids have black hair?
-
-## Daycare example: simple event {.verybig}
+ `r knitr::kable(hair_shoe[1:2,1:2],align="c")`
 
 ```{r,echo=FALSE}
 hair_shoe <- cbind(hair_shoe,rowSums(hair_shoe))
@@ -536,12 +558,12 @@ hair_shoe <- rbind(hair_shoe,colSums(hair_shoe))
 row.names(hair_shoe)[3] <- "total"
 colnames(hair_shoe)[3] <- "total"
 ```
+\
+If you pick a kid at random, what is the probability they have black hair and sparkly shoes?
 
+`r hair_shoe[1,2]/100`
 \
 
- `r knitr::kable(hair_shoe[,3]/hair_shoe[3,3],align="c",col.names=c("proportion of kids"))`
-
-There is a 0.517 probability of picking a kid with black hair.
 
 ## Daycare example: complex event {.build}
 
@@ -568,10 +590,11 @@ What's the probability of having black hair?
 
 p(black hair) = 
 p(black hair AND plain shoes) + p(black hair AND sparkly shoes)
+= `r (hair_shoe[1,2]/100) + (hair_shoe[1,1]/100)`
 
-## Daycare example: shared event
+## Daycare example: shared event {.build}
 
-What's the probability of having black hair AND sparkly shoes?
+What's the probability of picking two kids that both have black hair and sparkly shoes?
 
 \
 
@@ -579,57 +602,11 @@ What's the probability of having black hair AND sparkly shoes?
 
 \
 
-
-## Daycare example: shared event
-
-What's the probability of having black hair AND sparkly shoes?
-
-\
-
-`r knitr::kable(hair_shoe[1:2,1:2]/hair_shoe[3,3],align="c")`
-
-\
-
-The probability of a **shared event** is the product 
-of the probabilities of the constitutive simple events, 
-so long as the events are independent.
+p(black hair and sparkly shoes) x p(black hair and sparkly shoes)
+= `r (hair_shoe[1,2]/100)^2`
 
 
-<!-- 
-## Daycare example: shared event
 
-`r knitr::kable(hair_shoe/hair_shoe[3,3],align="c")`
-\
-\
-
-$p(\text{black hair} \cap \text{sparkly shoes}) \stackrel{?}{=} p(\text{black hair}) \times p(\text{sparkly shoes})$
-
-## Kid example: shared event
-
-`r knitr::kable(hair_shoe/hair_shoe[3,3],align="c")`
-\
-\
-
-$p(\text{black hair} \cap \text{sparkly shoes}) \stackrel{?}{=} p(\text{black hair}) \times p(\text{sparkly shoes})$
-
-\
-
-`r hair_shoe[1,2]/hair_shoe[3,3]` $\stackrel{?}{=}$ `r hair_shoe[1,3]/hair_shoe[3,3]` $\times$ `r hair_shoe[3,2]/hair_shoe[3,3]`
-
-
-## Kid example: shared event
-
-`r knitr::kable(hair_shoe/hair_shoe[3,3],align="c")`
-\
-\
-
-$p(\text{black hair} \cap \text{sparkly shoes}) \stackrel{?}{=} p(\text{black hair}) \times p(\text{sparkly shoes})$
-
-\
-
-`r hair_shoe[1,2]/hair_shoe[3,3]` $\stackrel{?}{=}$ `r hair_shoe[1,3]/hair_shoe[3,3] * hair_shoe[3,2]/hair_shoe[3,3]`
-
--->
 
 ## Rules of probability: thus far {.build}
 
