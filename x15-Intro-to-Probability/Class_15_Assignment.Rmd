@@ -1,7 +1,6 @@
 ---
 title: "Intro to Probability 1: Assignment"
 output:
-  pdf_document: default
   html_document: default
 language: R
 ---
@@ -9,7 +8,7 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_15_Assignment.Rmd") -->
 
-#### Due by the beginning of next class (10/28)
+#### Due by midnight on Oct 26 (the night before class on Oct 27)
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment15.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -53,11 +52,6 @@ Define the following terms:
  
  - shared event
  
- \
- \
- 
- - conditional probability
-
  \
  \
  
