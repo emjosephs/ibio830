@@ -48,8 +48,7 @@ I am Emily Josephs
 
 ## Fun around Lansing: Hawk Island Park
 
-```{r, out.width="3
-00px",echo=FALSE,fig.align="center"}
+```{r, out.width="300px",echo=FALSE,fig.align="center"}
 	knitr::include_graphics("figs/hawkislandmap.jpg")
 ```
 

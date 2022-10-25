@@ -1,3 +1,11 @@
+From 2022
+Didn't get to conditional probability this time. Think about how to streamline?
+
+Also note that we are sampling kids with replacement. Maybe OK if the students figure that out on their own.
+
+
+-------
+
 start w/ pipeline showing data (response and predictor)
 
 need a way to make quantitative statements about your data 

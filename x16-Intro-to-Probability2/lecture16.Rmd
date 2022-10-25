@@ -1,7 +1,7 @@
 ---
 title: "Lecture 16 - Intro to Probability, pt. II"
 author: "Emily Josephs"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "`October 26, 2022"
 output:
   ioslides_presentation:
     transition: 0
@@ -22,35 +22,137 @@ output:
 	set.seed(123)
 ```
 
-## Homework Review - Definitions {.build}
 
-probability - **how often we expect an event to happen**
+## Today {.build}
 
-simple event - **a single experiment (drawing a random number) with a single outcome (the number drawn)**
+1. Conditional probabilities
 
-complex event - **a composite of simple events**
+2. Homework review
 
-shared event - **the simultaneous occurrence of simple events**
+3. Probability distributions
 
-conditional probability - **the probability of one outcome _conditional_ on another**
- 
-statistical independence - **events are independent when their outcomes do not affect each other**
+```{r echo=FALSE}
+nTots <- 100
+brnHair <- rbinom(1, nTots,0.6)
+blkHair <- nTots - brnHair
+plnShoe <- rbinom(1, nTots,0.8)
+sprklShoe <- nTots - plnShoe
+brnpln <- round(nTots * (brnHair/nTots * plnShoe/nTots))
+brnsprkl <- brnHair - brnpln
+hair_shoe <- matrix(c(brnpln,brnsprkl,plnShoe - brnpln,sprklShoe - brnsprkl),nrow=2,ncol=2,byrow=TRUE)
+row.names(hair_shoe) <- c("black hair","brown hair")
+colnames(hair_shoe) <- c("plain","sparkly")
 
-## Homework Review - Probability logic {.build}
+hair_shoe <- cbind(hair_shoe,rowSums(hair_shoe))
+hair_shoe <- rbind(hair_shoe,colSums(hair_shoe))
+row.names(hair_shoe)[3] <- "total"
+colnames(hair_shoe)[3] <- "total"
+```
 
-Suppose a process has two possible outcomes: A and B.
-If the probability of A ($p(A)$) is 0.2, what is p(B)?
 
-**0.8**
+## Conditional probabilities
+
+- a **_conditional probability_** is the probability of one outcome _conditional_ on another
+
+- written as p(A | B), read as "probability of A _given_ B"
+
+- probability of the intersection of A and B, divided by the probability of B
+
+<div class ="centered">
+$\Huge p(A|B) = \frac{p(A ~ \cap ~ B)}{p(B)}$
+</div>
+
+## Conditional probabilities
+
+```{r, out.width="500px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("../x15-Intro-to-Probability/figs/conditionalprob.jpg")
+```
+
+<div class ="centered">
+$\Huge p(A|B) = \frac{p(A ~ \cap ~ B)}{p(B)}$
+</div>
+
+## Conditional probabilities
+
+`r knitr::kable(hair_shoe,align="c")`
 
 \
 \
+- probability of sparkly shoes **IF** you have black hair?
 
-More generally, if a process has many possible outcomes, 
-one of which is A, what is the probability of _not_ A?
+## Conditional probabilities
 
-$1-p(A)$
+`r knitr::kable(hair_shoe,align="c")`
 
+\
+\
+- probability of sparkly shoes **IF** you have black hair?
+\
+\
+p(A | B) = p(A $\cap$ B)/p(B) =
+
+## Conditional probabilities
+
+`r knitr::kable(hair_shoe,align="c")`
+
+\
+\
+- probability of sparkly shoes **IF** you have black hair?
+\
+\
+p(A | B) = p(A $\cap$ B)/p(B) = `r hair_shoe[1,2]` / `r hair_shoe[1,3]` = `r hair_shoe[1,2] / hair_shoe[1,3]`
+
+
+## Conditional probabilities {.build}
+
+- recall that if A and B are independent, p( A $\cap$ B) = p(A) * p(B)
+
+- so if A and B are independent:
+
+<div class ="centered">
+
+$\Large
+\begin{aligned}
+ p(A \mid B) &= \frac{p(A ~ \cap ~ B)}{p(B)} \\
+\\
+&= \frac{p(A)p(B)}{p(B)} = p(A)
+\end{aligned}$
+</div>
+
+## Conditional probabilities {.build}
+
+`r knitr::kable(hair_shoe,align="c")`
+
+\
+
+Does a kid's hair color affect the probability that their parents will get them 
+a sweet pair of sparkly shoes?
+
+p(sparkle shoes | black hair) = `r (hair_shoe[1,2]/hair_shoe[1,3])`
+
+p(sparkle shoes) = `r (hair_shoe[3,2]/hair_shoe[3,3])`
+
+## Rules of probability: recap {.build}
+
+1. The probability of an **_outcome_** is the number of times the outcome occurs divided by the total number of trials.
+
+2. The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
+
+3. The probability of a **_shared event_** is the product of the probabilities of its constitutive events, so long as they're independent.
+
+4. The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
+
+5. A **_conditional probability_** is probability of one outcome _conditional_ on another, 
+and is equal to the probability of the intersection of the outcomes, 
+divided by the probability of the condition
+
+## Today 
+
+1. Conditional probabilities
+
+2. Homework review
+
+3. Probability distributions
 
 ## Homework Review - birthday twinsies
 
@@ -107,66 +209,19 @@ birthdaySharing <- function(myN){
   return(myOut)
 }
 
-
 birthdaySim <- function(myP){
 # Run the function for each simulation for a given P
 myOut = sapply(1:1e5,function(x){birthdaySharing(myP)})
 #	return the proportion of simulations with birthday twinsies
   return(sum(myOut)/1e5)}
+```
 
-
+```{r, echo=TRUE, eval=F}
+which(sapply(1:30,function(n){birthdaySim(n)}) > 0.5)[1]
 ```
 
 
-## Homework Review - birthday twinsies ON MARS {.build}
-\
-```{r, out.width="400px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/martian.png")
-```
-
-
-## Homework Review - birthday twinsies ON MARS {.build}
-3c) Suppose humans colonize Mars.  How many people have to be in a room 
-on Mars for there to be a >50% probability that at least 2 of them share 
-a **Martian** birthday?
-
-The Martian year is 687 days long.
-
-##
-```{r, echo=TRUE}
-
-# Write a function where you
-birthdaySharingMars <- function(myN){
-  # draw N birthdays from the year (w/ replacement!)
-  birthdays = sample(1:687, myN, replace=T)
-  	# if the total number of birthdays is < N
-  if (sum(duplicated(birthdays))>0) { 
-    		#	log as a "bday twinsies" event
-    myOut = TRUE} else {myOut = FALSE}
-  return(myOut)}
-
-birthdaySimMars <- function(myP){
-# Run the function for each simulation for a given P
-myOut = sapply(1:1e5,function(x){birthdaySharingMars(myP)})
-#	return the proportion of simulations with birthday twinsies
-  return(sum(myOut)/1e5)}
-
-```
-
-## The birthday problem!
-### Analytical solution
-
-How many people must be in a room for there to be > 50% probability 
-that _at least_ two of them share a birthday?
-
-A = two people share a birthday \
-A' = no people share a birthday \
-N = number of people in the room \
-\
-\
-
-
-## Birthday problem - analytical
+## Birthday problem - analytical solution
 
 A = two people share a birthday \
 A' = no people share a birthday \
@@ -180,22 +235,6 @@ p(A) &= 1 - p(A') \\
 \\
 p(A') &= \frac{365}{365} \times \frac{364}{365} \times \ldots  \times \frac{365-(N-1)}{365}\\
 \end{aligned}$
-</div>
-
-
-## Birthday problem - analytical
-<div class ="centered">
-```{r,echo=FALSE,fig.width=7,fig.height=5}
-	birthday.problem <- function(N,yr.length){
-		log.prob.match <- -N*log(yr.length) + sum(log((yr.length-(N-1)):yr.length))
-		prob.match <- 1 - exp(log.prob.match)
-		return(prob.match)
-	}
-plot(-2,-2,type='n',xlab="N",ylab="p(birthday twinsies)",main="Birthday Problem",pch=19,ylim=c(0,1),col=4,xlim=c(1,40))
-	legend(x="topleft",col=c(4,2),lty=1,lwd=2,legend=c("Earth","Mars"),title="analytical")
-	lines(1:40,sapply(1:40,function(i){birthday.problem(i,365)}),lwd=2,col=4)
-	lines(1:40,sapply(1:40,function(i){birthday.problem(i,687)}),lwd=2,col=2)
-```
 </div>
 
 
@@ -219,6 +258,8 @@ flips <- function(nFlips){
 	flips[flips==0] <- "T"
 	return(flips)
 }
+
+flips(3)
 
 flips(3)
 ```
