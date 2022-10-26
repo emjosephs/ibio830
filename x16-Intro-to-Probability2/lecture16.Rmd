@@ -1,12 +1,11 @@
 ---
 title: "Lecture 16 - Intro to Probability, pt. II"
 author: "Emily Josephs"
-date: "`October 26, 2022"
+date: "October 27, 2022"
 output:
   ioslides_presentation:
     transition: 0
     bigger: true
-    incremental: true
 ---
 
 <style>
@@ -50,7 +49,7 @@ colnames(hair_shoe)[3] <- "total"
 ```
 
 
-## Conditional probabilities
+## Conditional probabilities {.build}
 
 - a **_conditional probability_** is the probability of one outcome _conditional_ on another
 
@@ -58,11 +57,7 @@ colnames(hair_shoe)[3] <- "total"
 
 - probability of the intersection of A and B, divided by the probability of B
 
-<div class ="centered">
-$\Huge p(A|B) = \frac{p(A ~ \cap ~ B)}{p(B)}$
-</div>
-
-## Conditional probabilities
+## Conditional probabilities {.build}
 
 ```{r, out.width="500px",echo=FALSE,fig.align="center"}
 	knitr::include_graphics("../x15-Intro-to-Probability/figs/conditionalprob.jpg")
@@ -221,7 +216,7 @@ which(sapply(1:30,function(n){birthdaySim(n)}) > 0.5)[1]
 ```
 
 
-## Birthday problem - analytical solution
+## Birthday problem - analytical solution {.build}
 
 A = two people share a birthday \
 A' = no people share a birthday \
@@ -237,9 +232,15 @@ p(A') &= \frac{365}{365} \times \frac{364}{365} \times \ldots  \times \frac{365-
 \end{aligned}$
 </div>
 
+## Today 
 
+1. Conditional probabilities
 
-## Another example: coin-flipping {.build}
+2. Homework review
+
+3. Probability distributions
+
+## Coin-flipping {.build}
 
 Let's say I hand you a quarter and ask you to flip it 3 times 
 and count the number of heads that you get.
@@ -248,14 +249,16 @@ Working in groups,
 write an R function that uses `sample()` 
 to simulate these flips.
 
+flips(3)
+
+[1] "H" "T" "T"
+
 ## Another example: coin-flipping {.build}
 
 
 ```{r}
 flips <- function(nFlips){
-	flips <- sample(c(0,1),nFlips,replace=TRUE)
-	flips[flips==1] <- "H"
-	flips[flips==0] <- "T"
+	flips <- sample(c('H','T'), nFlips, replace=TRUE)
 	return(flips)
 }
 
@@ -269,6 +272,9 @@ flips(3)
 Let's say I hand you a quarter and ask you to flip it 3 times 
 and count the number of heads that you get.
 
+- First, let's define the **state space** (the list of all possible outcomes)
+	+ {HHH, HHT, HTH, THH, TTH, THT, HTT, TTT}
+
 - Some questions:
 1. What is the probability of the sequence THH?
 2. What is the probability I get exactly 2 heads out of 3 flips?
@@ -279,8 +285,6 @@ and count the number of heads that you get.
 
 - First, let's define the **state space** (the list of all possible outcomes)
 	+ {HHH, HHT, HTH, THH, TTH, THT, HTT, TTT}
-
-\
 
 1. What is the probability of the sequence THH?
 	+ {HHH, HHT, HTH,<span style="color:red">THH</span>, TTH, THT, HTT, TTT} = 1/8
@@ -350,22 +354,6 @@ the process (in this case, coin-flipping) as a **_random variable_**.
 A **_random variable_** is a variable whose value is the 
 outcome of a **_stochastic_** (or random) **_process_**.
 
-## Historical aside {.build}
-
-A random variable is also called an "aleatory variable."  Why?
-
-```{r, out.width="305px",out.height="428px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/caesar.jpg")
-```
-
-## Historical aside
-
-A random variable is also called an "aleatory variable."  Why?
-
-```{r, out.width="305px",out.height="428px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/caesar_dice.jpg")
-```
-
 ## Coin-flipping: a probability distribution {.build}
 
 |     Heads    |  Probability  |
@@ -379,13 +367,13 @@ A random variable is also called an "aleatory variable."  Why?
 \
 
 <div class="centered">
-$\Huge p(\text{1 head}) < p(\text{2 heads})$
+$\ p(\text{1 head}) < p(\text{2 heads})$
 </div>
 
 ## Coin-flipping: a probability distribution {.build}
 
 <div class="centered">
-$\Huge p(\text{1 head}) < p(\text{2 heads})$
+$\ p(\text{1 head}) < p(\text{2 heads})$
 </div>
 
 \
@@ -395,7 +383,7 @@ but we know, out of 4 flips:
 \
 
 <div class="centered">
-$\Huge p(\text{HTTT}) = p(\text{HTHT})$
+$\ p(\text{HTTT}) = p(\text{HTHT})$
 </div>
 
 
@@ -587,15 +575,12 @@ Part 2: how many permutations give _k_ successes?
 $\Large {{n}\choose{k}} = \frac{n!}{k!(n-k)!}$
 </div>
 
-## Coin-flipping: probability distribution function {.build}
+## Coin-flipping: probability distribution function
 
-_n_ trials \
-_k_ successes \
-_p_ probability of success \
-\
+_n_ trials, _k_ successes, _p_ probability of success \
 
 <div class="centered">
-$\Large {{n}\choose{k}}p^k (1-p)^{n-k}$
+$\ {{n}\choose{k}}p^k (1-p)^{n-k}$
 </div>
 
 \
@@ -604,18 +589,17 @@ Work in groups to write a function that returns
 the probability of a number of heads (_k_) given a probability of 
 flipping heads (_p_) and a number of flips (_n_).
 
-Hint - check out the function `choose()`.
+Hint - check out the function `choose()`
 
+Make a plot with 1 to 100 on the x axis, and the y axis shows your probability of x heads if you flip a coin 100 times.
 
 ## Coin-flipping: probability distribution function
 
-_n_ trials \
-_k_ successes \
-_p_ probability of success \
-\
+_n_ trials, _k_ successes, _p_ probability of success \
+
 
 <div class="centered">
-$\Large {{n}\choose{k}}p^k (1-p)^{n-k}$
+$\ {{n}\choose{k}}p^k (1-p)^{n-k}$
 </div>
 
 \
@@ -632,7 +616,7 @@ $\Large {{n}\choose{k}}p^k (1-p)^{n-k}$
 ```{r,fig.width=6.5,fig.height=5.5,fig.align="center",echo=FALSE}
 	par(oma=c(3,0,0,0))
 	plot(coin.flip.prob(n=100,k=0:100,p=0.5),
-			xlab="successes",ylab="probability",
+			xlab="heads",ylab="probability",
 			pch=20,col=adjustcolor(1,0.7))
 ```
 
@@ -668,6 +652,5 @@ $\Large {{n}\choose{k}}p^k (1-p)^{n-k}$
 3. A **_probability distribution function_** is a rule or formula 
 that describes the probability of all possible outcomes of a random event
 
-4. Julius Caesar began the Great Roman Civil War in 49 BCE when he crossed 
-the Rubicon against the express orders of the Senate, 
-apocryphally uttering the phrase, _"alea iacta est"_
+4. The **_binomial distribution_** describes the probabilities of success in a set of trials.
+
