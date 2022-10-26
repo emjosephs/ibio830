@@ -1,7 +1,6 @@
 ---
 title: "Intro to Probability 1: Assignment"
 output:
-  pdf_document: default
   html_document: default
 language: R
 ---
@@ -36,35 +35,37 @@ It is due before our next class.
 
 Define the following terms: 
 
+** There are a number of possible definitions, here's how I'd do it
+
  - probability
  
  \
+  **How often we expect an event to happen**
  \
  
  - simple event 
  
  \
+ ** a single experiment (ie drawing a random number) with a single outcome (ie the number drawn)**
  \
  
  - complex event
  
  \
+  **a composite of simple events**
  \
  
  - shared event
  
  \
+  **the simultaneous occurrence of simple events**
  \
  
- - conditional probability
 
- \
- \
- 
  - statistical independence
 
  \
- \
+ **events are independent when their outcomes do not affect each other**
  \
 
 
@@ -74,12 +75,14 @@ Define the following terms:
 If the probability of A ($p(A)$) is 0.2, what is p(B)?
 
 \
+p(B) = 0.8
 \
 
 2b) More generally, if a process has many possible outcomes, 
 one of which is A, what is the probability of _not_ A?
 
 \
+p(not A) = 1 - p(A)
 \
 \
 
@@ -100,31 +103,29 @@ share a birthday.
 
 
 
-```{r}
+```{r, echo=T}
 
-## function for just one run
+## Write a function where you
 birthdaySharing <- function(myN){
-  birthdays = sample(1:365, myN, replace=T) ##REPLACE is very important
+  #sample n birthdays from the year (with replacement!)
+  birthdays = sample(1:365, myN, replace=T)
+  # if anyone shares a birthday, log it as a "birthday twins" event
   if (sum(duplicated(birthdays))>0) { myOut = TRUE} else {myOut = FALSE}
   return(myOut)
 }
 
-## do it many times
-birthdaySim <- function(myP){
-myOut = sapply(1:1e5,function(x){birthdaySharing(myP)})
-  return(sum(myOut)/1e5)}
+## run the function 1e5 times
+birthdaySim <- function(myP){ ##myP is the number of individuals
+myOut = sapply(1:1e4,function(x){birthdaySharing(myP)})##
+  return(sum(myOut)/1e4)}
 
 birthdaySim(10)
-
-
-
 ```
 
 3b) Using this function, determine how many people must be in a room for 
 there to be > 50% probability that _at least_ two of them share a birthday
 
-
-```{r}
+```{r, echo=T}
 
 which(sapply(1:30,function(n){birthdaySim(n)}) > 0.5)[1]
 
@@ -138,19 +139,19 @@ a **Martian** birthday?
 \
 
 
-```{r}
+```{r, echo=T}
 ## Martian year has 687 days
 
 birthdaySharingMars <- function(myN){
-  birthdays = sample(1:687, myN, replace=T) ##REPLACE is very important
+  birthdays = sample(1:687, myN, replace=T) 
   if (sum(duplicated(birthdays))>0) { myOut = TRUE} else {myOut = FALSE}
   return(myOut)
 }
 
 ## do it many times
 birthdaySimMars <- function(myP){
-myOut = sapply(1:1e5,function(x){birthdaySharingMars(myP)})
-  return(sum(myOut)/1e5)}
+myOut = sapply(1:1e4,function(x){birthdaySharingMars(myP)})
+  return(sum(myOut)/1e4)}
 
 which(sapply(1:60,function(n){birthdaySimMars(n)}) > 0.5)[1]
 

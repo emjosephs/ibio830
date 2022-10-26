@@ -36,13 +36,19 @@ It is due before our next class.
 
 Define the following terms: 
 
-1a) random variable
+1a) conditional probability
+
+\
+\
+\
+
+1b) random variable
  
  \
  \
  \
  
-1b) probability distribution function
+1c) probability distribution function
  
  \
  \
