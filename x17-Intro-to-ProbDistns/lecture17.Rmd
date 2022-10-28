@@ -51,13 +51,6 @@ Well, let's start with calculating the probability of
 any _particular_ sequence of **_n=100_** flips 
 that contains **_k=43_** heads?
 
-```{r}
-	tmp <- rep("T",100)
-	tmp[sample(1:100,43,replace=FALSE)] <- "H"
-	tmp
-```
-
-
 ## Coin-flipping  {.build}
 
 What is the probability of any _particular_ sequence of **_n_** flips 
