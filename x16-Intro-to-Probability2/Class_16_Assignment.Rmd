@@ -2,7 +2,6 @@
 title: "Intro to Probability 2: Assignment"
 output:
   html_document: default
-  pdf_document: default
 language: R
 ---
 

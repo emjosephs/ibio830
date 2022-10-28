@@ -1,7 +1,7 @@
 ---
 title: "Lecture 17 - Introduction to Probability Distributions"
 author: "Emily Josephs"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "November 1 2022"
 output:
   ioslides_presentation:
     transition: 0.001
@@ -393,15 +393,17 @@ including tools for simulating data, and calculations for the expected mean and 
 
 ## Shiny Demo!
 
-## Get to know a distribution
+## Get to know a distribution!
 
 **continuous**: beta, exponential, gamma, lognormal, normal, uniform
 
 **discrete**: poisson, geometric, negative binomial, Bernoulli
 
+## Get to know a distribution!
+
 Make an Rmarkdown info cheatsheet, including:
 
-1. A brief history of the distribution (wikipedia is your friend, citations unnecessary unless you make outlandish claims)
+1. A brief history of the distribution (wikipedia is your friend, citations unnecessary)
 2. A walkthrough of the notation, with an explanation of all parameters
 3. Description of mean and variance, with some intuition-(and character!)-building discussion
 4. State the bounds of the distribution (if there are any), and state whether it is continuous or discrete

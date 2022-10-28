@@ -221,13 +221,36 @@ which(sapply(1:30,function(n){birthdaySim(n)}) > 0.5)[1]
 A = two people share a birthday \
 A' = no people share a birthday \
 N = number of people in the room \
-\
-\
+
+For N=2, what is p(A')? \
+
 <div class ="centered">
 $\large
 \begin{aligned}
-p(A) &= 1 - p(A') \\
-\\
+p(A') &= \frac{365}{365} \times \frac{364}{365} \\
+\end{aligned}$
+</div>
+
+For N=3, what is p(A')? \
+
+<div class ="centered">
+$\large
+\begin{aligned}
+p(A') &= \frac{365}{365} \times \frac{364}{365} \times \frac{363}{365} \\
+\end{aligned}$
+</div>
+
+## Birthday problem - analytical solution {.build}
+
+A = two people share a birthday \
+A' = no people share a birthday \
+N = number of people in the room \
+
+For any value of N: \
+
+<div class ="centered">
+$\large
+\begin{aligned}
 p(A') &= \frac{365}{365} \times \frac{364}{365} \times \ldots  \times \frac{365-(N-1)}{365}\\
 \end{aligned}$
 </div>
@@ -245,15 +268,6 @@ p(A') &= \frac{365}{365} \times \frac{364}{365} \times \ldots  \times \frac{365-
 Let's say I hand you a quarter and ask you to flip it 3 times 
 and count the number of heads that you get.
 
-Working in groups, 
-write an R function that uses `sample()` 
-to simulate these flips.
-
-flips(3)
-
-[1] "H" "T" "T"
-
-## Another example: coin-flipping {.build}
 
 
 ```{r}
@@ -264,18 +278,18 @@ flips <- function(nFlips){
 
 flips(3)
 
-flips(3)
+mySims = replicate(100, flips(3), simplify=TRUE)
 ```
 
-## Another example: coin-flipping {.build}
+## Coin-flipping {.build}
 
 Let's say I hand you a quarter and ask you to flip it 3 times 
 and count the number of heads that you get.
 
-- First, let's define the **state space** (the list of all possible outcomes)
+- This is the **state space** (the list of all possible outcomes)
 	+ {HHH, HHT, HTH, THH, TTH, THT, HTT, TTT}
 
-- Some questions:
+- Some questions to answer in your breakout room:
 1. What is the probability of the sequence THH?
 2. What is the probability I get exactly 2 heads out of 3 flips?
 3. What is the probabilty I **_do not_** get exactly 2 heads out of 3 flips?

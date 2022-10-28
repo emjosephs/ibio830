@@ -2,7 +2,6 @@
 title: "Intro to Probability 2: Assignment"
 output:
   html_document: default
-  pdf_document: default
 language: R
 ---
 
@@ -38,14 +37,14 @@ Define the following terms:
 
 1a) random variable
  
- Some variable that is the outcome of a random/stochastic process
+ **A variable that is the outcome of a random/stochastic process**
  \
  \
  \
  
 1b) probability distribution function
  
- This function describes the probability of outcomes across the sample space
+ **This function describes the probability of outcomes across the sample space**
  \
  \
  \
@@ -60,25 +59,28 @@ $\Large {{n}\choose{k}}p^k (1-p)^{n-k}$
 2a) Using your own words, break down the equation above and 
 describe what each part means (or is doing).
 
-This equation describes the probability distribution function of coin flipping (or similar processes).
-n is the number of trials (or flips)
-k is the number of successes
-and p is the probability of success
+**This equation describes the probability distribution function of coin flipping (or similar processes).**
+**n is the number of trials (or flips)**\
+**k is the number of successes**\
+**and p is the probability of success**\
 
-It is the combination of two smaller expression.
-$p^{k} (1-p)^{n-k}$ is the probability of getting k successes and n-k failures given a certain underlying probability k. This expression is the product of all the probabilities of success (p) and all the probabilities of failure (1-p).
-${n}\choose{k}$ is the number of permutations that will give you k successes
+\
+**$p^{k} (1-p)^{n-k}$ is the probability of getting k successes and n-k failures given a certain underlying probability k. We get this value through the rule that the probability of a shared event is the product of the probabilities of all the simple events that make up the shared event**
+**${n}\choose{k}$ is the number of permutations that will give you k successes. This is the binomial coefficient**
+\
+\
 
 2b) Using the function of this equation that you coded up in class, calculate the probability of 
 seeing 71 successes out of 531 trials, where the probability of success is 0.12345.
 
 ```{r, echo=T}
+
 coinFlipProb <- function(n,k,p){
   myprob = choose(n,k)*p^k*(1-p)^(n-k)
   return(myprob)
 }
 
-coinFlipProb(531,71,.12345)
+coinFlipProb(n=531,k=71,p=.12345)
 
 ```
 
@@ -101,30 +103,32 @@ For the purposes of this calculation, assume the following:
 -only 1 in every 3 flu infections is detected.\
 
 3a) What is the analytical probability that no one in our classroom 
-has an active flu infection?
-
-First -- how many people have the flu?
-40 per day * 5 days * 3 cases per detected case = 600
-P(Infection in Ingham County) = 600/280000 = 0.002142857
-P(Not infected in Ingham County) = 1 - 600/280000 = 0.9978571
-
-P(No one has flu) = P(Each person doesn't have the flu)^(Number of people)
-= (0.9978571)^55
-= 0.8887085
+has an active flu infection?\
+\
+**First we need to figure out how many people actually have the flu.**\
+40 infections per day x 5 days x 3 actual cases per detected case = 600.\
+P(Infection in Ingham County) = 600/280000 = 0.002142857\
+P(Not infected in Ingham County) = 1 - 600/280000 = 0.9978571\
+\
+Next we use this to figure out the probability that no one in the class has the flu. We can repurpose our coin flip function from above.\
+```{r, echo=T}
+pNoFlu = coinFlipProb(n=55, k=0, p=0.002142857)
+pNoFlu
+```
 
 3b) What is the probability at least one person in the room **_does_** have an active 
-flu infection
-
-P(Someone has the flu) = 1 - P(no one has the flu) = 0.1112915
-
+flu infection\
+\
+**P(Someone has the flu) = 1 - P(no one has the flu) = 0.1112915**
+\
+\
 3c) What is probability 2 people in the room are infected?
 
-Now we can use our equation from above
+**Again we can repurpose the coin flip probability function.
 
 ```{r, echo=T}
-
-coinFlipProb(55,2,0.002142857)
-
+p2flu = coinFlipProb(55,2,0.002142857)
+p2flu
 ```
 
 
@@ -136,19 +140,26 @@ and it should return the probability (from simulations),
 that no one in the room has an active flu infection.
 
 ```{r, echo=T}
-myN = 55
-myP = 0.002142857
 
-fluClass <- function(myN, myP){
-  myRuns = sapply(1:1e4,function(x){
-  myclass = sample(c(1,0),myN, replace=T, prob = c(myP, 1-myP))
-  mysick = sum(myclass) > 0
-  return(mysick)})
-  probFlu = sum(myRuns)/1e4
-  return(probFlu)
+## write a function that does one simulation of a class of people who may or may not have the flu
+## inputs are prob of flu (myP) and number of people in the class (myN)
+sickClass <- function(myP, myN){
+  ## sample a class of myN people (1 if have flu, 0 if don't have fl
+  myclass = sample(x=c(1,0),size=myN, replace=T, prob = c(myP, 1-myP))
+  # return TRUE if someone is sick, if not return FALSE
+  mysick = sum(myclass) > 0 
+  return(mysick)}
+  
+##run the sickClass function 1000 times
+classSims <- function(myP, myN){
+  ## use the replicate function to run the simulations
+  allSims = replicate(1e4, sickClass(myP =myP, myN=myN))
+  ##  calculate how often someone is sick in all the simulations
+  probSick = sum(allSims)/1e4
+ return(1-probSick) 
 }
 
-fluClass(55, 0.002142857)
+classSims(myP = 0.002142857, myN = 55)
 
 ```
 
