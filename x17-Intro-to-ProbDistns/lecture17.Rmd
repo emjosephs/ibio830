@@ -28,122 +28,137 @@ output:
 3. A **_probability distribution function_** is a rule or formula 
 that describes the probability of all possible outcomes of a random event
 
-## Coin-flipping {.build}
+## The Binomial Distribution {.build}
 
 Given:
 
- - a number of flips (**_n_**)
+ - a number of trials (**_n_**)
  
- - and a probability of flipping heads (**_p_**)
+ - and a probability of success (**_p_**)
 
 can we come up with a rule for calculating 
-the probability of any number of heads (**_k_**)?
+the probability of any number of successes (**_k_**)?
 
 \
 
-E.g., what's the probability of 43 heads out of 100 flips?
+E.g., what's the probability of 43 successes out of 100 trials?
 
-## Coin-flipping {.build}
+## The binomial distribution {.build}
 
-What's the probability of 43 heads out of 100 flips?
+What's the probability of 43 successes out of 100 trials?
 
-Well, let's start with calculating the probability of 
-any _particular_ sequence of **_n=100_** flips 
-that contains **_k=43_** heads?
+$P(A \cap B) = P(A) \times P(B)$
 
-## Coin-flipping  {.build}
+$P(43 ~\text{successes}) = P(\text{success})^{43} \times P(\text{failure})^{100-43}$
 
-What is the probability of any _particular_ sequence of **_n_** flips 
-that contains **_k_** heads?
+
+## The binomial distribution {.build}
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is ______
+
+so the probability of $k$ successes is ______
+
+the probability of each fail is ______
+
+if there are $n$ trials and $k$ successes, there are ____ fails
+
+so the probability of all the fails is _____
+
+and the probability of a particular sequence of **_n_** trials containing **_k_** successes is ______
+
+
+## The binomial distribution
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
 
 Well, what do we know?
 
-the probability of each "H" is ______
-
-so the probability of $k$ heads is ______
-
-the probability of each "T" is ______
-
-if there are $n$ flips and $k$ heads, there are ____ tails
-
-so the probability of all the tails is _____
-
-and the probability of a particular sequence of **_n_** flips containing **_k_** heads is ______
-
-
-## Coin-flipping
-
-What is the probability of any _particular_ sequence of **_n_** flips 
-that contains **_k_** heads?
-
-Well, what do we know?
-
-the probability of each "H" is $p$
+the probability of each success is $p$
  
-so the probability of $k$ heads is $p^k$
+so the probability of $k$ successes is $p^k$
  
-the probability of each "T" is $1-p$
+the probability of each tail is $1-p$
  
-if there are $n$ flips and $k$ heads, there are $n-k$ tails
+if there are $n$ trials and $k$ successes, there are $n-k$ fails
  
-so the probability of $n-k$ tails is $(1-p)^{(n-k)}$
+so the probability of $n-k$ fails is $(1-p)^{(n-k)}$
  
-and the probability of a particular sequence of **_n_** flips containing **_k_** heads is $p^k \times (1-p)^{(n-k)}$
+and the probability of a particular sequence of **_n_** trials containing **_k_** successes is $p^k \times (1-p)^{(n-k)}$
 
 
-## Coin-flipping  {.build}
+## The binomial distribution  {.build}
 
-What's the probability of 43 heads out of 100 flips?
-
-Well, we know the probability of any _particular_ sequence of 
-**_n=100_** flips containing **_k=43_** heads is 
-
-<div class="centered">
-$\Large (0.5)^{43} \times (1-0.5)^{57}$
-</div>
-
-\
+and the probability of a particular sequence of **_n_** trials containing **_k_** successes is $p^k \times (1-p)^{(n-k)}$
 
 Now we need to know _how many ways there are_ of getting a sequence of 
-**_n=100_** flips containing **_k=43_** heads.
+**_n=100_** trials containing **_k=43_** successes.
 
 <div class="centered">
 $\Large {{n}\choose{k}}$
 </div>
 
-```{r,eval=FALSE}
+```{r,eval=TRUE}
 	choose(n=100,k=43)
 ```
 
 
-## Coin-flipping  {.build}
+## The Binomial distribution  {.build}
 
-So, what's the probability of 43 heads out of 100 flips?
-
-Well, we've just derived the **_probability distribution function_** 
-for coin-flipping!
+Well, we've just derived the **_probability distribution function_**.
 
 <div class="centered">
 $\Large {{n}\choose{k}} \times \left( p^k \times (1-p)^{n-k}	\right)$
 </div>
 
+## The Binomial distribution  {.build}
+
+Why are we multiplying the two terms together?
+
+Imagine that we have 2 flips and we want to know how likely we are to get 1 heads?
+
+Our state space = $[H,H], [H,T], [T,H], [T,T]$
+
+All of these options are equiprobable!
+
+$P(2~\text{heads}) = P([H,T]) + P([T,H])$
+
+$P(2~\text{heads}) = 2 \times P([H,T])$
+
 ```{r}
+choose(n=2, k=1)
+```
+
+
+## The Binomial distribution  {.build}
+
+
+```{r, echo=T}
 	coin.flip.prob <- function(n,k,p){
 		prob <- choose(n,k) * p^k * (1-p)^(n-k)
 		return(prob)
 	}
 ```
 	
-```{r}
+```{r, echo=T}
 	coin.flip.prob(n=100,k=43,p=0.5)
 ```
 
-## Coin-flipping - a probability distribution function {.build}
-```{r,fig.width=6.5,fig.height=5,fig.align="center",echo=FALSE}
+## Coin-flipping {.build}
+```{r,fig.width=6.5,fig.height=5,fig.align="center",echo=T}
 	plot(coin.flip.prob(n=100,k=0:100,p=0.5),
-			xlab="successes",ylab="probability",main="coin-flipping:\nprobability distribution function",
-			pch=20,col=adjustcolor(1,0.7))
+			xlab="successes",ylab="probability")
 ```
+
+## Coin-flipping {.build}
+```{r,fig.width=6.5,fig.height=5,fig.align="center",echo=T}
+	plot(coin.flip.prob(n=100,k=0:100,p=0.3),
+			xlab="successes",ylab="probability")
+```
+
 
 ## 
 ```{r,fig.width=6.5,fig.height=5,fig.align="center",echo=FALSE}
@@ -155,20 +170,6 @@ $\Large {{n}\choose{k}} \times \left( p^k \times (1-p)^{n-k}	\right)$
 		legend(x="topright",lty=1,lwd=3,col=c("blue","purple","red"),legend=c(0.3,0.5,0.7),title="p(heads) = ")
 ```
 
-## The binomial distribution {.build}
-
-Per wikipedia:
-
-\
-
-The **_binomial distribution_** with parameters **_n_** and **_p_** is the discrete probability 
-distribution of the number of successes in a sequence of **_n_** independent experiments, 
-each asking a yes–no question, and each with its own boolean-valued outcome - 
-a random variable containing single bit of information:
- 
- - success/yes/true/one (with probability p) 
-
- - or failure/no/false/zero (with probability q = 1 − p). 
 
 ## Probability distributions: the binomial {.build}
 
@@ -180,16 +181,14 @@ If a random variable **_X_** is binomially distributed, we write:
 $\Large X \sim B(n,p)$
 </div> 
 
-\
 
 Read as: "_X_ is a draw from a binomial distribution 
 with parameters _n_ and _p_"
 
-\
 
 And, if **_X_** is a draw from a binomial distribution, 
 we can use the **_binomial probability distribution function_** 
-to calculate the probability for any value of **_X_**, given **_n_** and **_p_**.
+to calculate the probability for any value of **_X_ = k**, given **_n_** and **_p_**.
 
 ## Probability distributions: the binomial {.build}
 
@@ -204,8 +203,18 @@ Using `rbinom`, generate 1 sample of 100 draws from a
 binomial distribution with `p=0.6`.
 
 ```{r}
-	rbinom(n=1,size=100,p=0.6)
+rbinom(n=1,size=100,p=0.6)
+rbinom(n=1,size=100,p=0.6)
 ```
+
+## Breakout room exercise
+Use `rbinom` to sample 1000 draws from the binomial distribution. Pick your own value of *p*.
+
+Plot the histogram of the values that you get.
+
+Calculate the mean of the values.
+
+Calculate the variance of the values (hint: use `var()`).
 
 ## Probability distributions: the binomial {.build}
 
@@ -218,38 +227,23 @@ If $X \sim B(n,p)$, we know:
 $\Large \mathbb{E}[X] = np$
 </div> 
 
-\
-
 and
-
-\
 
 <div class="centered">
 $\Large \mathbb{V}ar(X) = np(1-p)$
 </div>
 
-## Probability distributions: the binomial {.build}
+Check to make sure that your estimates from the breakout rooms match these values.
 
-Simulating a coin toss matches the binomial distribution
+## Wait what's a variance? {.build}
 
-<div class="centered">
-```{r,echo=FALSE,fig.height=5,fig.width=6}
-	viz.binom.stats <- function(n,p){
-		binomDraws <- rbinom(1e5,n,p)
-		hist(binomDraws,xlab="number of heads",main=sprintf("X ~ Binomial(n=%s,p=%s)\nE[X]=%s, Var[X] = %s",n,p,n*p,n*p*(1-p)))
-		abline(v=mean(binomDraws),lwd=3,col=4,lty=1)
-		abline(v=n*p,lwd=3,col=2,lty=3)
-		segments(x0=n*p - var(binomDraws)/2,y0=5,
-				 x1=n*p + var(binomDraws)/2,y1=5,
-				 col=4,lwd=4,lty=1)
-		segments(x0=n*p - (n*p*(1-p)/2),y0=0,
-				 x1=n*p + (n*p*(1-p)/2),y1=0,
-				 col=2,lwd=4,lty=3)
-		legend(x="topright",legend=c("sample","predicted"),col=c(4,2),lwd=3,lty=c(1,3))
-	}
-	viz.binom.stats(n=50,p=0.7)
-```
-</div> 
+The variance tells you about the amount of spread in the data.
+
+$\large \mathbb{V}ar(X) = \mathbb{E}(x_{i}-\bar{x})^{2}$
+
+The variance will be higher if things tend to be farther away from the mean.
+
+(hint: Wikipedia is your friend for math concepts like variance)
 
 ## Probability distributions {.build}
 
@@ -260,18 +254,6 @@ Why are they useful?
 
 Because they describe processes that shape 
 the world around us!
-
-## Course Motto: D.R.E.A.M. {.build}
-
-### **D**istributions
-
-### **R**ule
-
-### **E**verything
-
-### **A**round
-
-### **M**e
 
 ## Distributions and Random Variables {.build}
 
@@ -390,7 +372,7 @@ including tools for simulating data, and calculations for the expected mean and 
 
 **continuous**: beta, exponential, gamma, lognormal, normal, uniform
 
-**discrete**: poisson, geometric, negative binomial, Bernoulli
+**discrete**: poisson, geometric, negative binomial
 
 ## Get to know a distribution!
 
