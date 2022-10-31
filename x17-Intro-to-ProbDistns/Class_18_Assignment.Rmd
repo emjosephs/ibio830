@@ -1,0 +1,57 @@
+---
+title: "Intro to Likelihood: Assignment"
+output:
+  html_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_19_Assignment.Rmd") -->
+
+#### Due by the beginning of next class 
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment19.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment19.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+Please spend some time working through the shiny demos that your classmates made (available on d2l) and answer the following questions:
+
+### Question 1
+
+Choose which probability distribution (from the bank below) would best describe 
+the following types of data:
+
+bank: {beta, exponential, gamma, lognormal,
+	   normal, uniform, poisson, geometric, 
+	   negative binomial, binomial}
+	   
+1. Lengths of ribbon left over after wrapping presents
+
+2. A chess grandmaster's win percentage
+
+3. Number of coding errors (bugs) in student homework assignments
+
+4. Deviation from the mean height in a classroom of toddlers
+
+5. Number of times you have to flip a USB drive over before you successfully put it into your computer
+
+6. Number of games before your favorite sports team wins a game
+
+7. Human arm length
+
+8. Number of seagulls circling a fishing boat
+
+### Question 2
+
+What distribution do you think will be most useful for your future data analysis. Explain why in a few sentences. Alternatively, talk about a distribution that you are sure you will not use.
+
+### Question 3
+
+Was there anything in the distribution demos that surprised you? (This could include the fun trivia).
