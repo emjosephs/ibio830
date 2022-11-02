@@ -24,7 +24,7 @@ output:
  
 ## Notation, parameters, bounds
 
-If a random variable $X$ is gmma distributed, we write 
+If a random variable $X$ is gamma distributed, we write 
 
 <div class="centered">
 $\Large X \sim \Gamma(\alpha,\beta)$
@@ -36,51 +36,43 @@ Where
 </div>
 \
 
- - $n$ is the number of trials (e.g., the number of times you flip a coin)
+ - $\alpha$ is the shape parameter
 
- - $p$ is the probability of success in each trial (e.g., the probability of flipping a heads)
+ - $\beta$ is the rate parameter (equal to $\frac{1}{\theta}$ where $\theta$ is the scale parameter)
 
- - the binomial distribution is a **discrete** probability distribution
+ - the gamma distribution is a **continuous** probability distribution
  
- - a draw from a binomial distribution is bounded between 0 and $n$
+ - a draw from a gamma distribution is bounded between 0 and infinity
  
 ## Mean
 
 The mean of a binomial is given by 
 
 <div class="centered">
-$\Large \mathbb{E}[X] = np$
+$\Large \mathbb{E}[X] = \alpha\theta = \frac{\alpha^{2}}{\beta}$
 </div> 
 
 \
 
 ### Intuition:
-If you conduct more trials, you expect more successes (more flips = more heads).
 
-A higher probability of success ($p$) will increase the expected number of successes (higher chance of heads = more heads).
-
-When there are no trials ($n$ = 0), or when the probability of a success is 0 ($p$ = 0), 
-the mean is also 0.
+.
 
 ## Variance
 The variance is given by
 
 <div class="centered">
-$\Large \mathbb{V}ar(X) = np(1-p)$
+$\Large \mathbb{V}ar(X) = \alpha\theta^{2} = \frac{\alpha^{2}}{\beta^{2}}$
 </div>
 
 \
 
 ### Intuition:
-A larger number of trials increases the variance (more possible outcomes).
 
-Extreme values of $p$ give lower variances because most outcomes will be the same type.
 
-When $p$ is 0 or 1, there is no variance, because all outcomes are failures or successes, respectively.
+## Things that are gamma distributed
 
-## Things that are binomially distributed
-
- - the time it takes for a certain number of cell divisions to occur (or any other type of Poisson-distributed processe)
+ - the time it takes for a certain number of cell divisions to occur (or any other type of Poisson-distributed processes)
  
  - the distribution of fitness effects of new mutations
 
