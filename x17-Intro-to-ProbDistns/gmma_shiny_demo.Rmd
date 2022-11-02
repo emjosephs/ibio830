@@ -20,25 +20,23 @@ output:
 
 ## Brief history {.build}
 
- - Derived by Laplace?
+ - Derived by Laplace? Or Euler? No one knows.
+ 
+ - The distribution of waiting times for a certain number of things to happen
  
 ## Notation, parameters, bounds
 
 If a random variable $X$ is gamma distributed, we write 
 
 <div class="centered">
-$\Large X \sim \Gamma(\alpha,\beta)$
+$\large X \sim \Gamma(\alpha,\beta)$
 </div>
 
-Where
-<div class="centered">
-\beta = \frac{1}{\theta}
-</div>
-\
+ - $\alpha$ is the shape parameter (ie how many events are you waiting for)
 
- - $\alpha$ is the shape parameter
-
- - $\beta$ is the rate parameter (equal to $\frac{1}{\theta}$ where $\theta$ is the scale parameter)
+ - $\beta$ is the rate parameter (the average rate of things)
+ 
+ - $\beta = \frac{1}{\theta}$ where $\theta$ is the scale parameter
 
  - the gamma distribution is a **continuous** probability distribution
  
@@ -56,7 +54,7 @@ $\Large \mathbb{E}[X] = \alpha\theta = \frac{\alpha^{2}}{\beta}$
 
 ### Intuition:
 
-.
+Wait times will be longer if you are waiting for more things ($\alpha$) or the rate ($\beta$) is slower.
 
 ## Variance
 The variance is given by
@@ -68,11 +66,11 @@ $\Large \mathbb{V}ar(X) = \alpha\theta^{2} = \frac{\alpha^{2}}{\beta^{2}}$
 \
 
 ### Intuition:
-
+The variance of wait times goes up if you're waiting for more things, or if the rate is slower.
 
 ## Things that are gamma distributed
 
- - the time it takes for a certain number of cell divisions to occur (or any other type of Poisson-distributed processes)
+ - the time it takes for a certain number of cell divisions to occur
  
  - the distribution of fitness effects of new mutations
 
