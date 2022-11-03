@@ -48,6 +48,8 @@ bank: {beta, exponential, gamma, lognormal,
 
 8. Number of seagulls circling a fishing boat
 
+9. If you're 5th in line at a taxi stand, how long will you have to wait for a taxi?
+
 ### Question 2
 
 What distribution do you think will be most useful for your future data analysis. Explain why in a few sentences. Alternatively, talk about a distribution that you are sure you will not use.
