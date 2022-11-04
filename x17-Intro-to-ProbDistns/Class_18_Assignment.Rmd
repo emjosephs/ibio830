@@ -1,5 +1,5 @@
 ---
-title: "Intro to Likelihood: Assignment"
+title: "Probability Distributions: Assignment"
 output:
   html_document: default
 language: R
@@ -15,7 +15,7 @@ For each question, fill out the answer and, where requested,
 provide the relevant R code using "```" and the echo = TRUE argument.
 
 When finished, Knit your script together into an html report, 
-saved as “YourlastName_Assignment19.html” and upload the 
+saved as “YourlastName_Assignment18.html” and upload the 
 resulting file to the D2L site (in today’s class folder) to turn it in. 
 It is due before our next class.
 
