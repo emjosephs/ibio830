@@ -1,7 +1,7 @@
 ---
 title: "Lecture 19 - Introduction to Likelihood"
 author: "Emily Josephs"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "November 8 2022"
 output:
   ioslides_presentation:
     transition: 0.001
@@ -18,30 +18,8 @@ output:
 ```
 
 ## Today:
-
- * Probability distribution recap
  * Law of large numbers
  * Introduction to likelihood
-
-## Probability Distributions: recap {.build}
-
-1. A probability distribution gives the probabilities of 
-the outcomes of some stochastic process
-
-2. Many natural processes are well described by some 
-commonly used distributions, which can be categorized 
-as discrete or continuous
-
-3. Given the parameters of the distribution, we can 
-calculate the probability of each outcome of a process
-
-4. For a continuous distribution, this is actually the 
-_relative_ probability
-
-5. R has built-in functions for using these distributions (e.g., rnorm() and dnorm())
-
-6. **D**istributions **R**ule **E**verything **A**round **M**e!
-
 
 ## The Law of Large Numbers {.build}
 
@@ -79,12 +57,6 @@ Which has a higher probability of happening on the 21st flip: heads or tails?
 
 ## Beware the gambler's fallacy!
 
-Say I give you a coin that flips heads with a probability of 1/2.
-
-Now you flip the coin 20 times, and get a heads **every** time!
-
-Which has a higher probability of happening on the 21st flip: heads or tails?
-
 Probability is the same, because the flips are independent!
 
 $p(21 \text{ heads in 21 flips}) = {{n=21}\choose{k=21}} \times (0.5)^{21} = `r choose(21,21) * (0.5)^{21}`$
@@ -93,7 +65,26 @@ $p(21 \text{ heads} \; | \; 20 \text{ heads}) = 0.5$
 
 ## Visualizing the Law of Large Numbers
 
-```{r,echo=FALSE,cache=TRUE}
+```{r,echo=TRUE,eval=F}
+	draw.running.mean <- function(r,n){
+		replicate(r,{
+			x1 <- rnorm(n,mean=0,sd=0.5)
+			x1.mean <- cumsum(x1)/(1:n)
+			lines(1:n,x1.mean,col=adjustcolor(1,0.2))
+		})
+		return(invisible(0))
+	}
+	n <- 1e2
+	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
+			xlab="number of draws from a normal",
+			ylab="running mean")
+		draw.running.mean(r = 1,n = 100)
+		abline(h=0,col=2)
+```
+
+## Visualizing the Law of Large Numbers
+
+```{r,echo=F,eval=T, cache=T}
 	draw.running.mean <- function(r,n){
 		replicate(r,{
 			x1 <- rnorm(n,mean=0,sd=0.5)
@@ -114,14 +105,6 @@ $p(21 \text{ heads} \; | \; 20 \text{ heads}) = 0.5$
 ## Visualizing the Law of Large Numbers
 
 ```{r,echo=FALSE,cache=TRUE}
-	draw.running.mean <- function(r,n){
-		replicate(r,{
-			x1 <- rnorm(n,mean=0,sd=0.5)
-			x1.mean <- cumsum(x1)/(1:n)
-			lines(1:n,x1.mean,col=adjustcolor(1,0.2))
-		})
-		return(invisible(0))
-	}
 	n <- 1e2
 	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
 			xlab="number of draws from a normal",
@@ -131,7 +114,7 @@ $p(21 \text{ heads} \; | \; 20 \text{ heads}) = 0.5$
 ```
 
 
-## Visualizing the Law of Large Numbers {.build}
+## Visualizing the Law of Large Numbers
 
 ```{r,echo=FALSE,cache=TRUE}
 
@@ -168,27 +151,28 @@ data as a function of some unknown parameters.
 Likelihood is probability...in reverse!
 </div>
 
-## Introduction to Likelihood {.build}
+## Probability vs. Statistics{.build}
 
- - First, let's start with the difference between probability and statistics:
- 	+ In probability, we think about some stochastic process, 
- 		and figure out ways to calculate the probability of possible outcomes
- 	+ In statistics, we start with some observed outcomes, 
- 		and try to figure out the underlying process.
+- In probability, we think about some stochastic process, 
+ and figure out ways to calculate the probability of possible outcomes
+ 		
+- In statistics, we start with some observed outcomes, 
+ and try to figure out the underlying process.
 
 
-## Introduction to Likelihood {.build}
+##  Probability vs. Statistics{.build}
 
 probability says: given that the coin is fair, what's the probability of getting 46 heads out of 100 flips?
 
 statistics says: given some flip data, can we figure out the fairness of the coin?
 
+##  Probability vs. Statistics{.build}
+
 In calculating probabilities, we consider a single parameter value 
 and describe the probabilities of all possible outcomes of a 
 process parameterized by that value.
 
-In calculating likelihoods, we consider a single outcome (or set of outcomes)  
-and many possible parameter values that could best explain it.
+In calculating likelihoods, we consider a single outcome (or set of outcomes) and many possible parameter values that could best explain it.
 
 In formulating the problem this way, 
 we are treating the observed data ($k=46$) as a _known_, 
@@ -208,8 +192,6 @@ about a **_population_**.
 
 - e.g., the _true_ mean height of students in our class, 
 or the _true_ frequency of a genetic variant in a species.
-
-\
 \
 
 We rarely get to know the truth 
@@ -231,15 +213,15 @@ n.heads <- 46
 ```
 
 <div class="centered">
-$\Large X \sim B(n,p)$
+$\large X \sim B(n,p)$
 </div>
 
 <div class="centered">
-$\Large X \sim B(n=100,p=??)$
+$\large 46 \sim B(n=100,p=??)$
 </div>
 
 <div class="centered">
-$\Large prob(X=46 \mid p)$
+$\large prob(X=46 \mid p, n=100)$
 </div>
 
 \
@@ -252,56 +234,58 @@ How do we go about figuring out what $p$ is?
 
 ## Calculating likelihood
 
-point-values: p = 0.1
+Coin flips are *________ distributed*
 
-```{r,echo=FALSE}
-	# calculate likelihood of the data if p = 0.1
-	p <- 0.1
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.1),main="prob(46 heads | p)",
-		xlab="probability of heads (p)",ylab="p(data)",
-		pch=20,col=2)
-```
 
 ## Calculating likelihood
 
-point-values: p = c(0.1,0.5)
+Coin flips are *binomially distributed*
 
-```{r,echo=FALSE}
+## Calculating likelihood with rbinom?
+```{r}
+hist(rbinom(n=1000, size=100, prob=0.1), main="", xlab = 'p=0.1', xlim = c(0,100))
+abline(v=46, col="red")
+```
+
+## Calculating likelihood with rbinom?
+```{r}
+hist(rbinom(n=1000, size=100, prob=0.2), main="", xlab = 'p=0.1', xlim = c(0,100))
+abline(v=46, col="red")
+```
+
+
+## Calculating likelihood with dbinom!
+
+```{r, eval=F}
+?dbinom
+```
+
+
+## Calculating likelihood for one value of p
+```{r,echo=T}
+	p <- 0.1
+	plot(p,dbinom(x=n.heads,size=100,p=p),xlim=c(0,1),ylim=c(0,0.1), xlab="probability of heads (p)",ylab="p(data)", pch=20,col=2)
+```
+
+## Calculating likelihood for 2 values of p
+```{r,echo=T}
 	# calculate likelihood of the data if p = 0.1
 	p <- c(0.1,0.5)
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.1),main="prob(46 heads | p)",
-		xlab="probability of heads (p)",ylab="p(data)",
-		pch=20,col=2)
+	plot(p,dbinom(x=n.heads,size=100,p=p), xlim=c(0,1),ylim=c(0,0.1),, xlab="probability of heads (p)",ylab="p(data)", pch=20,col=2)
 ```
 
-## Calculating likelihood
+## Calculating likelihood for many ps
 
-haphazard search: p = runif(15,min=0,max=1)
-
-```{r,echo=FALSE}
-	# calculate likelihood of the data if p = 0.1
+```{r,echo=T}
 	p <- runif(15,min=0,max=1)
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.1),main="prob(46 heads | p)",
-		xlab="probability of heads (p)",ylab="p(data)",
-		pch=20,col=2)
+	plot(p,dbinom(x=n.heads,size=100,p=p), xlim=c(0,1),ylim=c(0,0.1), xlab="probability of heads (p)",ylab="p(data)", pch=20,col=2)
 ```
 
-## Calculating likelihood
-
-grid/exhaustive search: p = seq(0,1,length.out=1e3)
-
-```{r,echo=FALSE}
-	# calculate likelihood of the data if p = 0.1
-	p <- seq(0,1,length.out=1e3)
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.1),main="prob(46 heads | p)",
-		xlab="probability of heads (p)",ylab="p(data)",
-		pch=20,col=2)
+## Calculating likelihood with a grid search
+```{r,echo=T}
+	p <- seq(0,1,length.out=1e3) 
+	plot(p,dbinom(x=n.heads,size=100,p=p), xlim=c(0,1),ylim=c(0,0.1), xlab="probability of heads (p)",ylab="p(data)", pch=20,col=2)
 	arrows(x0=0.46,x1=0.46,y0=0.092,y1=0.085,length=0.1)
-	text(x=0.46,y=0.097,labels="most likely")
 ```
 
 ## Maximum likelihood {.build}

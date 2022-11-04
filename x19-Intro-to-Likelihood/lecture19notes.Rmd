@@ -3,7 +3,7 @@ title: "lecture19notes"
 output:
   html_document:
     keep_md: yes
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "November 8 2022"
 ---
 
 

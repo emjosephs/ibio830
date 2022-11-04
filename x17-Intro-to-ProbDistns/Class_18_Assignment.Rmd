@@ -10,7 +10,7 @@ language: R
 
 #### Due by the beginning of next class 
 
-Save this Rmarkdown script as a file named “YourlastName_Assignment19.Rmd”. 
+Save this Rmarkdown script as a file named “YourlastName_Assignment18.Rmd”. 
 For each question, fill out the answer and, where requested, 
 provide the relevant R code using "```" and the echo = TRUE argument.
 
