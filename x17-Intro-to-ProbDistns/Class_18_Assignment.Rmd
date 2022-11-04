@@ -6,7 +6,7 @@ language: R
 ---
 
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
-<!-- rmarkdown::render("Class_19_Assignment.Rmd") -->
+<!-- rmarkdown::render("Class_18_Assignment.Rmd") -->
 
 #### Due by the beginning of next class 
 
@@ -17,7 +17,7 @@ provide the relevant R code using "```" and the echo = TRUE argument.
 When finished, Knit your script together into an html report, 
 saved as “YourlastName_Assignment18.html” and upload the 
 resulting file to the D2L site (in today’s class folder) to turn it in. 
-It is due before our next class.
+It is due midnight before the next class.
 
 \
 
@@ -26,7 +26,7 @@ Please spend some time working through the shiny demos that your classmates made
 ### Question 1
 
 Choose which probability distribution (from the bank below) would best describe 
-the following types of data:
+the following types of data and briefly (one sentence) explain why.
 
 bank: {beta, exponential, gamma, lognormal,
 	   normal, uniform, poisson, geometric, 
