@@ -2,14 +2,13 @@
 title: "Intro to Likelihood: Assignment"
 output:
   html_document: default
-  pdf_document: default
 language: R
 ---
 
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_19_Assignment.Rmd") -->
 
-#### Due by the beginning of next class (11/11)
+#### Due by midnight before the beginning of next class (11/10)
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment19.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -32,53 +31,12 @@ It is due before our next class.
 
 \
 
-### Question 1
-
-Choose which probability distribution (from the bank below) would best describe 
-the following types of data:
-
-bank: {beta, exponential, gamma, lognormal,
-	   normal, uniform, poisson, geometric, 
-	   negative binomial, bernoulli, binomial}
-	   
-1. Lengths of ribbon left over after wrapping presents
-
-
-
-2. A chess grandmaster's win percentage
-
-
-
-3. Number of coding errors (bugs) in student homework assignments
-
-normal
-
-4. Deviation from the mean height in a classroom of toddlers
-
-normal
-
-5. Number of times you have to flip a USB drive over before you successfully put it into your computer
-
-binomial
-
-6. Number of games before your favorite sports team wins a game
-
-binomial
-
-7. Human arm length
-
-normal
-
-8. Number of seagulls circling a fishing boat
-
-poisson
-
 ### Question 2
 
 What is the log product rule, and how/why is it used for likelihood-based inference?
 
 The log product rule is that log(A x B) = log(A) + log(B). 
-It's important for likelihood-based inference because it allows you to calculate the likelihood of multiple events.
+It's important for likelihood-based inference because it allows you to calculate the likelihood of multiple events without breaking your computer with small numbers
 
 
 ### Question 3
