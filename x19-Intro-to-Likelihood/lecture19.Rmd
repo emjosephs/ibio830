@@ -241,23 +241,30 @@ Coin flips are *________ distributed*
 
 Coin flips are *binomially distributed*
 
-## Calculating likelihood with rbinom?
-```{r}
-hist(rbinom(n=1000, size=100, prob=0.1), main="", xlab = 'p=0.1', xlim = c(0,100))
-abline(v=46, col="red")
+## Calculating likelihood with math? {.build}
+
+<div class="centered">
+$\large X \sim B(n=100,p=0.5)$\
+\
+
+$\large 
+\begin{aligned}
+p(X=46) &= {{n}\choose{k}}p^k (1-p)^{n-k} \\ 
+\\
+&= {{100}\choose{46}}(0.5)^{46} (0.5)^{54}
+\end{aligned}$
+</div>
+
+```{r, eval=T}
+choose(n=100,k=46)*(0.5^46)*(0.5^54)
 ```
 
-## Calculating likelihood with rbinom?
-```{r}
-hist(rbinom(n=1000, size=100, prob=0.2), main="", xlab = 'p=0.1', xlim = c(0,100))
-abline(v=46, col="red")
-```
 
+  
+## Calculating likelihood with dbinom! {.build}
 
-## Calculating likelihood with dbinom!
-
-```{r, eval=F}
-?dbinom
+```{r, eval=T}
+dbinom(x=46, p=0.5, size=100)
 ```
 
 
@@ -413,40 +420,34 @@ help(dbinom)
 help(which.max)
 ```
 
-## How do we find the MLE?
+## Grid search to find the MLE
 
 ```{r}
 p <- seq(0,1,length.out=1000)
 likelihoods <- dbinom(x=37,size=57,p=p)
 p[which.max(likelihoods)]
 ```
-<div class="centered">
-```{r,fig.width=4,fig.height=3,echo=FALSE}
+
+## Grid search to find the MLE
+
+```{r,echo=T}
 plot(p,likelihoods,xlab="p(heads)",ylab="p(data)")
 	abline(v=p[which.max(likelihoods)],col=2)
 	legend(x="topleft",lty=1,col=2,legend="MLE")
 ```
-</div>
-## How do we find the MLE? {.build}
 
-```{r,eval=FALSE}
-	help(optimize)
-```
+## Using optimize to find the MLE {.build}
 
-```{r,echo=FALSE}
+```{r,echo=T}
 	l.binom <- function(p){
 		binom.prob <- dbinom(x=46,size=100,prob=p)
 		return(binom.prob)
 	}
 	mle <- optimize(f = l.binom,lower=0,upper=1,maximum=TRUE)
+	mle
 ```
 
-```{r,echo=FALSE}
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		 xlab="probability of success",ylab="p(data)",type='n')
-	lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
-	points(mle$maximum,mle$objective,pch=8,cex=2)
-```
+Note, maximum is the parameter, objective is the likelihood of the data given the parameter
 
 ## Now hang on... {.build}
 
@@ -475,18 +476,6 @@ $\huge p(X \; \mid \; \theta)$
 
      -Will Wetzel
 
-## Maximum Likelihood - not bananas*
-
-"Things that happened were more likely to happen than things that didn't."
-
-     -Will Wetzel
-\
-\
-\
-\
-\
-\
-(*) maybe a _little bit_ bananas - we'll come back to this when we talk about Bayesian inference.
 
 ## Maximum Likelihood: recap
 
@@ -504,39 +493,29 @@ inference!
 
 ## Multiple observations {.build}
 
-So we know how to take the likelihood of a single observation:
-
-<div class="centered">
-$\Large X \sim B(n=100,p=0.5)$\
-\
-$\large 
-\begin{aligned}
-p(X=46) &= {{n}\choose{k}}p^k (1-p)^{n-k} \\ 
-\\
-&= {{100}\choose{46}}(0.5)^{46} (0.5)^{54}
-\end{aligned}$
-</div>
+So we know how to take the likelihood of a single observation.
 
 What about if we have _multiple observations_?
 
-## Calculating the likelihood of multiple observations {.build}
+## Multiple observations {.build}
 
 Assuming the observations are independent and identically distributed (i.i.d.), 
 their probabilities can be computed as a single **shared event**.
 
-<div class="centered">
-$\Large p(A \; \cap \; B) = p(A) \times p(B)$
-\
-\
+
+$\large p(A \; \cap \; B) = p(A) \times p(B)$
+
+
+
 $\large
 \begin{aligned}
 p(\vec{X}=\{46,47,48\}) =& \; p(X_1=46) \\
 &\times p(X_2=47) \\ 
 &\times p(X_3=48)
 \end{aligned}$
-</div>
 
-## Calculating the likelihood of multiple observations {.build}
+
+## Multiple observations {.build}
 
 $p(X={46,47,48}) = p(X=46) \times p(X=47) \times p(X=48)$
 ```{r,echo=FALSE}
@@ -552,7 +531,7 @@ B - prod(dbinom(x=c(46,47,48), size=100, prob=0.5)) \
 C - dbinom(46, size=100, prob=0.5) \
 D - prod(dnorm(c(46,47,48), mean=50, sd=1)) \
 
-## Calculating the likelihood of multiple observations
+## CMultiple observations
 
 $p(X={46,47,48}) = p(X=46) \times p(X=47) \times p(X=48)$
 
@@ -565,7 +544,7 @@ A - sum(dbinom(x=c(46,47,48), size=100, prob=0.5)) \
 C - dbinom(46, size=100, prob=0.5) \
 D - prod(dnorm(c(46,47,48), mean=50, sd=1)) \
 
-## Calculating the likelihood of multiple observations {.build}
+## Multiple observations {.build}
 
 $p(X={46,47,48}) = p(X=46) \times p(X=47) \times p(X=48)$
 
@@ -578,13 +557,15 @@ dbinom(x=48, size=100, prob=0.5)
 prod(dbinom(x=c(46,47,48) ,size=100, prob=0.5))
 ```
 
-## Calculating the likelihood of multiple observations {.build}
+## Multiple observations {.build}
 
 What if we want to know the likelihood of 10 observations?
 ```{r}
 myObservations = rbinom(10,size=100,prob=0.5)
 prod(dbinom(x=myObservations,size=100,prob=0.5))
 ```
+
+## Multiple observations {.build}
 
 What about 50 observations? What might go wrong here?
 
@@ -608,16 +589,9 @@ prod(dbinom(x=myObservations,size=100,prob=0.5))
 
 ### Underflow
 
-<div class="centered">
-$\Large \text{If } \vec{X} \; < \; 1 \text{, then } 
-\prod\limits_{i=1}^n X_i < 1$
-</div>
+The product of small numbers are smaller numbers.
 
-\
-
-<div class="centered">
-$\Large \text{if } n \text{ is large, } \prod\limits_{i=1}^n X_i << 1$
-</div>
+Very very very small numbers cannot be represented in your computer's memory.
 
 ## So how can we calculate the likelihood of multiple observations? {.build}
 
@@ -639,12 +613,19 @@ $\Large \text{log}\left(\prod\limits_{i=1}^n X_i \right) = \sum\limits_{i=1}^n \
 
 ## Log Likelihood
 
-```{r,echo=FALSE}
+```{r,echo=T}
 heads <- rbinom(10,size=100,prob=0.5)
 probs <- seq(0,1,length.out=50)
-likelihood <- unlist(lapply(probs,function(p){prod(dbinom(heads,100,p))}))
-log.likelihood <- unlist(lapply(probs,function(p){sum(dbinom(heads,100,p,log=TRUE))}))
 
+likelihood <- sapply(probs,function(p)
+  {prod(dbinom(heads,100,p))})
+
+log.likelihood <- sapply(probs,function(p)
+  {sum(dbinom(heads,100,p,log=TRUE))})
+```
+
+## Log Likelihood
+```{r,echo=T}
 par(mfrow=c(1,2))
 	plot(probs,likelihood,main="likelihood",pch=20,xlab="p(heads)",ylab="likelihood")
 	plot(probs,log.likelihood,main="log likelihood",pch=20,xlab="p(heads)",ylab="log likelihood")
