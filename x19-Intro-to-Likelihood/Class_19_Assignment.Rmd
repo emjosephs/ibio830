@@ -34,16 +34,38 @@ It is due before our next class.
 ### Question 1
 
 What is the log product rule, and how/why is it used for likelihood-based inference?
-
-
+\
+\
+\
 
 ### Question 2
+
+Everything from class used the binomial distribution, so let's try using the Poisson distribution instead.
+\
+\
+\
+a) If $X \sim \text{Pois}(\lambda)$, calculate $P(2 | \lambda=4)$
+\
+
+b) You make 2 draws from the Poisson distribution and get 2 the first time, and 3 the second time. What is the probability of this outcome of $\lambda$ is 4?
+\
+\
+\
+
+c) What is the log-likelihood of the outcome from part b?
+
+\
+\
+\
+
+### Question 3
 
 Use maximum likelihood inference to estimate 
 the parameter values I used to simulate data from a Poisson distribution, 
 which are saved as a .Robj file in the Class 19 folder.
 You should refer to the lecture .Rmd file for helpful reference 
 code that you can cannibalize.
+Your answers from Question 2 will also be helpful.
 
 I've included pseudocode below to help you on your journey.
 
@@ -68,6 +90,8 @@ I've included pseudocode below to help you on your journey.
 #	should be calculated as the sum of the logs of the 
 #	simple events that make up the shared event
 #
+
+
 
 
 # do a grid search over values of lambda
