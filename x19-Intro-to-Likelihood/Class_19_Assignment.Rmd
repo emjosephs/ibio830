@@ -27,7 +27,7 @@ It is due before our next class.
 
 2. extrapolate from in-class exercises to apply likelihood-based inference to arbitrary distributions
 
-3. use your R skillz: function building, data visualization, etc.
+3. use your R skills: function building, data visualization, etc.
 
 \
 
@@ -43,8 +43,9 @@ What is the log product rule, and how/why is it used for likelihood-based infere
 Everything from class used the binomial distribution, so let's try using the Poisson distribution instead.
 \
 \
-\
+
 a) If $X \sim \text{Pois}(\lambda)$, calculate $P(2 | \lambda=4)$
+\
 \
 
 b) You make 2 draws from the Poisson distribution and get 2 the first time, and 3 the second time. What is the probability of this outcome of $\lambda$ is 4?
