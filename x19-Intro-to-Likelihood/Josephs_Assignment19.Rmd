@@ -76,7 +76,7 @@ You should refer to the lecture .Rmd file for helpful reference
 code that you can cannibalize.
 Your answers from Question 2 will also be helpful.
 
-I've included pseudocode below to help you on your journey.
+I've included pseudocode below to help you on your journey, but you don't need to use it.
 
 ```{r, eval=F}
 ################
@@ -103,24 +103,22 @@ hist(poisson.data)
 #	simple events that make up the shared event
 #
 
-# do a grid search over values of lambda
-#	extra hint: you can use the histogram to inform the upper limit 
-#				of your grid search!
-
+## pick a set of lambdas based on the histogram
 lambdas <- seq(0,8,length.out=1000)
 
-likelihoods <- sapply(lambas, function(x){dpois(poisson.data,lambda=x)})
-p[which.max(likelihoods)]
 
+## write a function to calculate the log-likelihood of the data for a given lambda
+myLogLikeF = function(l){sum(sapply(poisson.data, function(x){dpois(x, lambda=l, log=T)}))}
+  
+# run your function on all the lambdas in your set
+myLogLikes <- sapply(lambdas, myLogLikeF)
 
-plot(seq(0,10,by=.1),sapply(seq(0,10,by=.1), myLikelihood), xlab = "lambda",bty="n", ylab = "log likelihood")
+myMLE <- p[which.max(myLogLikes)]
 
-
-mle <- optimize(f = myLikelihood,lower=0,upper=10,maximum=TRUE)
-mle$maximum
-
-abline(v = mle$maximum)
+## plot your data to see if it looks right
+plot(lambdas,myLogLikes, xlab = "lambda",bty="n", ylab = "log likelihood")
+abline(v = myMLE, col="red", btw=2)
 
 # ML estimate for lambda is:
-
+myMLE
 ```

@@ -67,7 +67,7 @@ You should refer to the lecture .Rmd file for helpful reference
 code that you can cannibalize.
 Your answers from Question 2 will also be helpful.
 
-I've included pseudocode below to help you on your journey.
+I've included pseudocode below to help you on your journey, but you don't need to use it if it makes more sense to you to go a different route.
 
 ```{r}
 ################
@@ -91,14 +91,16 @@ I've included pseudocode below to help you on your journey.
 #	simple events that make up the shared event
 #
 
+## pick a set of lambdas based on the histogram
+
+## write a function to calculate the log-likelihood of the data for a given lambda
+
+# run your function on all the lambdas in your set
 
 
-
-# do a grid search over values of lambda
-#	extra hint: you can use the histogram to inform the upper limit 
-#				of your grid search!
-
+## plot your data to see if it looks right
 
 # ML estimate for lambda is:
+
 
 ```
