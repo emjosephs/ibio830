@@ -110,41 +110,41 @@ Step 2: understand the rules of probability
 
 ## Deriving Bayes Theorem {.build}
 
-Say we have a hypothesis $\theta$ that the probability that a given coin flips heads is 0.5.
+Say we have a hypothesis $H$ that the probability that a given coin flips heads is 0.5.
 
 And we have observed data $D$ of a large number of flips from that coin.
 
 ## Deriving Bayes Theorem {.build}
 
-We might be interested in the  conditional probability of our data $D$ given hypothesis $\theta$.
+We might be interested in the  conditional probability of our data $D$ given hypothesis $H$.
 
 <div class="centered">
-$\Large{p(D \mid \theta) = \frac{P(\theta \  \cap \ D)}{P(\theta)}}$
+$\Large{p(D \mid H) = \frac{P(H \  \cap \ D)}{P(H)}}$
 </div>
 
-We also know, based on how conditional probabilities work, the conditional probability of our hypothesis $\theta$ given our data $D$.
+We also know, based on how conditional probabilities work, the conditional probability of our hypothesis $H$ given our data $D$.
 
 <div class="centered">
-$\Large{p(\theta \mid D) = \frac{P(D \  \cap \ \theta)}{P(D)}}$
+$\Large{p(H \mid D) = \frac{P(D \  \cap \ H)}{P(D)}}$
 </div>
 
 We can combine these two equations and rearrange.
 
 ## Deriving Bayes Theorem {.build}
 
-$p(\theta \mid D) = \frac{P(D \  \cap \ \theta)}{P(D)}$ and $p(D \mid \theta) = \frac{P(\theta \  \cap \ D)}{P(\theta)}$ 
+$p(H \mid D) = \frac{P(D \  \cap \ H)}{P(D)}$ and $p(D \mid H) = \frac{P(H \  \cap \ D)}{P(H)}$ 
 
-$p(\theta \mid D) = \frac{P(D \  \cap \ \theta)}{P(D)}$ and $P(\theta \  \cap \ D) = p(D \mid \theta) \times P(\theta)$ 
+$p(H \mid D) = \frac{P(D \  \cap \ H)}{P(D)}$ and $P(H \  \cap \ D) = p(D \mid H) \times P(H)$ 
 
 
 <div class="centered">
-$\Huge{p(\theta \mid D) = \frac{P(D \  \mid \ \theta) \times P(\theta)}{P(D)}}$
+$\Huge{p(H \mid D) = \frac{P(D \  \mid \ H) \times P(H)}{P(D)}}$
 </div>
 
 ## Bayes Theorem {.build}
 
 <div class="centered">
-$\Huge{p(\theta \mid D) = \frac{P(D \  \mid \ \theta) \times P(\theta)}{P(D)}}$
+$\Huge{p(H \mid D) = \frac{P(D \  \mid \ H) \times P(H)}{P(D)}}$
 </div>
 
 Bayes Theorem allows us to assess the probability of a hypothesis given some data, 
@@ -155,35 +155,35 @@ as in frequentist statistics.
 ## Bayes Theorem {.build}
 
 <div class="centered">
-$\Huge{p(\theta \mid D) = \frac{P(D \  \mid \ \theta) \times P(\theta)}{P(D)}}$
+$\large{p(H \mid D) = \frac{P(D \  \mid \ H) \times P(H)}{P(D)}}$
 </div>
 
-$p(\theta \; \mid \; D)$ is the _posterior probability_ 
+$p(H \; \mid \; D)$ is the _posterior probability_ 
 
-$p(D \; \mid \; \theta)$ is the _likelihood_ of $D$ given $\theta$
+$p(D \; \mid \; H)$ is the _likelihood_ of $D$ given $H$
 
-$p(\theta)$ is the _prior probability_ of $\theta$
+$p(H)$ is the _prior probability_ of $H$
 
 $p(D)$ is the _marginal likelihood_ or _model evidence_ of D
 
 
 ## Bayes Theorem - Example {.build}
 
-- Using data collected in 1975, we know that the proportion of people that develop thyroid cancer is 0.0001.
+- Using data collected in 1975, we know that the proportion of people that develop cancer is 0.01.
 
-- The probability that a biopsy correctly identifies these people as having cancer is 90%.
+- If someone with cancer gets tested, there is a 90% chance the test will find it.
 
-- The probability of a “false positive” (the test saying there was cancer when there wasn't) is 0.001.
+- The probability of a “false positive” where the test saying there was cancer when there wasn't is 0.001.
 
 **What is the probability that a person with a positive result actually has cancer?**
 
 ## Bayes Theorem - Example {.build}
 
-$\LARGE{p(A \; \mid \; B) = \frac{p(B \; \mid \; A) \; \times \; p(A)}{p(B)}}$
+$\large{p(H \mid D) = \frac{P(D \  \mid \ H) \times P(H)}{P(D)}}$
 
-What's A, and what's B?
+What's H, and what's D?
 
-"A" is cancer, and "B" is the positive result.
+"H" is cancer, and "D" is the positive result.
 
 \
 \
@@ -195,20 +195,45 @@ $\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mi
 
 **What is the probability that a person with a positive result actually has cancer?**
 
-$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
 
-$\Large p(\text{PosRes} \; \mid \; \text{Cancer}) =$
+$p(\text{PosRes} \; \mid \; \text{Cancer}) =$
 
-$\Large p(\text{Cancer}) =$
+$p(\text{Cancer}) =$
 
-$\Large p(\text{PosRes}) =$
+$p(\text{PosRes}) =$
 
 
 ## Bayes Theorem - Example
 
 **What is the probability that a person with a positive result actually has cancer?**
 
-$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+
+$p(\text{PosRes} \mid \text{Cancer}) = \text{sensitivity (true positive rate)}$
+
+$p(\text{Cancer}) =$
+
+$p(\text{PosRes}) =$
+
+## Bayes Theorem - Example
+
+**What is the probability that a person with a positive result actually has cancer?**
+
+$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+
+$p(\text{PosRes} \mid \text{Cancer}) = \text{sensitivity (true positive rate)}$
+
+$p(\text{Cancer}) = \text{prior on having cancer}$
+
+$p(\text{PosRes}) =$
+	
+
+## Bayes Theorem - Example
+
+**What is the probability that a person with a positive result actually has cancer?**
+
+$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
 
 $p(\text{PosRes} \mid \text{Cancer}) = \text{sensitivity (true positive rate)}$
 
@@ -220,10 +245,14 @@ $p(\text{PosRes}) = \text{???}$
 
 What about $p(\text{PosRes})$?
 
+We break down all positive results into 1) positive results if cancer
+and 2) positive results if no cancer.
+
 $\begin{aligned}
 p(\text{PosRes}) = \: &p(\text{Cancer}) \times p(\text{PosRes} \mid \text{Cancer}) \\
 &+ p(\text{noCancer}) \times p(\text{PosRes} \mid \text{noCancer})
 \end{aligned}$
+
 
 ## Bayes Theorem - Example
 
@@ -246,9 +275,9 @@ p(\text{PosRes}) = \: &p(\text{Cancer}) \times p(\text{PosRes} \mid \text{Cancer
 
 ## Bayes Theorem - Example {.build}
 
-- Using data collected in 1975, we know that the proportion of people that develop thyroid cancer is 0.0001.
+- Using data collected in 1975, we know that the proportion of people with cancer is 0.01.
 
-    + this gives us the **prior probability** of developing thyroid cancer
+    + this gives us the **prior probability** of developing cancer
 
 - The probability that a biopsy correctly identifies these people as having cancer is 90%.
 
@@ -259,76 +288,58 @@ p(\text{PosRes}) = \: &p(\text{Cancer}) \times p(\text{PosRes} \mid \text{Cancer
     + this gives the **false positive rate** of the biopsy test
 
 ## Bayes Theorem - Example
-```{r,echo=FALSE}
-pr.cancer <- 1/1e4
-pr.false.pos <- 1/1e3
-sensitivity <- 0.9
-```
 
 **What is the probability that a person with a positive result actually has cancer?**
 
-$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
 
-$\large p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
+$p(\text{PosRes} \; \mid \; \text{Cancer}) = 0.9$
 
-$\large p(\text{Cancer}) =$ `r pr.cancer`
+$p(\text{Cancer}) = 0.01$
 
-$\large p(\text{noCancer}) =$ `r 1 - pr.cancer`
+$p(\text{noCancer}) = 1 - 0.01 = 0.99$ 
 
-$p\large (\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
+$p(\text{PosRes} \mid \text{noCancer}) = 0.001$
 
-$\large p(\text{PosRes}) =$ `r pr.cancer` $\times$ `r sensitivity` $+$ `r 1-pr.cancer` $\times$ `r pr.false.pos`
+$\begin{aligned}
+p(\text{PosRes}) = \: &p(\text{Cancer}) \times p(\text{PosRes} \mid \text{Cancer}) \\
+&+ p(\text{noCancer}) \times p(\text{PosRes} \mid \text{noCancer})
+\end{aligned}$
 
 
 ## Bayes Theorem - Example
 
 **What is the probability that a person with a positive result actually has cancer?**
 
-$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
 
-$\large p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
+$p(\text{PosRes} \; \mid \; \text{Cancer}) = 0.9$
 
-$\large p(\text{Cancer}) =$ `r pr.cancer`
+$p(\text{Cancer}) = 10^{-4}$
 
-$\large p(\text{noCancer}) =$ `r 1 - pr.cancer`
+$p(\text{noCancer}) = 1 - 10^{-4} = 0.9999$ 
 
-$p\large (\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
+$p(\text{PosRes} \mid \text{noCancer}) = 0.001$
 
-$\large p(\text{PosRes}) =$ `r pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos`
+$p(\text{PosRes}) = 0.01 \times 0.9 + 0.99 \times 0.001 = 0.00999$ 
 
-
-## Bayes Theorem - Example
-
-**What is the probability that a person with a positive result actually has cancer?**
-
-$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{`r (sensitivity * pr.cancer)`}{`r (pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos)`}$
-
-$\large p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
-
-$\large p(\text{Cancer}) =$ `r pr.cancer`
-
-$\large p(\text{noCancer}) =$ `r 1 - pr.cancer`
-
-$p\large (\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
-
-$\large p(\text{PosRes}) =$ `r pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos`
 
 
 ## Bayes Theorem - Example
 
 **What is the probability that a person with a positive result actually has cancer?**
 
-$\large p(\text{Cancer} \; \mid \; \text{PosRes}) =$ `r (sensitivity * pr.cancer)/(pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos)`
+$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{9 \times 10^{-5}}{0.00109} = 0.09$
 
-$\large p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
+$p(\text{PosRes} \; \mid \; \text{Cancer}) = 0.9$
 
-$\large p(\text{Cancer}) =$ `r pr.cancer`
+$p(\text{Cancer}) = 0.001$
 
-$\large p(\text{noCancer}) =$ `r 1 - pr.cancer`
+$p(\text{noCancer}) = 1 - 10^{-4} = 0.9999$ 
 
-$p\large (\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
+$p(\text{PosRes} \mid \text{noCancer}) = 0.001$
 
-$\large p(\text{PosRes}) =$ `r pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos`
+$p(\text{PosRes}) = 0.01 \times 0.9 + 0.99 \times 0.001 = 0.00999$ 
 
 
 ## Bayes'd & Confused {.build}
@@ -343,23 +354,18 @@ Yes, but think about the numbers!
 
 ## Bayes'd & Confused {.build}
 
-```{r,include=FALSE}
-n.people <- 1e7
-```
+Out of 100,000 people: 
 
-Out of `r n.people` people: 
+ - there will be 1000 cancer victims
+ 
+	 + of whom 900 will be correctly diagnosed if everyone is tested.
 
- - there will be `r n.people * pr.cancer` cancer victims
+Of the remaining 99,000 healthy people:
  
-	 + of whom `r n.people * pr.cancer * sensitivity` will be correctly diagnosed.
+ - there will be approx 100 false positives.
+ 
+ So if there's a positive diagnosis, the probability that a person actually has cancer is $\frac{90}{90+100}$
 
-Of the remaining `r n.people * (1 - pr.cancer)` healthy people:
- 
- - there will be `r (n.people * (1 - pr.cancer)) * pr.false.pos` false positives.
- 
- So if there's a positive diagnosis, the probability that a person actually has cancer is 
-$\frac{`r n.people * pr.cancer * sensitivity` }{`r n.people * pr.cancer * sensitivity` + `r (n.people * (1 - pr.cancer)) * pr.false.pos`}$
-= `r n.people * pr.cancer * sensitivity/(n.people * pr.cancer * sensitivity + (n.people * (1 - pr.cancer)) * pr.false.pos)`
 
 ## Bayes Theorem - Goats and Doors {.build}
 
@@ -767,7 +773,7 @@ plot(p.seq,lnL2,ylim=c(-15,5),type='l',col=2,lwd=2,
 ## Bayes Takeaways {.build}
 
 <div class="centered">
-<span style="color:red">$\Huge{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$</span>
+<span style="color:red">$\Huge{p(H \; \mid \; D) = \frac{p(D \; \mid \; H) \; \times \; p(H)}{p(D)}}$</span>
 </div>
 
  - the _prior_ represents a belief based on previous information
