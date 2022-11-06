@@ -1,7 +1,7 @@
 ---
 title: "Lecture 20 - Intro to Bayesian Statistics"
 author: "Emily Josephs"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "November 10 2022"
 output:
   ioslides_presentation:
     transition: 0.001
@@ -19,147 +19,35 @@ output:
 
 1. Probability
 
-2. Random variables 
+2. Probability distributions
 
-3. Probability distributions
-
-4. Likelihood
-
-## Rules of probability: recap {.build}
-
-1. The probability of an **_outcome_** is the number of times the outcome occurs divided by the total number of trials.
-
-2. The probability of a **_complex event_** is the sum of the probabilities of its constitutive events.
-
-3. The probability of a **_shared event_** is the product of the probabilities of its constitutive events, so long as they're independent.
-
-4. The sum of the probabilities of **_all possible outcomes_** of an event is equal to 1.
-
-5. A **_conditional probability_** is probability of one outcome _conditional_ on another, 
-and is equal to the probability of the intersection of the outcomes, 
-divided by the probability of the condition
+3. Likelihood
 
 
-## Intro to random variables: recap
+## Quick Recap
 
-1. The outcome of a random process is called a **_random variable_**
+1. Probability: Figuring out how likely it is that an event (or many events, combinations of events) will happen.
 
-2. To calculate the probability of any given value of the random variable:
-	+ we can either define the state space and count or
-	+ we can figure out the probability distribution function
+2. Probability distributions
 
-3. A **_probability distribution function_** is a rule or formula 
-that describes the probability of all possible outcomes of a random event
+3. Likelihood
 
+## Quick Recap
 
-## Probability Distributions: recap {.build}
+1. Probability: Figuring out how likely it is that an event (or many events, combinations of events) will happen.
 
-1. A probability distribution gives the probabilities of 
-the outcomes of some stochastic process
+2. Probability distributions: Calculating the probability of event(s) based on specific parameters.
 
-2. Many natural processes are well described by some 
-commonly used distributions, which can be categorized 
-as discrete or continuous
+3. Likelihood
 
-3. Given the parameters of the distribution, we can 
-calculate the probability of each outcome of a process
+## Quick Recap
 
-4. For a continuous distribution, this is actually the 
-_relative_ probability
+1. Probability: Figuring out how likely it is that an event (or many events, combinations of events) will happen.
 
-## Likelihood {.build}
+2. Probability distributions: Calculating the probability of event(s) based on specific parameters.
 
-In parametric inference, 
-we treat observed data as draws from 
-an underlying process or **_population_**, 
-and we try to learn about that population from our sample.
+3. Likelihood: Given a set of events, what are the most likely parameters?
 
-E.g., if we observe 46 heads out of 100 flips: 
-
-probability says: given that the coin is fair, what's the probability of getting 46 heads out of 100 flips?
-
-statistics says: given 46 heads out of 100 flips, can we figure out the probability that this coin comes up heads?
-
-In formulating the problem this way, 
-we are treating the observed data ($k=46$) as a _known_, 
-and treating $p$ as an unknown **_parameter_** of the model.
-
-
-## Log Likelihood
-
-```{r,echo=FALSE}
-heads <- rbinom(10,size=100,prob=0.5)
-probs <- seq(0,1,length.out=50)
-likelihood <- unlist(lapply(probs,function(p){prod(dbinom(heads,100,p))}))
-log.likelihood <- unlist(lapply(probs,function(p){sum(dbinom(heads,100,p,log=TRUE))}))
-
-par(mfrow=c(1,2))
-	plot(probs,likelihood,main="likelihood",pch=20,xlab="p(heads)",ylab="likelihood")
-	plot(probs,log.likelihood,main="log likelihood",pch=20,xlab="p(heads)",ylab="log likelihood")
-```
-
-## Likelihood and number of observations {.build}
-
-What do you think will happen to the likelihood as 
-we increase the number of observations?
-
-```{r}
-n.heads <- rbinom(n=1e4,size=100,prob=0.7)
-probs <- seq(0.001,0.999,length.out=50)
-```
-
-```{r,echo=FALSE}
-lnL1 <- sapply(probs,function(p){
-			sum(dbinom(n.heads[1:100],100,p,log=TRUE))})
-
-lnL2 <- sapply(probs,function(p){
-			sum(dbinom(n.heads[1:1000],100,p,log=TRUE))})
-
-lnL3 <- sapply(probs,function(p){
-			sum(dbinom(n.heads[1:10000],100,p,log=TRUE))})
-```
-
-## Likelihood and number of observations
-
-```{r,echo=FALSE,fig.width=7,fig.height=5.5}
-plot(probs,lnL1,ylab="log likelihood",ylim=c(-2e5,5e4),type='n')
-	abline(v=0.7,col=1,lty=2)
-legend(x="topleft",lty=1,lwd=3,
-		col=c("blue","purple","red"),
-		legend=c("n=1e2","n=1e3","n=1e4"))
-```
-
-## Likelihood and number of observations
-
-```{r,echo=FALSE,fig.width=7,fig.height=5.5}
-plot(probs,lnL1,ylab="log likelihood",ylim=c(-2e5,5e4),type='n')
-	abline(v=0.7,col=1,lty=2)
-	lines(probs,lnL1,col="blue")
-	lines(probs,lnL2,col="purple")
-	lines(probs,lnL3,col="red")
-legend(x="topleft",lty=1,lwd=3,
-		col=c("blue","purple","red"),
-		legend=c("n=1e2","n=1e3","n=1e4"))
-```
-
-## Likelihood recap {.build}
-
-We can calculate the likelihood of observed data given values of the parameters of a distribution
-
-**_Maximum likelihood (ML) inference_** is a method for estimating the values 
-of the parameters of a statistical model that maximize the likelihood 
-of the observed data.
-
-The **_maximum likelihood estimate_** (MLE) is the parameter value
-(or, if there are multiple parameters, the vector of parameter values) 
-that maximize the likelihood of the data.
-
-When we have multiple observations, we calculate their likelihood as the 
-product of their individual likelihoods, or (better) the sum of their **_log likelihoods_**.
-
-The more observations we have, 
-the more confident we are in our parameter estimates 
-(the "peakier" our likelihood surface becomes).
 
 ## Bird's-eye view {.build}
 
@@ -278,15 +166,6 @@ $p(\theta)$ is the _prior probability_ of $\theta$
 
 $p(D)$ is the _marginal likelihood_ or _model evidence_ of D
 
-## Bayes Theorem {.build}
-
-<div class="centered">
-$\Huge{p(\theta \mid D) = \frac{P(D \  \mid \ \theta) \times P(\theta)}{P(D)}}$
-</div>
-
-Allows us to assess the probability of a hypothesis given some data, 
-rather than the other way around ( $p(D \; \mid \; \theta)$ ), 
-as in frequentist statistics.
 
 ## Bayes Theorem - Example {.build}
 
