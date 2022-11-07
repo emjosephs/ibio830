@@ -17,11 +17,21 @@ output:
 	set.seed(123)
 ```
 
+## GO VOTE
+
+Seriously, if you can, please log out and go vote.
+
+https://mvic.sos.state.mi.us/
+
+
+
 ## Today:
  * Law of large numbers
  * Introduction to likelihood
 
 ## The Law of Large Numbers {.build}
+
+$X \sim B(n=100, p=0.3)$
 
 ```{r,echo=FALSE}
 par(mfrow=c(1,2))
@@ -35,9 +45,6 @@ par(mfrow=c(1,2))
 			abline(v=100*0.3,col="green",lwd=2)
 		legend(x="topright",lty=1,col=c("red","green"),legend=c("sample mean","expectation"),cex=0.7)
 ```
-
-These data are drawn from the same distribution, \
-so what's the deal?
 
 ## The Law of Large Numbers {.build}
 
@@ -276,7 +283,6 @@ dbinom(x=46, p=0.5, size=100)
 
 ## Calculating likelihood for 2 values of p
 ```{r,echo=T}
-	# calculate likelihood of the data if p = 0.1
 	p <- c(0.1,0.5)
 	plot(p,dbinom(x=n.heads,size=100,p=p), xlim=c(0,1),ylim=c(0,0.1),, xlab="probability of heads (p)",ylab="p(data)", pch=20,col=2)
 ```
@@ -439,10 +445,12 @@ plot(p,likelihoods,xlab="p(heads)",ylab="p(data)")
 ## Using optimize to find the MLE {.build}
 
 ```{r,echo=T}
+# function to estimate the p(k=46|n=100,p) for a given p
 	l.binom <- function(p){
 		binom.prob <- dbinom(x=46,size=100,prob=p)
 		return(binom.prob)
 	}
+# use optimize() to get the mle
 	mle <- optimize(f = l.binom,lower=0,upper=1,maximum=TRUE)
 	mle
 ```
@@ -462,13 +470,6 @@ But, that's not really what we're doing -
 
 We're calculating the probability of the observed data as a draw from some distribution,
 **_given_** the values of the parameters of that distribution
-
-<div class="centered">
-$\huge X \sim f(\theta)$
-\
-\
-$\huge p(X \; \mid \; \theta)$
-</div>
 
 ## Maximum Likelihood - not bananas*
 
@@ -531,7 +532,7 @@ B - prod(dbinom(x=c(46,47,48), size=100, prob=0.5)) \
 C - dbinom(46, size=100, prob=0.5) \
 D - prod(dnorm(c(46,47,48), mean=50, sd=1)) \
 
-## CMultiple observations
+## Multiple observations
 
 $p(X={46,47,48}) = p(X=46) \times p(X=47) \times p(X=48)$
 
@@ -567,7 +568,7 @@ prod(dbinom(x=myObservations,size=100,prob=0.5))
 
 ## Multiple observations {.build}
 
-What about 50 observations? What might go wrong here?
+What about 50 observations?
 
 ```{r}
 myObservations = rbinom(50,size=100,prob=0.5)
@@ -599,27 +600,37 @@ Very very very small numbers cannot be represented in your computer's memory.
 ## Logs!
 
 Recall that:
-<div class="centered">
-$$ \large \text{log}(A \times B \times C) = \text{log}(A) + \text{log}(B) + \text{log}(C)$$
-</div>
 
-\
+$$\text{log}(A \times B \times C) = \text{log}(A) + \text{log}(B) + \text{log}(C)$$
 \
 and more generally:
 
-<div class="centered">
-$\Large \text{log}\left(\prod\limits_{i=1}^n X_i \right) = \sum\limits_{i=1}^n \text{log}(X_i)$
-</div>
+$\text{log}\left(\prod\limits_{i=1}^n X_i \right) = \sum\limits_{i=1}^n \text{log}(X_i)$
+
+## Logs!
+
+The log is *monotonic*.
+
+If $X > Y$ then $\text{log}(X) > \text{log}(Y)$
+
+```{r, echo=F}
+plot((1:100)/100, log((1:100)/100), bty="n", xlab = "X", ylab = "log(X)")
+```
 
 ## Log Likelihood
 
 ```{r,echo=T}
+#simulate data
 heads <- rbinom(10,size=100,prob=0.5)
+
+#grid search input
 probs <- seq(0,1,length.out=50)
 
+#calculate likelihood across the grid
 likelihood <- sapply(probs,function(p)
   {prod(dbinom(heads,100,p))})
 
+#calculate log likelihood across the grid
 log.likelihood <- sapply(probs,function(p)
   {sum(dbinom(heads,100,p,log=TRUE))})
 ```

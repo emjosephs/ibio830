@@ -411,19 +411,29 @@ There are 3 doors. One hides $1,000,000, and there are goats behind the other tw
 		plot.monty.hall(switch.results)
 ```
 
+## What's going on?? {.build}
+Let's use Bayes theorem to figure it out.\
+
+Say I pick Door 1 and Monty opens Door 3.\
+
+H1: Door 1 has money \
+H2: Door 2 has money \
+H3: Door 3 has money \
+D3 = Door 3 opened after picking Door 1
+
+We want to compare $p(H1 \mid D3)$ with $p(H2 \mid D3)$ to decide whether to switch or stay.
+
+
 ## Goats & Doors, with Bayes {.build}
 
-$\Large{p(H \; \mid \; D) = \frac{p(D \; \mid \; H) \; \times \; p(H)}{p(D)}}$
+$p(H1 \mid D3) = \frac{p(D3 \; \mid \; H1) \; \times \; p(H1)}{p(D3)}$ 
 
-Say I pick Door 1 and Monty opens Door 3.
-
-H1: Door 1 = $ \
-H2: Door 2 = $ \
-H3: Door 3 = $ \
-D3 = Door 3 opened
+$p(H2 \mid D3) = \frac{p(D3 \; \mid \; H2) \; \times \; p(H2)}{p(D3)}$ \
 
 $p(D3 \; \mid \; H1) = \frac{1}{2}$ \
+
 $p(H1) = \frac{1}{3}$ \
+
 $p(D3) =$ ?
 
 ## Goats & Doors, with Bayes {.build}
@@ -432,7 +442,9 @@ $\phantom{p(D3) = \;}p(H2) \times p(D3 \mid H2) \; +$ \
 $\phantom{p(D3) = \;}p(H3) \times p(D3 \mid H3)$
 
 $p(D3 \mid H1) = \frac{1}{2}$ \
+
 $p(D3 \mid H2) = 1$ \
+
 $p(D3 \mid H3) = 0$ \
 
 $p(H1) = p(H2) = p(H3) = \frac{1}{3}$

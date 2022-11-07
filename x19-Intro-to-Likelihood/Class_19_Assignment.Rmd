@@ -8,7 +8,7 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_19_Assignment.Rmd") -->
 
-#### Due by midnight before the beginning of next class (11/10)
+#### Due by midnight before the beginning of next class on 11/10
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment19.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -44,11 +44,13 @@ Everything from class used the binomial distribution, so let's try using the Poi
 \
 \
 
-a) If $X \sim \text{Pois}(\lambda)$, calculate $P(2 | \lambda=4)$
+a) If $X \sim \text{Pois}(\lambda)$, calculate $P(X=2 | \lambda=4)$
 \
 \
-
-b) You make 2 draws from the Poisson distribution and get 2 the first time, and 3 the second time. What is the probability of this outcome of $\lambda$ is 4?
+\
+\
+b) You make 2 draws from the Poisson distribution and get 2 the first time, and 3 the second time. What is the probability of this outcome f $\lambda = 4$?
+This is the same as asking you to calculate $P(X={2,3}| \lambda=4)$.
 \
 \
 \
@@ -58,13 +60,14 @@ c) What is the log-likelihood of the outcome from part b?
 \
 \
 \
+\
 
 ### Question 3
 
 Use maximum likelihood inference to estimate 
 the parameter values I used to simulate data from a Poisson distribution, 
 which are saved as a .Robj file in the Class 19 folder.
-You should refer to the lecture .Rmd file for helpful reference 
+You can refer to the lecture for helpful reference 
 code that you can cannibalize.
 Your answers from Question 2 will also be helpful.
 
