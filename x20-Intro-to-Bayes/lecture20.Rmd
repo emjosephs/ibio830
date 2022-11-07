@@ -166,20 +166,26 @@ $p(H)$ is the _prior probability_ of $H$
 
 $p(D)$ is the _marginal likelihood_ or _model evidence_ of D
 
-
 ## Bayes Theorem - Example {.build}
 
-- Using data collected in 1975, we know that the proportion of people that develop cancer is 0.01.
+```{r,echo=FALSE}
+pr.cancer <- 0.0001
+pr.false.pos <- 0.001
+sensitivity <- 0.9
+n.people <- 1e7
+```
 
-- If someone with cancer gets tested, there is a 90% chance the test will find it.
+- Using data collected in 1975, we know that the proportion of people that develop thyroid cancer is `r pr.cancer`.
 
-- The probability of a “false positive” where the test saying there was cancer when there wasn't is 0.001.
+- The probability that a biopsy correctly identifies these people as having cancer is `r sensitivity`.
+
+- The probability of a “false positive” (the test saying there was cancer when there wasn't) is `r pr.false.pos`.
 
 **What is the probability that a person with a positive result actually has cancer?**
 
 ## Bayes Theorem - Example {.build}
 
-$\large{p(H \mid D) = \frac{P(D \  \mid \ H) \times P(H)}{P(D)}}$
+${p(H \mid D) = \frac{P(D \  \mid \ H) \times P(H)}{P(D)}}$
 
 What's H, and what's D?
 
@@ -188,13 +194,10 @@ What's H, and what's D?
 \
 \
 
-$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
 
 
 ## Bayes Theorem - Example {.build}
-
-**What is the probability that a person with a positive result actually has cancer?**
-
 $p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
 
 $p(\text{PosRes} \; \mid \; \text{Cancer}) =$
@@ -205,166 +208,98 @@ $p(\text{PosRes}) =$
 
 
 ## Bayes Theorem - Example
-
-**What is the probability that a person with a positive result actually has cancer?**
-
 $p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
 
-$p(\text{PosRes} \mid \text{Cancer}) = \text{sensitivity (true positive rate)}$
+$p(\text{PosRes} \; \mid \; \text{Cancer}) =$ test sensitivity (`r sensitivity`)
 
-$p(\text{Cancer}) =$
+$p(\text{Cancer}) =$ cancer frequency (`r pr.cancer`)
 
-$p(\text{PosRes}) =$
-
-## Bayes Theorem - Example
-
-**What is the probability that a person with a positive result actually has cancer?**
-
-$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
-
-$p(\text{PosRes} \mid \text{Cancer}) = \text{sensitivity (true positive rate)}$
-
-$p(\text{Cancer}) = \text{prior on having cancer}$
-
-$p(\text{PosRes}) =$
-	
-
-## Bayes Theorem - Example
-
-**What is the probability that a person with a positive result actually has cancer?**
-
-$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
-
-$p(\text{PosRes} \mid \text{Cancer}) = \text{sensitivity (true positive rate)}$
-
-$p(\text{Cancer}) = \text{prior on having cancer}$
-
-$p(\text{PosRes}) = \text{???}$
+$p(\text{PosRes}) =$ ???
 	
 ## Bayes Theorem - Example {.build}
 
 What about $p(\text{PosRes})$?
 
-We break down all positive results into 1) positive results if cancer
-and 2) positive results if no cancer.
+We can break all positive results down into positive results where one has cancer, and positive results where one doesn't have cancer.
 
 $\begin{aligned}
 p(\text{PosRes}) = \: &p(\text{Cancer}) \times p(\text{PosRes} \mid \text{Cancer}) \\
 &+ p(\text{noCancer}) \times p(\text{PosRes} \mid \text{noCancer})
 \end{aligned}$
 
+$p(\text{PosRes}) =$ `r pr.cancer` $\times$ `r sensitivity` $+$ `r 1-pr.cancer` $\times$ `r pr.false.pos`
+
+$p(\text{PosRes}) =$ `r pr.cancer*sensitivity + (1-pr.cancer)*pr.false.pos`
 
 ## Bayes Theorem - Example
-
-**What is the probability that a person with a positive result actually has cancer?**
-
-$\large p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
-
-$p(\text{PosRes} \; \mid \; \text{Cancer}) = \text{sensitivity (true positive rate)}$
-
-$p(\text{Cancer}) = \text{prior on having cancer}$
-
-$p(\text{noCancer}) =$
-
-$p(\text{PosRes} \mid \text{noCancer}) =$
-
-$\begin{aligned}
-p(\text{PosRes}) = \: &p(\text{Cancer}) \times p(\text{PosRes} \mid \text{Cancer}) \\
-&+ p(\text{noCancer}) \times p(\text{PosRes} \mid \text{noCancer})
-\end{aligned}$
-
-## Bayes Theorem - Example {.build}
-
-- Using data collected in 1975, we know that the proportion of people with cancer is 0.01.
-
-    + this gives us the **prior probability** of developing cancer
-
-- The probability that a biopsy correctly identifies these people as having cancer is 90%.
-
-    + this gives the **sensitivity** of the biopsy test
-
-- The probability that the test says there is cancer when there isn't is 0.001.
-
-    + this gives the **false positive rate** of the biopsy test
-
-## Bayes Theorem - Example
-
-**What is the probability that a person with a positive result actually has cancer?**
 
 $p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
 
-$p(\text{PosRes} \; \mid \; \text{Cancer}) = 0.9$
+$p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
 
-$p(\text{Cancer}) = 0.01$
+$p(\text{Cancer}) =$ `r pr.cancer`
 
-$p(\text{noCancer}) = 1 - 0.01 = 0.99$ 
+$p(\text{noCancer}) =$ `r 1 - pr.cancer`
 
-$p(\text{PosRes} \mid \text{noCancer}) = 0.001$
+$p(\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
 
-$\begin{aligned}
-p(\text{PosRes}) = \: &p(\text{Cancer}) \times p(\text{PosRes} \mid \text{Cancer}) \\
-&+ p(\text{noCancer}) \times p(\text{PosRes} \mid \text{noCancer})
-\end{aligned}$
+$p(\text{PosRes}) =$ `r pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos`
 
 
 ## Bayes Theorem - Example
 
-**What is the probability that a person with a positive result actually has cancer?**
+$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{`r (sensitivity * pr.cancer)`}{`r (pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos)`}$
 
-$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+$p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
 
-$p(\text{PosRes} \; \mid \; \text{Cancer}) = 0.9$
+$p(\text{Cancer}) =$ `r pr.cancer`
 
-$p(\text{Cancer}) = 10^{-4}$
+$p(\text{noCancer}) =$ `r 1 - pr.cancer`
 
-$p(\text{noCancer}) = 1 - 10^{-4} = 0.9999$ 
+$p(\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
 
-$p(\text{PosRes} \mid \text{noCancer}) = 0.001$
-
-$p(\text{PosRes}) = 0.01 \times 0.9 + 0.99 \times 0.001 = 0.00999$ 
-
-
+$p(\text{PosRes}) =$ `r pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos`
 
 ## Bayes Theorem - Example
+$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{`r (sensitivity * pr.cancer)`}{`r (pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos)`}$ = `r (sensitivity*pr.cancer)/(pr.cancer*sensitivity + (1-pr.cancer)*pr.false.pos)`
 
-**What is the probability that a person with a positive result actually has cancer?**
+$p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
 
-$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{9 \times 10^{-5}}{0.00109} = 0.09$
+$p(\text{Cancer}) =$ `r pr.cancer`
 
-$p(\text{PosRes} \; \mid \; \text{Cancer}) = 0.9$
+$p(\text{noCancer}) =$ `r 1 - pr.cancer`
 
-$p(\text{Cancer}) = 0.001$
+$p(\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
 
-$p(\text{noCancer}) = 1 - 10^{-4} = 0.9999$ 
-
-$p(\text{PosRes} \mid \text{noCancer}) = 0.001$
-
-$p(\text{PosRes}) = 0.01 \times 0.9 + 0.99 \times 0.001 = 0.00999$ 
+$p(\text{PosRes}) =$ `r pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos`
 
 
 ## Bayes'd & Confused {.build}
 
 What's going on here?
 
-We know the false positive rate is only 1/1000, 
+We know the false positive rate is only `r pr.false.pos`, 
 so if a person gets a "positive" diagnosis, 
-shouldn't there be a 99.9% that they have cancer?
+shouldn't there be a `r 1 - pr.false.pos` that they have cancer?
 
 Yes, but think about the numbers!
 
 ## Bayes'd & Confused {.build}
 
-Out of 100,000 people: 
+Out of `r n.people` people: 
 
- - there will be 1000 cancer victims
+ - there will be `r n.people * pr.cancer` cancer victims
  
-	 + of whom 900 will be correctly diagnosed if everyone is tested.
+	 + of whom `r n.people * pr.cancer * sensitivity` will be correctly diagnosed.
 
-Of the remaining 99,000 healthy people:
+Of the remaining `r n.people * (1 - pr.cancer)` healthy people:
  
- - there will be approx 100 false positives.
+ - there will be `r (n.people * (1 - pr.cancer)) * pr.false.pos` false positives.
  
- So if there's a positive diagnosis, the probability that a person actually has cancer is $\frac{90}{90+100}$
+ So if there's a positive diagnosis, the probability that a person actually has cancer is 
+$\frac{`r n.people * pr.cancer * sensitivity` }{`r n.people * pr.cancer * sensitivity` + `r (n.people * (1 - pr.cancer)) * pr.false.pos`}$
+= `r n.people * pr.cancer * sensitivity/(n.people * pr.cancer * sensitivity + (n.people * (1 - pr.cancer)) * pr.false.pos)`
+
 
 
 ## Bayes Theorem - Goats and Doors {.build}
