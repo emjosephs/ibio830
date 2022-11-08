@@ -78,7 +78,7 @@ Your answers from Question 2 will also be helpful.
 
 I've included pseudocode below to help you on your journey, but you don't need to use it.
 
-```{r, eval=F}
+```{r, eval=T}
 ################
 #	load in simulated dataset 
 #	hint: see the function load()
@@ -113,12 +113,13 @@ myLogLikeF = function(l){sum(sapply(poisson.data, function(x){dpois(x, lambda=l,
 # run your function on all the lambdas in your set
 myLogLikes <- sapply(lambdas, myLogLikeF)
 
-myMLE <- p[which.max(myLogLikes)]
+# ML estimate for lambda is:
+myMLE <- lambdas[which.max(myLogLikes)]
+myMLE
 
 ## plot your data to see if it looks right
 plot(lambdas,myLogLikes, xlab = "lambda",bty="n", ylab = "log likelihood")
-abline(v = myMLE, col="red", btw=2)
+abline(v = myMLE, col="red", lwd=2)
 
-# ML estimate for lambda is:
-myMLE
+
 ```
