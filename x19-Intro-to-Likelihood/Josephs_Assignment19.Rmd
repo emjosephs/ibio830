@@ -85,7 +85,7 @@ I've included pseudocode below to help you on your journey, but you don't need t
 #		don't forget to specify full file paths and use quotes
 ################
 
-setwd('~/Documents/ibio830/x19-Intro-to-Likelihood/')
+setwd('~/Documents/ibio830/x19-Intro-to-Likelihood/') ## replace this with your own directory
 load('poisson_data.Robj')
 
 ################
