@@ -2,14 +2,13 @@
 title: "Intro to Bayes: Assignment"
 output:
   html_document: default
-  pdf_document: default
 language: R
 ---
 
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_20_Assignment.Rmd") -->
 
-#### Due by the beginning of next class (11/16)
+#### Due by the beginning of next class (11/15)
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment20.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -34,7 +33,7 @@ It is due before our next class.
 
 ### Question 1
 
-1. Write down Bayes' Theorem using $D$ to denote "data" and $\theta$ to denote "the hypothesis"
+1. Write down Bayes' Theorem using $D$ to denote "data" and $H$ to denote "the hypothesis"
 
 
 
@@ -48,24 +47,21 @@ It is due before our next class.
 
 ### Question 2
 
-If you know a child younger than 5 (or a parent of a child younger than 5), 
-chances are you've heard of RSV (respiratory syncytial virus), 
+RSV (respiratory syncytial virus) is
 a flu-like illness that infects virtually all children in their 
-first few years of life. Although RSV prevalence usually peaks in the winter 
-months in the Northern Hemisphere, this year has seen an unusual 
-wave in the late summer/early fall season.
+first few years of life. 
 
 To detect RSV, healthcare providers generally administer antigen tests, 
 which are cheaper and faster (although generally less accurate) than PCR-based tests.
 The most commonly used RSV antigen test has a 91.7% sensitivity and a 98.9% specificity. 
-Let's say my younger kid (Abe) shows some symptoms of RSV, so we get him
+A child shows some symptoms of RSV, so we get him
 an antigen test, which comes back positive. 
-Given that result, what is the probability Abe is actually infected with RSV?
+Given that result, what is the probability the child is actually infected with RSV?
 
 In your calculations, assume the following:\
 
 -There are ~7,000 kids under the age of 2 in Ingham County\
--Abe can be treated as a random draw from the <2yos of Ingham County\
+-The child can be treated as a random draw from the <2yos of Ingham County\
 -over the last 10 days, the average per-day number of new detected cases of active RSV infection in Ingham County is 5\
 -someone infected with RSV is infectious for 7 days\
 -only 1 out of every 3 RSV infections is detected and reported.\
@@ -76,7 +72,7 @@ In your calculations, assume the following:\
 ### Question 3
 
 3a) Building on the results from Question 2, 
-write an R function that explores how the probability Abe is actually infected with RSV 
+write an R function that explores how the probability the child is actually infected with RSV 
 given a positive result from an antigen test 
 is dependent on the number of infected toddlers in Ingham County.
 The function should take as its arguments: \

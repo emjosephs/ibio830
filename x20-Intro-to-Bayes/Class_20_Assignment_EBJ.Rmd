@@ -2,14 +2,13 @@
 title: "Intro to Bayes: Assignment"
 output:
   html_document: default
-  pdf_document: default
 language: R
 ---
 
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_20_Assignment.Rmd") -->
 
-#### Due by the beginning of next class (11/16)
+#### Due by the beginning of next class (11/15)
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment20.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -34,9 +33,9 @@ It is due before our next class.
 
 ### Question 1
 
-1. Write down Bayes' Theorem using $D$ to denote "data" and $\theta$ to denote "the hypothesis"
+1. Write down Bayes' Theorem using $D$ to denote "data" and $H$ to denote "the hypothesis"
 
-$\Large p(\theta \mid D) = \frac{p(D \mid \theta)p(\theta)}{p(D)}$
+$\Large p(H \mid D) = \frac{p(D \mid H)p(H)}{p(D)}$
 
 2. Label the different components using the following list of concepts:
 	- the posterior probability of the hypothesis
@@ -44,60 +43,73 @@ $\Large p(\theta \mid D) = \frac{p(D \mid \theta)p(\theta)}{p(D)}$
 	- the prior probability of the hypothesis
 	- the likelihood of the data given the hypothesis
 
+$p(H \mid D)$ is the posterior probability of the hypothesis 
 
-$\Large \text{posterior prob of the hypothesis} = \frac{\text{the likelihood of the data given the hypothesis} \times \text{the prior probability of the hypothesis}}{\text{the marginal likelihood of the data}}$
+$p(D \mid H)$ is the likelihood of the data given the hypothesis
+
+$p(H)$ is the prior probability of the hypothesis
+
+$p(D)$ is the marginal likelihood of the data
 
 ### Question 2
 
-If you know a child younger than 5 (or a parent of a child younger than 5), 
-chances are you've heard of RSV (respiratory syncytial virus), 
+RSV (respiratory syncytial virus) is
 a flu-like illness that infects virtually all children in their 
 first few years of life. 
 
 To detect RSV, healthcare providers generally administer antigen tests, 
 which are cheaper and faster (although generally less accurate) than PCR-based tests.
 The most commonly used RSV antigen test has a 91.7% sensitivity and a 98.9% specificity. 
-Let's say my kid (Ilana) shows some symptoms of RSV, so we get her
+A child shows some symptoms of RSV, so we get him
 an antigen test, which comes back positive. 
-Given that result, what is the probability Ilana is actually infected with RSV?
+Given that result, what is the probability the child is actually infected with RSV?
 
 In your calculations, assume the following:\
 
 -There are ~7,000 kids under the age of 2 in Ingham County\
--Ilana can be treated as a random draw from the <2yos of Ingham County\
+-The child can be treated as a random draw from the <2yos of Ingham County\
 -over the last 10 days, the average per-day number of new detected cases of active RSV infection in Ingham County is 5\
 -someone infected with RSV is infectious for 7 days\
 -only 1 out of every 3 RSV infections is detected and reported.\
+\
 
-Answer\
-Prior probability of the hypothesis = proportion of kids with RSV in Ingham county\
+**Answer**\
+We want to determine p(RSV | positive test).
+
+p(RSV) = proportion of kids with RSV in Ingham county\
 = Number of cases / number of kids\
+= Number of detected cases x time a case is infections x number of cases per detected case
 ```{r}
-myPrior = (5*7*3)/7000
-myPrior
+pRSV = (5*7*3)/7000
+pRSV
 ```
 
-Likelihood of the data given the hypothesis = likelihood of getting a positive test given RSV = .917
+p(positive test | RSV) = likelihood of getting a positive test given RSV = .917
+```{r}
+pPosRSV = 0.917
+```
 
-Marginal likelihood of the data = p(positive result)
-= p(positive result | has RSV) x p(has RSV) + p(positive result | does not have RSV) x p(does not have RSV)
+p(Positive result) =
+p(positive result | RSV) x p(RSV) + p(positive result | no RSV) x p(no RSV)
 = 0.917 x 0.015 +  (1-0.989) x (1-0.015)
 ```{r}
-myMarginal = 0.917*myPrior + (1-0.989)*(1-myPrior)
-myMarginal
+pPos = 0.917*pRSV + (1-0.989)*(1-pRSV)
+pPos
 ```
 
-Posterior probability = Likelihood of the data x Prior probability of the hypothesis / marginal likelihood of the data
+p(RSV | positive test) = [p(positive test | RSV) x p(RSV)]/p(positive test)
+
 ```{r}
-myPosterior = (0.917 * myPrior)/myMarginal
-myPosterior
+pRSV.Pos = (pPosRSV * pRSV)/pPos
+pRSV.Pos
 ```
 
+So there is a `r pRSV.Pos` chance that the child with a positive test actually has RSV.
 
 ### Question 3
 
 3a) Building on the results from Question 2, 
-write an R function that explores how the probability Ilana is actually infected with RSV 
+write an R function that explores how the probability the child is actually infected with RSV 
 given a positive result from an antigen test 
 is dependent on the number of infected toddlers in Ingham County.
 The function should take as its arguments: \
@@ -109,9 +121,9 @@ and it should return the probability a given toddler is infected with RSV given 
 
 
 ```{r}
-posteriorFunction <- function(myPrior, mySensitivity, mySpecificity){
+rsvFunction <- function(myPrior, mySensitivity, mySpecificity){
   myMarginal = mySensitivity*myPrior + (1-mySpecificity)*(1-myPrior)#get the marginal likelihood of the data
-  myPosterior =  (mySensitivity * myPrior)/myMarginal
+  myPosterior =  (mySensitivity * myPrior)/myMarginal #run Baye's theorem
   return(myPosterior)
 }
 
@@ -123,8 +135,16 @@ the probability of a given toddler actually being infected given a positive anti
 ```{r}
 mySensitivity = 0.917
 mySpecificity = 0.989
+RSVgrid = seq(0,0.5, length=100)
 
-plot(seq(0,0.5, by = 0.01), posteriorFunction(seq(0,0.5, by = 0.01), mySensitivity, mySpecificity))
+#calculate the posterior probability for a grid of background infection rates
+myRSVs = rsvFunction(RSVgrid, mySensitivity, mySpecificity)
+
+plot(RSVgrid, myRSVs, bty='n', ylab = "p(RSV | pos)", xlab = "background RSV level")
 abline(h=0.9)
+
+#figure out the smallest value that is above .9
+RSVgrid[min(which(myRSVs > 0.9))]
+
 
 ```
