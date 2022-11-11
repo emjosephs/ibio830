@@ -1,7 +1,7 @@
 ---
 title: "Lecture 22 - Intro to MCMC"
-author: "Gideon Bradburd"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "Emily Josephs"
+date: "November 15, 2022"
 output:
   ioslides_presentation:
     transition: 0
@@ -16,43 +16,15 @@ output:
 	options(digits=5)
 ```
 
-## Last time on Bayes of our Lives {.build}
-
-1. So how do we do inference in a Bayesian world?
-
-2. And what happened to that denominator in Bayes' Theorem that you said was so difficult to calculate and then conveniently dropped from all calculations?
-
-## Bayes' Theorem
+## Bayes' Theorem {.build}
 Recall: 
 
-<div class="centered">
-<span style="color:red">$\Huge{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$</span>
-</div>
 
-$p(\theta \; \mid \; D)$ is the _posterior probability_ (p(model given the data))
+$\large{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$
 
 $p(D \; \mid \; \theta)$ is the _likelihood_ of the data given the model
 
-$p(\theta)$ is the _prior probability_ of the model
-
-$p(D)$ is the _marginal likelihood_ or _model evidence_ of the data
-
-## Bayes' Theorem
-Recall: 
-
-<div class="centered">
-$\Huge{p(\theta \; \mid \; D) = \frac{\boldsymbol{p(D \; \mid \; \theta)} \; \times \; p(\theta)}{p(D)}}$
-</div>
-
-<span style="color:lightgray">$p(\theta \; \mid \; D)$ is the _posterior probability_ (p(model given the data))</span>
-
-$p(D \; \mid \; \theta)$ is the _likelihood_ of the data given the model
-
-<span style="color:lightgray">$p(\theta)$ is the _prior probability_ of the model</span>
-
-<span style="color:lightgray">$p(D)$ is the _marginal likelihood_ or _model evidence_ of the data</span>
-
-## Maximum Likelihood recap {.build}
+## Maximum likelihood recap {.build}
 
 We can calculate the likelihood of observed data given values of the parameters of a distribution
 
@@ -63,6 +35,25 @@ of the observed data.
 The _maximum likelihood estimate_ (MLE) is the parameter value
 (or, if there are multiple parameters, the vector of parameter values) 
 that maximize the likelihood of the data.
+
+## Likelihood vs probability {.build}
+$X \sim \text{Pois}(2)$
+```{r, echo=TRUE, out.width="500px"}
+myprobs = rpois(n=1000, lambda=2)
+hist(myprobs, breaks=10, border="white", xlab = "X", main="")
+```
+
+Probability tells us the likelihood of all different outcomes based on known parameters.
+
+## Likelihood vs probability {.build}
+
+```{r, echo=TRUE, out.width="500px"}
+
+hist(myprobs, breaks=10, border="white", xlab = "X", main="")
+```
+
+Likelihood tells us about the probability of a known outcome at all parameters.
+
 
 ## Maximum Likelihood recap
 

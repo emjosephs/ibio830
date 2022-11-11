@@ -1,2 +1,12 @@
-MAKE THEM SAY WHETHER DISTN IS CONTINUOUS OR DISCRETE
-MAKE THEM SAY WHAT IT'S BOUNDED BETWEEN
+They did not learn what they needed to about distributions from this exercise. 
+
+Specific issues -- using R to manipulate distributions other than the binomial.
+
+One issue is maybe that in the group, only one person was working on the shiny app.
+
+Future ideas:
+Switch from shiny apps to google docs presentations with static figures 
+Make an assignment that requires them to use the R functions for a distribution beyond the binomial.
+
+
+

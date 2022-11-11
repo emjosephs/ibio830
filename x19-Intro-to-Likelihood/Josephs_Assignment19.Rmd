@@ -108,7 +108,14 @@ lambdas <- seq(0,8,length.out=1000)
 
 
 ## write a function to calculate the log-likelihood of the data for a given lambda
-myLogLikeF = function(l){sum(sapply(poisson.data, function(x){dpois(x, lambda=l, log=T)}))}
+myLogLikeF = function(l){sum(
+    sapply(
+        poisson.data, 
+        function(x){
+          dpois(x, lambda=l, log=T)
+          }))}
+
+myLogLikeF = function(l){sum(dpois(poisson.data, lambda=l, log=T))}
   
 # run your function on all the lambdas in your set
 myLogLikes <- sapply(lambdas, myLogLikeF)
