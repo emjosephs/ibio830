@@ -43,17 +43,23 @@ myprobs = rpois(n=1000, lambda=2)
 hist(myprobs, breaks=10, border="white", xlab = "X", main="")
 ```
 
-Probability tells us the likelihood of all different outcomes based on known parameters.
 
 ## Likelihood vs probability {.build}
+$P(X=2 \mid X \sim \text{Pois}(\lambda = 2))$
 
 ```{r, echo=TRUE, out.width="500px"}
 
-hist(myprobs, breaks=10, border="white", xlab = "X", main="")
+myLikelihoods = sapply(seq(1,8,length.out=100), function(l){
+  dpois(2, lambda=l, log=F)})
+plot(seq(1,8,length.out=100), myLikelihoods, xlab = "potential lambdas", ylab = "likelihood of drawing 2")
+
 ```
 
-Likelihood tells us about the probability of a known outcome at all parameters.
+## Likelihood vs probability {.build}
 
+Probability tells us the likelihood of all different outcomes based on known parameters.
+
+Likelihood tells us about the probability of a known outcome at all parameters.
 
 ## Maximum Likelihood recap
 
@@ -131,10 +137,7 @@ Bayesian inference:
  - for complicated problems, uses a Markov chain Monte Carlo 
    to characterize the posterior distribution
 
-## {.build}
-
-$\Huge{\text{Markov chain}}$\
-$\Huge{\text{Monte Carlo}}$
+## Markov chain Monte Carlo {.build}
 
  - I'm going to explain what the "MCMC" stands for...
 
@@ -144,10 +147,7 @@ $\Huge{\text{Monte Carlo}}$
  
  - Then come back to the terms, and hopefully all will be clear.
 
-## {.build}
-
-$\Huge{\text{Markov chain}}$\
-$\Huge{\text{Monte Carlo}}$
+## Markov chain Monte Carlo {.build}
 
 - A _Markov chain_ is a stochastic process that satisfies the _Markov property_, 
 	which means it is _memoryless_
