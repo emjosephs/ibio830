@@ -42,16 +42,16 @@ binom.mcmc <- function(n.iter,flips,n){
 	p.samples <- rep(NA,n.iter) #make an empty vector for the samples
 	p <- runif(1) #set the prior to be uniform
 	post <- ln.post(flips,n,p) #calculate the posterior
-	for(i in 1:n.iter){
-		p.prime <- p + rnorm(1,0,0.05)
-		post.prime <- -Inf
-		if(is.finite(ln.prior(p.prime))){
-			post.prime <- ln.post(flips,n,p.prime)
+	for(i in 1:n.iter){ #one step of the MCMC
+		p.prime <- p + rnorm(1,0,0.05) #calculate p'
+		post.prime <- -Inf 
+		if(is.finite(ln.prior(p.prime))){ #check to see if p' is finite
+			post.prime <- ln.post(flips,n,p.prime) # calculate the posterior for p'
 		}
-		if(exp(post.prime-post) > runif(1)){
-			p <- p.prime
+		if(exp(post.prime-post) > runif(1)){ #calc diff in posterior for p and p prime, is it better than the uniform?
+			p <- p.prime #if so, p' becomes p
 		}
-		p.samples[i] <- p
+		p.samples[i] <- p  #save p in psamples
 	}
 	return(p.samples)
 }

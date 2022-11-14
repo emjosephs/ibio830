@@ -42,7 +42,7 @@ It is due before our next class.
 Below is a chunk of R code that implements an MCMC algorithm 
 to estimate the rate parameter ($\lambda$) of a Poisson distribution. 
 This code is uncommented - please write a comment for each line 
-explaining what that line is doing.
+explaining what that line is doing. It may help to load in poisData.Robj from d2l and work through the code line by line to see what it's doing.
 
 ```{r}
 
@@ -52,14 +52,14 @@ calcPostProb <- function(poisData,lambda){
 	return(lnL + lnPrior)
 }
 
-mcmcPoisson <- function(poisData, nSteps){
-	lambdaSamples <- rep(NA,nSteps)
-	postProbSamples <- rep(NA,nSteps)
+mcmcPoisson <- function(poisData, n.iter){
+	lambdaSamples <- rep(NA,n.iter)
+	postProbSamples <- rep(NA,n.iter)
 	lambda <- abs(rnorm(1))
 	postProb <- calcPostProb(poisData,lambda)
 	lambdaSamples[1] <- lambda
 	postProbSamples[1] <- postProb
-	for(i in 1:nSteps){
+	for(i in 1:n.iter){
 		lambdaPrime <- lambda + rnorm(n=1,mean=0,sd=0.3)
 		if(lambdaPrime > 0){
 			postProbPrime <- calcPostProb(poisData,lambdaPrime)
@@ -83,9 +83,9 @@ mcmcPoisson <- function(poisData, nSteps){
 
 ### Question 3
 
-Use the code above to do inference on the rate parameter 
+Use the code above to do inference on the rate parameter (lambda)
 I used to simulate the Poisson-distributed data saved in the 
-.Robj file in the Class 22 homework folder on D2L.
+.Robj file in the Class 21 homework folder on D2L.
 
 Provide some visualizations of the results of your MCMC run.
 Use your imagination here - if you were a data scientist, 
