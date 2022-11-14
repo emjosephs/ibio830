@@ -2,14 +2,13 @@
 title: "Intro to MCMC: Assignment"
 output:
   html_document: default
-  pdf_document: default
 language: R
 ---
 
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_22_Assignment.Rmd") -->
 
-#### Due by the beginning of next class (11/23)
+#### Due by midnight before the beginning of next class (11/17)
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment22.Rmd”. 
 For each question, fill out the answer and, where requested, 

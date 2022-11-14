@@ -1,0 +1,68 @@
+---
+title: "Intro to MCMC: Breakout room"
+output:
+  html_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_22__Assignment_breakoutroom_exercise.Rmd") -->
+
+Here are the functions we defined in class for getting a prior, log-likelihood, and posterior. You'll want to run the code in this block to store the functions.
+
+```{r}
+# define a prior log probability function (we are coin novices)
+ln.prior <- function(p){
+	return(dunif(x=p, min=0, max=1, log=TRUE))
+}
+
+# define a log-likelihood function
+ln.L <- function(flips,n,p){
+	return(dbinom(x=flips, size=n, prob=p, log=TRUE))
+}
+
+# define a posterior probability function
+ln.post <- function(flips,n,p){
+	return(ln.L(flips,n,p) + ln.prior(p)) 
+  ##note that we can add because it's logs
+}
+```
+
+
+Below is a function to run an MCMC that takes the following inputs:
+n.iter = the number of iterations that you want your MCMC to run
+flips = the number of heads in n flips that you observe
+n = the number of flips
+
+The function returns all the samples from the posterior from the MCMC.
+
+```{r}
+
+binom.mcmc <- function(n.iter,flips,n){
+	p.samples <- rep(NA,n.iter) #make an empty vector for the samples
+	p <- runif(1) #set the prior to be uniform
+	post <- ln.post(flips,n,p) #calculate the posterior
+	for(i in 1:n.iter){
+		p.prime <- p + rnorm(1,0,0.05)
+		post.prime <- -Inf
+		if(is.finite(ln.prior(p.prime))){
+			post.prime <- ln.post(flips,n,p.prime)
+		}
+		if(exp(post.prime-post) > runif(1)){
+			p <- p.prime
+		}
+		p.samples[i] <- p
+	}
+	return(p.samples)
+}
+
+```
+
+You're given a new coin and you want to know if it's fair. You flip the coin 20 times and get heads 3 times. Use binom.mcmc to make an MCMC with 50 iterations to to estimate the posterior distribution of p(heads) for flipping a coin 20 times and getting heads 3 times. What is the mean value of p(heads) from your MCMC interations?
+\
+\
+
+Try it again with 500 iterations. Then with 1000 iterations.\
+\
+
+How many iterations do you need to get a good estimate of the probability of heads?

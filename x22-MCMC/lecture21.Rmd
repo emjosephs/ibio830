@@ -651,7 +651,7 @@ binom.mcmc <- function(n.iter,flips,n,ylim,viz=TRUE){
 	
 ## Breakout room exercise:
 
-Navigate to today's class in d2l and download Class_22_breakoutroom_excercise.Rmd
+Navigate to today's class in d2l and download Class_21_breakoutroom_exercise.Rmd
 
 Work through the exercise with your group!
 
