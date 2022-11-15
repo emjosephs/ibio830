@@ -58,7 +58,7 @@ binom.mcmc <- function(n.iter,flips,n){
 
 ```
 
-You're given a new coin and you want to know if it's fair. You flip the coin 20 times and get heads 3 times. Use binom.mcmc to make an MCMC with 50 iterations to to estimate the posterior distribution of p(heads) for flipping a coin 20 times and getting heads 3 times. What is the mean value of p(heads) from your MCMC interations?
+You're given a new coin and you want to know if it's fair. You flip the coin 20 times and get heads 3 times. Use binom.mcmc to make an MCMC with 50 iterations to to estimate the posterior distribution of p(heads) for flipping a coin 20 times and getting heads 3 times. What is the mean value of p(heads) from your MCMC iterations?
 \
 \
 

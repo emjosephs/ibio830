@@ -1,1 +1,8 @@
 connect functions (slide 37) to the pieces of Bayes theorem
+
+
+MAKE SURE THEY LEARN HOW DIRECTORIES WORK IN THE FIRST HALF
+AND HOW TO LOAD ROBJ FILES
+
+
+
