@@ -1,0 +1,1 @@
+connect functions (slide 37) to the pieces of Bayes theorem
