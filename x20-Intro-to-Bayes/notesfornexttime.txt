@@ -1,0 +1,2 @@
+homework question terminology (sensitivity, specificity) is unnecessarily confusing. Think about changing (or change question entirely? See McElreath on why this isn't a great example anyway)
+
