@@ -9,7 +9,7 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Review_Assignment.Rmd") -->
 
-#### Due by the beginning of next class (11/18)
+#### Due by the beginning of next class (11/29)
 
 Save this Rmarkdown script as a file named “YourlastName_ReviewAssignment.Rmd”. 
 For each question, fill out the answer and, where requested, 

@@ -9,7 +9,7 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Review_Assignment.Rmd") -->
 
-#### Due by the beginning of next class (11/18)
+#### Due by the beginning of next class (11/29)
 
 Save this Rmarkdown script as a file named “YourlastName_ReviewAssignment.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -24,13 +24,13 @@ It is due before our next class.
 
 **This homework assignment will test your abilities to:**
 
-1. think critically and creatively about probability, likelihood, probability distributions, and Bayesian statistics
+1. think critically and creatively about probability, likelihood, probability distributions, Bayesian statistics, and deterministic functions.
 
-2. use your R skillz: function building, data visualization, etc.
+2. use your R skills: function building, data visualization, etc.
 
 \
 
-### Question 1
+### Question 1 (Probability)
 
 You are at a county fair playing a game of chance. 
 The rules are: you roll two 6-sided dice then flip two coins.
@@ -39,7 +39,6 @@ a large stuffed teddy bear.
 
 1a. Assuming the dice and coins are fair, 
 what is the probability that you win the teddy bear?
-
 
 
 1b. Write a function that simulates this game, and use it to confirm 
@@ -57,57 +56,66 @@ pseudocode to help guide your function-writing.
 #		(hint: sample)
 
 # next, flip two coins
-#		(hint: rbinom)
+#		(hint: rbinom or sample)
 
 # use a logic statement to determine 
 #	whether the outcome is a win or a loss
 
-# call the function many times and determine  
+# return the outcome
+
+
+
+# Now, call the function many times and determine  
 #	the probability of winning from the 
 #	outcome of the simulations (number of times you won
 #	out of total number of simulations)
 
 ```
 
-1c. Suppose that the rules of the game have now changed 
-and you win the teddy bear if you roll a 7 OR if you flip 
-two heads (or if you do both).  Edit the function you wrote in part 1b to 
-simulate the probability of winning under this new game.
 
+### Question 2 (Maximum Likelihood)
 
-### Question 2
+I simulated data from a normal distribution and saved is as normData.Robj.
 
-Use maximum likelihood inference to estimate the parameter values 
-I used to simulate data from a Normal distribution, 
-which are saved as a .Robj file in the Review folder.
+Use maximum likelihood inference with a grid search to estimate the parameter values I used.
+
 Note that you will have to estimate BOTH the mean and the 
 standard deviation.
 
-```{r,cache=TRUE}
+I've given you the code to make the grid already, along with some pseudocode.
 
-# use mean(normData) and sd(normData)
-# to inform the parameter ranges within 
-# which you do your grid search
+```{r}
+load("normData.Robj") ##don't forget to use setwd() to go to the directory you saved the file in.
 
+## set ranges for the grids around the sample mean and standard deviation
+meanRange <- mean(normData) + c(-abs(mean(normData))/10,abs(mean(normData))/10)
+sdRange <- sd(normData) + c(-sd(normData)/10,sd(normData)/10)
 
-# use seq() to define the increments at which you'll 
-#	evaluate the likelihood of your data
+## make 100 grid entries within the range for each parameter
+nSteps = 1e2
+myMean = seq(meanRange[1], meanRange[2], length.out = 1e2)
+mySD = seq(sdRange[1], sdRange[2], length.out=1e2)
+
 
 # create an empty matrix in which to store the log-likelihood
 #	of the data for each parameter combination
+myMatrix = matrix(data=NA, nrow = nSteps, ncol=nSteps)
 
 
 # calculate the log likelihood of the data 
 #	given every possible parameter combination
+# fill these values into myMatrix
+# it might help to start by writing a function to calculate the log likelihood for a specific value of mean and sd
+# and then use a for loop or apply to use that function on all the inputs in the grid
 
-# look at it!
+# look at your log likelihoods across the grid with image()
 
 
 # report the MLEs
 
 ```
 
-### Question 3
+### Question 3 (Bayes Theorem)
 
 Suppose there are two full bowls of cookies. 
 Bowl #1 has 10 chocolate chip and 30 snickerdoodles, 
@@ -124,7 +132,7 @@ Cookiemonster picked it out of Bowl #1?
 
 
 
-3b. Write R code to simulate this problem to see 
+3b. Bonus optional question: Write R code to simulate this problem to see 
 if your answer from 3a was correct.
 
 
@@ -143,3 +151,18 @@ if your answer from 3a was correct.
 
 ```
 
+### Question 4 (Linear Models)
+
+Genome-wide association mapping studies often use a linear model to test for the association between genotype and phenotype.
+Specifically, if Y is phenotype and X is genotype, we model Y ~ b*X + a + sigma, where b is the genotypic effect, a is an intercept, and sigma is error.
+Genotypes for diploid individuals are coded as 0, 1, or 2.
+I've included data for genotypes at 2 loci and a phenotype (fruit count) for a population of Arabidopsis thaliana in the file "gwas-data.rda".
+
+4a) Load the data and plot a histogram of the phenotypes. Make a scatter plot for each locus that has genotype on the X axis and phenotype on the y axis.
+```{r}
+load('gwas-data.rda')
+
+```
+
+
+4b) Use lm() to separately estimate the effect of genotype at each locus and phenotype. Which locus do you think is more likely to affect phenotype? (hint, you can use summary() of the model output to get more information about the model)
