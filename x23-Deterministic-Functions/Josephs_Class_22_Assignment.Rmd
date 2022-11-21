@@ -1,0 +1,146 @@
+---
+title: "Model building: deterministic functions"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_23_Assignment.Rmd") -->
+
+#### Due by midnight before our next class
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment22.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment22.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about model building
+
+2. extrapolate from in-class exercises to simulate data and do inference with a linear model
+
+3. extrapolate from previous lecture materials to apply Bayes' Theorem to inference with a linear model
+
+4. hone your R skillz: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+Explain in your own words what each of the terms in the equation below is, 
+as well as what the equation as a whole is describing.
+
+$Y_i \sim \mathcal{N}(\mu_i=f(x_i),\sigma)$
+\
+$Y_{i}$ is the response variable for the ith individual/thing.
+\
+$\mu_{i}$ is the mean value of the response variable given the predictor variable for the ith individual/thing
+\
+$\sigma$ is the standard deviation of the normal distribution for each data point.
+
+The entire equation is telling us for each individual, the expected value of the response variable is a function of the predictor variable with normally distributed error.
+
+
+
+### Question 2
+
+1. Simulate a dataset of 1000 datapoints using a linear model 
+with Gaussian-distributed errors with the following parameter values:
+
+	- intercept = 12
+	- sigma = 10
+	- predictor effect size = -1.3
+
+You may generate values of the predictor variable however you wish.
+
+This is how Emily did the homework:
+```{r}
+
+#simulating predictors with the uniform distribution
+myPredictors = runif(1000, min=0, max=50)
+
+# making variables for each parameter
+myIntercept=12
+mySigma=10
+myBeta= -1.3
+
+#making a function to take a predictor and get a response out.
+myLinearSim <- function(i){
+  myMean = mean=myIntercept + i*myBeta ## get the mean based on a linear equation
+  responseI = rnorm(n=1, myMean, sd=mySigma) ## add in the normally distributed error to get a response
+  return(responseI)
+}
+myResponse = sapply(myPredictors, myLinearSim) ## get the responses that correspond with each predictor
+```
+
+
+Another (shorter + more elegant) way to answer this question:
+```{r}
+x <- seq(0,100,length.out=1000) #generate the predictors as a grid
+y <- rnorm(1e3,mean=-1.3*x+12,sd=10) #calculate the response variable all in one line!
+```
+
+### Question 3
+
+Use the function lm() to infer the parameter values used 
+to simulate these data.  Confirm your results by overlaying the 
+MLE parameter estimates on the real data (slope and intercept).
+
+```{r}
+
+myModel=lm(myResponse~myPredictors)
+summary(myModel)
+
+
+plot(myPredictors, myResponse, bty="n", col = "gray")
+abline(myModel, col = "magenta", lwd=2)
+abline(a=myIntercept, b=myBeta, col = "darkgreen", lwd=2)
+legend('topright', c('real data','mle estimates'), bty="n", col=c('darkgreen',"magenta"), lwd=2)
+```
+
+### Question 4
+
+Calculate the numerator of Bayes' Theorem 
+for the dataset you simulated in Question 1 
+assuming the following:
+
+* intercept ($\alpha$) = 13
+* effect size ($\beta$) = -1
+* standard deviation ($\sigma$) = 11
+* $\alpha \sim \mathcal{N}(0,1)$
+* $\beta \sim \mathcal{N}(0,1)$
+* $\sigma \sim \text{Exp}(1)$
+
+[hint: don't forget about the log product rule]
+
+
+
+```{r}
+
+## we want P(D|theta) x P(theta) = P(D|Alpha, Beta, Sigma) x p(Alpha, beta, sigma)
+      
+myIntercept=13
+myBeta = -1
+mySigma = 11
+
+## this is the first part P(D|Alpha, Beta, Sigma)
+firstPart =  sum(dnorm(myResponse,mean=myIntercept+myBeta*myPredictors,sd=mySigma,log=TRUE))
+
+## this is the second part p(Alpha, beta, sigma)
+secondPart = dnorm(myIntercept, mean=0, sd=1, log=T) + dnorm(myBeta, mean=0, sd=1, log=T) + dexp(mySigma, rate=1, log=T)
+
+## don't forget the log product rule!!
+firstPart+secondPart
+
+##note that your answers will be different because you likely started with different predictors.
+
+```
