@@ -132,7 +132,7 @@ Cookiemonster picked it out of Bowl #1?
 
 
 
-3b. Bonus optional question: Write R code to simulate this problem to see 
+3b. Write R code to simulate this problem to see 
 if your answer from 3a was correct.
 
 
