@@ -1,0 +1,40 @@
+---
+title: "GLM Class Activity"
+output:
+  html_document: default
+language: R
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+ 
+ First, install and load the bbmle library
+```{r}
+install.packages('bbmle')
+library(bbmle)
+```
+ 
+ 
+```{r}
+
+# define a deterministic function
+detFunc <- function(x,a,b){
+    return(a + b*x)
+}
+
+# define and inverse link function
+invLink <- function(z){
+    p <- 1/(1+exp(-z))
+    return(p)
+}
+
+# run binomial regression with mle2()
+mydata <- data.frame("x"= plant.height,"y"= occ.lfs)
+mod <- mle2(y ~ dbinom(size=30,
+                       p=invLink(detFunc(x,a,b))
+                 ),
+            data=mydata,
+            start=list("a"=0,"b"=0))
+
+```

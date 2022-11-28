@@ -62,9 +62,6 @@ $\large \text{outcome}_i \sim \text{Distribution}(\theta_i = f(\text{predictor}_
 \
 \
 
-So far, we've just used the Normal distribution, 
-but we can try other distributions.
-
 
 ## 
 

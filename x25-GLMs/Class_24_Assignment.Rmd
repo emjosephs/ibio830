@@ -2,14 +2,13 @@
 title: "Model Building: putting it all together"
 output:
   html_document: default
-  pdf_document: default
 language: R
 ---
 
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_24_Assignment.Rmd") -->
 
-#### Due by the beginning of next class (12/3)
+#### Due by midnight before the next class (12/1)
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment24.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -44,28 +43,57 @@ $f(x_i) = \alpha + \beta x_i$ \
 
 ### Question 2
 
-Write mle2 code blocks for the following models.
-For each, define an R function for the inverse link function and 
-the deterministic function, and write out the mle2 call 
-using a data frame with named columns "predictor" and "response".
-Hint: use the "eval=F" flag so that your markdown file knits.
-
-A) Binomial regression (sample size of 15)
-
-B) Poisson Regression
-
-C) Linear model (aka Normal regression)
-
-
-### Question 3
-
-Use mle2 to infer the parameters of the model 
-I used to simulate the data saved in the "mysteryData.Robj" 
+I used a mystery model to simulate the data saved in the "mysteryData.Robj" 
 file in the Class 24 homework folder on D2L.
-
-Plot the line from the model you fit and also 
-a histogram of the residuals (the observed data - 
-their expected value for all data points).
+I've also included mysteryData.txt for anyone having issues loading Robj files.
 
 
+Below is code to run a normal linear regression on this data. Run the code and look at the output plots. 
+```{r}
+load('mysteryData.Robj')
+library(bbmle)
+
+# define a deterministic function
+myDet <- function(x,a,b){
+    return(a + b*x)
+}
+
+# define inverse link function (it's just the identity because this is a normal regression)
+myInverse <- function(z){
+    return(z)
+}
+
+# run linear regression with mle2()
+mod1 <- mle2(response ~ dnorm(mean=myInverse(myDet(predictor,a,b)), sd=s),
+            data=mysteryData,
+            start=list("a"=0,"b"=0, 's'=1))
+
+## this is our model
+mod1
+
+##compare the model to the real data
+
+## use the model to generate data
+mod1Data = mod1@coef[1]+mysteryData$predictor*mod1@coef[2]
+
+
+#get residuals from difference between actual data and the predicted data
+residuals <- mysteryData$response - mod1Data
+
+## look at the model-predicted data curve on top of the actual data
+plot(mysteryData$predictor, mysteryData$response, bty="n", col="darkgray")
+points(mysteryData$predictor, mod1Data,col="red",lwd=2)
+  
+## look at a histogram of the residuals
+hist(residuals, col = "gray", border="white")
+
+```
+
+
+2a) Based on the plots, is the normal regression doing a good job of fitting this data? 
+In your answer, refer to the two plots from the code above.\
+\
+2b) Edit the code above and change the deterministic function (myDet) to be an exponential function ($a \times x^{b}$). 
+Hint: you will also have to change the line of code under "## use the model to generate data"
+Does this new model do a better or worse job of fitting the data?
 
