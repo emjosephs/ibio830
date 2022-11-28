@@ -145,6 +145,17 @@ if your answer from 3a was correct.
 # define a function to sample a bowl at random
 #	then sample a cookie from that bowl
 
+
+myFunction = function(){
+  x=sample(c(1,2), size=1, replace=TRUE)
+  return(x)
+}
+
+myFunction()
+
+
+sample(c("chocolatechip","snickerdoodle"), size=1, prob=c(0.75,0.25))
+
 # simulate that process many times
 
 # think about how to interpret the results!

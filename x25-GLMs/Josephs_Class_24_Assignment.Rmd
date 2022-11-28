@@ -41,11 +41,11 @@ $Y_i \sim \mathcal{Pois}(\lambda_i=f(x_i))$ \
 $\lambda = \text{exp}(f(x_i))$ \
 $f(x_i) = \alpha + \beta x_i$ \
 
-These functions describe a Poisson regression.
-$Y_i$ is the ith instance of a response variable.
-$x_i$ is the ith instance of a predictor variable.
-$\lambda_i$ is the rate parameter of the Poisson distribution, from which $Y_{i}$ is modeled as a draw.
-$f(x_i)$ is a function relating the predictor variable $x_i$ to the expected value for it's associated response variable.
+These functions describe a Poisson regression.\
+$Y_i$ is the ith instance of a response variable.\
+$x_i$ is the ith instance of a predictor variable.\
+$\lambda_i$ is the rate parameter of the Poisson distribution, from which $Y_{i}$ is modeled as a draw.\
+$f(x_i)$ is a function relating the predictor variable $x_i$ to the expected value for it's associated response variable.\
 
 
 
@@ -58,12 +58,7 @@ using a data frame with named columns "predictor" and "response".
 
 A) Binomial regression (sample size of 15)
 
-```{r}
-
-##make the data
-myPred = runif(15)
-myResponse = rbinom(15, size=1,prob = myPred)
-mydata <- data.frame("predictor"= myPred,"response"= myResponse)
+```{r, eval=F}
 
 
 # define a deterministic function
@@ -79,8 +74,6 @@ myInverse <- function(z){
 
 # run binomial regression with mle2()
 
-library('bbmle')
-
 mod <- mle2(response ~ dbinom(size=15, p=myInverse(myDet(predictor,a,b))),
             data=mydata,
             start=list("a"=0,"b"=0))
@@ -89,10 +82,8 @@ mod <- mle2(response ~ dbinom(size=15, p=myInverse(myDet(predictor,a,b))),
 
 B) Poisson Regression
 
-```{r}
-myPred = runif(100)
-myResponse = rpois(100, lambda=myPred)
-mydata <- data.frame("predictor"= myPred,"response"= myResponse)
+```{r, eval=F}
+
 
 # define a deterministic function
 myDet <- function(x,a,b){
@@ -104,7 +95,7 @@ myInverse <- function(z){
     return(exp(z))
 }
 
-# run binomial regression with mle2()
+# run poisson regression with mle2()
 
 
 mod <- mle2(response ~ dpois(lambda=myInverse(myDet(predictor,a,b))),
@@ -116,7 +107,7 @@ mod <- mle2(response ~ dpois(lambda=myInverse(myDet(predictor,a,b))),
 
 C) Linear model (aka Normal regression)
 
-```{r}
+```{r, eval=F}
 myPred = runif(100, 0,10)
 myResponse = rnorm(100, mean=myPred, sd=1)
 mydata <- data.frame("predictor"= myPred,"response"= myResponse)
@@ -153,35 +144,41 @@ their expected value for all data points).
 ```{r}
 
 load('mysteryData.Robj')
-
+library('bbmle')
+##look at the data
 plot(mysteryData$predictor, mysteryData$response)
 
 ##try exponential, changing the deterministic function
 myDet <- function(a,b,x){
     return(a*x^b)
 }
-#no link function needed... why?
+#sticking with the normal link function
 myInverse <- function(z){
     return(z)
 }
 
-
+## run the model
 mod <- mle2(response ~ dnorm(mean=myInverse(myDet(a,b,predictor)),sd=s),
             data=mysteryData,
             start=list("a"=rnorm(1),"b"=rnorm(1),"s"=abs(rnorm(1))))
 
+## look at the model
 mod
 
+
+## use the model to generate data
 modelData = mod@coef[1]* mysteryData$predictor^mod@coef[2]
 
+## look at the modeled data curve on top of the actual data
 par(mfrow=c(1,2))
 plot(mysteryData$predictor, mysteryData$response, bty="n", col="darkgray")
 points(mysteryData$predictor, modelData,col="red",lwd=2)
   
 
-  #get residuals from difference between actual data and the predicted data
+#get residuals from difference between actual data and the predicted data
 residuals <- mysteryData$response - modelData
 
+## look at a histogram of the residuals
 hist(residuals, col = "gray", border="white")
 
 ```

@@ -48,6 +48,7 @@ Write mle2 code blocks for the following models.
 For each, define an R function for the inverse link function and 
 the deterministic function, and write out the mle2 call 
 using a data frame with named columns "predictor" and "response".
+Hint: use the "eval=F" flag so that your markdown file knits.
 
 A) Binomial regression (sample size of 15)
 

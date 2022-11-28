@@ -237,7 +237,7 @@ Genotypes for diploid individuals are coded as 0, 1, or 2.
 I've included data for genotypes at 2 loci and a phenotype (fruit count) for a population of Arabidopsis thaliana in the file "gwas-data.rda".
 
 
-```{r, eval=F, include=F}
+```{r, eval=T, include=F}
 ##simulate the data
 myN=1000
 myGenos = sample(0:2, myN, replace=T)
@@ -255,7 +255,7 @@ save(gwasData, file = 'gwas-data.rda')
 
 4a) Load the data and plot a histogram of the phenotypes. Make a scatter plot for each locus that has genotype on the X axis and phenotype on the y axis.
 ```{r}
-load('gwas-data.rda')
+#load('gwas-data.rda')
 
 hist(gwasData$phenotype, main="")
 
