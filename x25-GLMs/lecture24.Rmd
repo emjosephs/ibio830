@@ -733,6 +733,32 @@ lines(plant.height[order(plant.height)],
  but it's always important to look at how the model is built when you 
  are interpreting output
  
+ 
+## Is our model working?
+
+```{r, echo=T}
+mod
+
+```
+
+## Is our model working?
+We can use our model coefficients to figure out our expectations for the data based on the model
+```{r, echo=T, out.width="500px"}
+modelData <-  inv.logit.link(
+  mod@coef[1] + mod@coef[2] * plant.height)
+plot(plant.height, modelData, col="darkred")
+```
+
+## Is our model working?
+We can look at the differences between our model predictions and the actual data
+(aka 'the residuals')
+```{r, echo=T, out.width="500px"}
+myResiduals = occ.lfs/30-modelData
+hist(myResiduals, main="")
+```
+
+We want them to look normally distributed around 0.
+ 
 ## Another example of GLMs: fungus-induced mortality
 
 - When fungal outbreaks get particularly severe, 

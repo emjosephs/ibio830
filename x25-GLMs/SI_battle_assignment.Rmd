@@ -108,16 +108,16 @@ opposing team used to simulate their data will win **_eternal glory_**.
  
 ### Timeline
 
- - Dec 2 - make groups, start to plan
+ - Dec 1 - make groups, start to plan
 
- - Dec 2-5 - work withIN groups to simulate data
+ - Dec 1-4 - work within groups to simulate data
  
- - Dec 6 - by 9am, email simulation scenario to me and Meaghan to get the green light
+ - Dec 5 (Monday) - by 9 am, email simulation scenario to me and Meaghan to get the green light
  
- 	+ teams with problems in their simulation code/scenario will have until 12/6 at 5pm to get their simulations cleared by instructors
+ 	+ teams with problems in their simulation code/scenario will have until 12/5 at 5pm to get their simulations cleared by instructors
 
- - Dec 7 - data handoff between teams
+ - Dec 6 - data handoff between teams at 9am (beginning of class)
 
- - Dec 9 - presentations
+ - Dec 8 - presentations
  
- 	+ **Presentations must be submitted to the D2L dropbox by by 9am** 
+ 	+ **Presentations must be submitted to the D2L dropbox by by 9am on Dec 8 ** 
