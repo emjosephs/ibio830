@@ -78,18 +78,18 @@ detFunc <- function(x,a,b){
 
 # specify the inverse link function
 invLink <- function(z){
-    return(exp(z))  ### CHANGE 
+    return(exp(z))  ### CHANGE -- this is the inverse-link function for the poisson distribution
 }
 
 # run a regression with mle2()
 mydata <- data.frame("x"= dry.wt.fungus,"y"= mortality)
-mod <- mle2(y ~ dpois(lambda=invLink( detFunc(x,a,b))), ### CHANGE
+mod <- mle2(y ~ dpois(lambda=invLink( detFunc(x,a,b))), ### CHANGE -- dnorm has now become dpois, and instead of a mean and sigma, we have a lambda value for the rate parameter
             data=mydata,
-            start=list("a"=0,"b"=0))  ## CHANGE 
+            start=list("a"=0,"b"=0))  ## CHANGE -- we now only need to start with two parameters
 
 
 ## use the model to generate data
-modData = exp(mod@coef[1]+mydata$x*mod@coef[2]) ##CHANGE
+modData = exp(mod@coef[1]+mydata$x*mod@coef[2]) ##CHANGE -- we're using the inverse-link function to calculate the model-predicted data
 
 #get residuals from difference between actual data and the predicted data
 residuals <- mydata$y - modData
@@ -105,3 +105,6 @@ hist(residuals, col = "gray", border="white")
 ```
 
 Discuss this Poisson regression model with your group. Does it fit better than the normal GLM? If so, how do you know
+\
+\
+I think the second model fits the data better because the residuals show a slightly better distribution around zero, although it's close. One lesson I take from this is that even when the data was generated through a non-normal process, the normal distribution can do a pretty good job of fitting the data!.

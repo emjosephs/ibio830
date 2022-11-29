@@ -1,7 +1,5 @@
 ---
 title: "Simulation/Inference Battle Assignment!"
-author: "Gideon Bradburd"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
     toc: true
@@ -34,7 +32,7 @@ opposing team used to simulate their data will win **_eternal glory_**.
  	+ come up with an awesome, stats-inspired team name: 
  		+ e.g., "Poisson of a Preacher Man"
 
- - [Group sign up here](https://docs.google.com/spreadsheets/d/1WqvmgePxDVAa0PkrhvwvsqwDNdtnTBV_EybxLpRX_t8/edit?usp=sharing)
+ - [Group sign up here](https://docs.google.com/spreadsheets/d/1X0kRQCpVkZ-xvt7R61dL8SMOX2ktAZ5RnMic_2KPg7Y/edit?usp=sharing)
 
 ### Simulation
 
