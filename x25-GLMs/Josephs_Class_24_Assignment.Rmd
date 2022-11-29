@@ -47,85 +47,6 @@ $\lambda_i$ is the rate parameter of the Poisson distribution, from which $Y_{i}
 $f(x_i)$ is a function relating the predictor variable $x_i$ to the expected value for it's associated response variable.\
 
 
-
-### Question 2
-
-Write mle2 code blocks for the following models.
-For each, define an R function for the inverse link function and 
-the deterministic function, and write out the mle2 call 
-using a data frame with named columns "predictor" and "response".
-
-A) Binomial regression (sample size of 15)
-
-```{r, eval=F}
-
-
-# define a deterministic function
-myDet <- function(x,a,b){
-    return(a + b*x)
-}
-
-# define inverse link function
-myInverse <- function(z){
-    p <- 1/(1+exp(-z))
-    return(p)
-}
-
-# run binomial regression with mle2()
-
-mod <- mle2(response ~ dbinom(size=15, p=myInverse(myDet(predictor,a,b))),
-            data=mydata,
-            start=list("a"=0,"b"=0))
-
-```
-
-B) Poisson Regression
-
-```{r, eval=F}
-
-
-# define a deterministic function
-myDet <- function(x,a,b){
-    return(a + b*x)
-}
-
-# define inverse link function
-myInverse <- function(z){
-    return(exp(z))
-}
-
-# run poisson regression with mle2()
-
-
-mod <- mle2(response ~ dpois(lambda=myInverse(myDet(predictor,a,b))),
-            data=mydata,
-            start=list("a"=0,"b"=0))
-
-
-```
-
-C) Linear model (aka Normal regression)
-
-```{r, eval=F}
-# define a deterministic function
-myDet <- function(x,a,b){
-    return(a + b*x)
-}
-
-# define inverse link function
-myInverse <- function(z){
-    return(z)
-}
-
-# run binomial regression with mle2()
-
-
-mod <- mle2(response ~ dnorm(mean=myInverse(myDet(predictor,a,b)), sd=s),
-            data=mydata,
-            start=list("a"=0,"b"=0, 's'=1))
-```
-
-
 ### Question 2
 
 I used a mystery model to simulate the data saved in the "mysteryData.Robj" 
@@ -224,3 +145,4 @@ hist(residuals, col = "gray", border="white")
 ```
 \
 Yes, this model fits the data better because the residuals are normally distributed with a mean of 0.
+

@@ -15,26 +15,93 @@ install.packages('bbmle')
 library(bbmle)
 ```
  
+ We're going to do a Poisson regression using the fungus-induced mortality example
+ 
+ Here is some code to generate the data we'll study
+```{r}
+## generating the data 
+dry.wt.fungus <- runif(1e3,0,30)
+mort.alpha <- -6
+mort.beta <- 0.21
+mortality <- rpois(length(dry.wt.fungus),lambda=exp(mort.alpha + mort.beta*dry.wt.fungus))
+
+```
+
+1)
+Below is code for running a normal regression GLM using mle2(). Try running the code and discuss with your group whether you think this model is doing a good job of fitting the data.
  
 ```{r}
 
-# define a deterministic function
+#define a deterministic funciton
 detFunc <- function(x,a,b){
     return(a + b*x)
 }
 
-# define and inverse link function
+# specify the inverse link function
 invLink <- function(z){
-    p <- 1/(1+exp(-z))
-    return(p)
+    return(z)
 }
 
-# run binomial regression with mle2()
-mydata <- data.frame("x"= plant.height,"y"= occ.lfs)
-mod <- mle2(y ~ dbinom(size=30,
-                       p=invLink(detFunc(x,a,b))
-                 ),
+# run a regression with mle2()
+mydata <- data.frame("x"= dry.wt.fungus,"y"= mortality)
+mod <- mle2(y ~ dnorm(mean=invLink( detFunc(x,a,b)), sd=s),
             data=mydata,
-            start=list("a"=0,"b"=0))
+            start=list("a"=0,"b"=0, 's'=1))
+
+## use the model to generate data
+modData = mod@coef[1]+mydata$x*mod@coef[2]
+
+#get residuals from difference between actual data and the predicted data
+residuals <- mydata$y - modData
+
+## look at the model-predicted data curve on top of the actual data
+plot(mydata$x, mydata$y, bty="n", col="darkgray")
+points(mydata$x, modData,col="red",lwd=2)
+  
+## look at a histogram of the residuals
+hist(residuals, col = "gray", border="white")
+```
+
+
+2) 
+
+Now, try a Poisson regression. Head to wikipedia and look up the link function for a Poisson regression: https://en.wikipedia.org/wiki/Generalized_linear_model#Link_function
+
+Code for running a Possion regression is below. I've added comments where things have changed from the previous version. Please discuss these changes with your group.
+
+```{r}
+
+#define a deterministic function
+detFunc <- function(x,a,b){
+    return(a + b*x)
+}
+
+# specify the inverse link function
+invLink <- function(z){
+    return(exp(z))  ### CHANGE 
+}
+
+# run a regression with mle2()
+mydata <- data.frame("x"= dry.wt.fungus,"y"= mortality)
+mod <- mle2(y ~ dpois(lambda=invLink( detFunc(x,a,b))), ### CHANGE
+            data=mydata,
+            start=list("a"=0,"b"=0))  ## CHANGE 
+
+
+## use the model to generate data
+modData = exp(mod@coef[1]+mydata$x*mod@coef[2]) ##CHANGE
+
+#get residuals from difference between actual data and the predicted data
+residuals <- mydata$y - modData
+
+## look at the model-predicted data curve on top of the actual data
+plot(mydata$x, mydata$y, bty="n", col="darkgray")
+points(mydata$x, modData,col="red",lwd=2)
+  
+## look at a histogram of the residuals
+hist(residuals, col = "gray", border="white")
+
 
 ```
+
+Discuss this Poisson regression model with your group. Does it fit better than the normal GLM? If so, how do you know

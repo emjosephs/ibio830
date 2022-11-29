@@ -101,11 +101,9 @@ plot(leaf.area,mite.arrival.times,xlab="leaf area",ylab="time to first mite",pch
 
 How does leaf size affect wait time to first mite?
 
-How are these data distributed?
+What distribution models waiting time?
 
-```{r,echo=FALSE,fig.width=7}
-plot(leaf.area,mite.arrival.times,xlab="leaf area",ylab="time to first mite",pch=20,col=adjustcolor(1,0.2))
-```
+Let's check out the exponential shiny demo
 
 ## Modeling with the exponential {.build}
 
@@ -409,19 +407,10 @@ $\large y \sim \text{Binomial}(n,p)$
 \
 
 $\large y_i \sim \text{Binomial}(n=30,p_i=f(x_i))$
+\
+\
+$p$ = probability of mite on leaf, (# of occupied leaves)/30
 
-## Inter-leaf variation in mite presence
-
-<div class="centered">
-```{r,fig.width=6.5,fig.height=4.75,echo=FALSE}
-par(mar=c(4,4,1,1))
-plot(plant.height,occ.lfs,pch=20,
-	col=adjustcolor(1,0.3),ylim=c(0,n.leaves),
-	xlab="plant height",
-	ylab="number of censused leaves with mites",
-	main="")
-```
-</div>
 
 ## Binomial regression {.build}
 
@@ -445,7 +434,8 @@ $\large y \sim \text{Binomial}(n,p)$
 
 \
 
-$\large p_i = \beta x_i + \alpha$
+$\large p_i = \beta x_i + \alpha$ \
+($x_{i}$ is plant height)
 
 \
 
@@ -551,7 +541,7 @@ plot(p,logit.link(p),type='l',lwd=3,xlab="p",ylab="logit(p)")
 
 $\large \text{logit}(x) = log \left(\frac{x}{1-x}\right)$
 
-## Binomial regression {.build}
+## Link functions {.build}
 
 $\Large y \sim \text{Binomial}(n,p)$
 
@@ -568,7 +558,7 @@ $\Large \text{logit}(p_i) = \beta x_i + \alpha$
 $\Large p_i = \text{inverse logit}(\beta x_i + \alpha)$
 
 
-## Binomial regression {.build}
+## The inverse logit {.build}
 
 $\Large 
 \begin{aligned}
@@ -585,7 +575,7 @@ inv.logit.link <- function(x){
 }
 ```
 
-## Binomial regression
+## The inverse logit
 <div class="centered">
 ```{r,echo=FALSE,fig.width=7.5,fig.height=5.5}
 x <- seq(-100,100,length.out=1e5)
@@ -594,13 +584,21 @@ plot(x,inv.logit.link(x),type='l',lwd=3,xlab="x",ylab="inverse_logit(x) = p")
 </div>
 
 
-## Binomial regression
+## The inverse logit
 
 <div class="centered">
 ```{r,echo=FALSE,fig.width=7.5,fig.height=5.5}
 plot(x,inv.logit.link(x),type='l',lwd=3,xlab="x",ylab="inverse_logit(x) = p",xlim=c(-5,5))
 ```
 </div>
+
+## Wait, how do I know what link function to use?
+
+https://en.wikipedia.org/wiki/Generalized_linear_model#Link_function
+
+```{r, out.width="700px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/link_functions.jpg")
+```
 
 
 ## Binomial regression {.build}
@@ -613,7 +611,7 @@ $\Large y \sim \text{Binomial}(n,p)$
 $\Large p_i = \text{inverse logit}(\beta x_i + \alpha)$
 </div>
 
-## Binomial regression {.build}
+## Binomial regression in R {.build}
 
 ```{r}
 # inverse logit link function
@@ -670,22 +668,24 @@ mod <- mle2(y ~ dbinom(size=30,
 			start=list("a"=0,"b"=0))
 ```
 
+## Binomial regression with mle2()
+
+```{r}
+mod
+
+```
 
 ## Binomial regression
+We can use our model coefficients to figure out our expectations for the data based on the model
+```{r, echo=T}
+modelData <-  inv.logit.link(
+  mod@coef[1] + mod@coef[2] * plant.height)
+```
 
-```{r,echo=FALSE,fig.width=7,fig.height=5}
-par(mar=c(4,4,1,1))
-plot(plant.height,occ.lfs/30,pch=20,
-	col=adjustcolor(1,0.3),ylim=c(0,1),
-	xlab="plant height",
-	ylab="proportion of censused leaves with mites",
-	main="")
-lines(plant.height[order(plant.height)],
-		inv.logit.link(mod@coef[1] + 
-						mod@coef[2] * plant.height)[order(plant.height)],				
-		col=2,lwd=3)
-	text(x=1.5,y=0.8,labels=sprintf("a = %s\nb = %s",round(mod@coef[1],2),round(mod@coef[2],2)),cex=1.5)
-	legend(x="bottomright",lty=1,lwd=3,col=2,legend="model fit")
+## Binomial regression
+```{r, echo=T}
+plot(plant.height,occ.lfs/30,col="gray", ylab = "p")
+points(plant.height, modelData, col="darkred")
 ```
 
 
@@ -704,23 +704,11 @@ $\large p_i = \text{inverse logit}(\beta x_i + \alpha)$
 	and gives us the change in expected response variable for each unit of predictor variable.
 
 ## Interpreting parameter estimates
-
-<div class="centered">
-```{r,echo=FALSE,fig.width=7,fig.height=5}
-par(mar=c(4,4,1,1))
-plot(plant.height,occ.lfs/30,pch=20,
-	col=adjustcolor(1,0.3),ylim=c(0,1),
-	xlab="plant height",
-	ylab="proportion of censused leaves with mites",
-	main="")
-	text(x=1.5,y=0.8,labels=sprintf("a = %s\nb = %s",round(mod@coef[1],2),round(mod@coef[2],2)),cex=1.5)
-lines(plant.height[order(plant.height)],
-		inv.logit.link(mod@coef[1] + 
-						mod@coef[2] * plant.height)[order(plant.height)],				
-		col=2,lwd=3)
-	legend(x="bottomright",lty=1,lwd=3,col=2,legend="model fit")
+```{r, out.width="500px"}
+mod@coef
+plot(plant.height,occ.lfs/30,col="gray", ylab = "p")
+points(plant.height, modelData, col="darkred")
 ```
-</div>
 
 ## Interpreting parameter estimates
 
@@ -807,6 +795,15 @@ $\large y_i \sim \text{Poisson}(\lambda_i = f(x_i))$
 
 $\large \lambda > 0$
 
+## Breakout room activity
+
+Try out Poisson regression for yourself. 
+\
+\
+Download "GLM-class-activity.Rmd" and go through
+the exercise with your breakout room.
+
+
 ## Poisson regression
 
 $\Large y_i \sim \text{Poisson}(\lambda_i = f(x_i))$
@@ -848,21 +845,20 @@ mod <- mle2(y ~ dpois(lambda=invLink(
 ## Poisson regression
 
 ```{r,fig.width=7,fig.height=5.5,echo=FALSE}
-plot(dry.wt.fungus,mortality,pch=20,col=adjustcolor(1,0.5),
-	xlab="mean dry weight fungus",ylab="number of dead plants",
-	main="Fungus-induced mortality")
-	text(x=5,y=4,labels=sprintf("a = %s\nb = %s",round(mod@coef[1],2),round(mod@coef[2],2)),cex=2)
-	lines(seq(0,35,length.out=1000),
-			exp(mod@coef[1] + mod@coef[2]*seq(0,35,length.out=1000)),
-			col="blue",lwd=3)
-```
+par(mfrow=c(1,2))
 
-## Link functions {.build}
+## use the model to generate data
+modData = exp(mod@coef[1]+mydata$x*mod@coef[2])
 
-Different distributions are commonly associated with different link functions
+#get residuals from difference between actual data and the predicted data
+residuals <- mydata$y - modData
 
-```{r, out.width="700px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/link_functions.jpg")
+## look at the model-predicted data curve on top of the actual data
+plot(mydata$x, mydata$y, bty="n", col="darkgray")
+points(mydata$x, modData,col="red",lwd=2)
+  
+## look at a histogram of the residuals
+hist(residuals, col = "gray", border="white")
 ```
 
 ## Model building recap: {.build}
@@ -932,6 +928,3 @@ Note: a **linear model** is a _special case_ of a GLM, for which:
  
  - Will is great!
  
-## Simulation/Inference battles!!!
-
-See Rmarkdown document
