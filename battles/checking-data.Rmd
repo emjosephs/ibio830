@@ -1,0 +1,62 @@
+---
+title: "checking-data.Rmd"
+output: html_document
+date: "2022-12-01"
+---
+
+```{r, echo=F}
+library(bbmle)
+
+```
+
+## Group 9
+
+```{r}
+makepoint<-function(x){
+  y<-rnorm(1, mean=70+100/(1+exp(-.25*(x-75))), sd=20)
+  return(y)
+}
+points<-sapply(seq(from=50,to=100, length.out=1000),makepoint)
+pointxs<-as.data.frame(seq(from=50,to=100, length.out=1000))
+mdata<-as.data.frame(cbind(pointxs,points))
+colnames(mdata)<-c("predictor","response")
+mdata<-subset(mdata,response>0)
+plot(mdata)
+
+## is the same as the other definition of the logistic regression?
+
+
+## load data
+mydata <- read.csv('~/Documents/ibio830/battles/Group9data.csv')
+
+
+n.reps <- 1e2
+
+detFunc <- function(x,a,b){
+	return(exp(a+b*x)/(1+exp(a+b*x)))
+}
+
+invLink <- function(z){
+	return(z)
+}
+
+names(mydata) <- c("response","predictor")
+
+
+##
+mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor,a,b)), sd=s),
+            data=mydata,
+            start=list("a"=20,"b"=0.25, 's'=20))
+
+## try their deterministic function
+detFunc2 <- function(x,a,b, L){
+	return(L/(1+exp(a*(x-b))))
+}
+
+
+mod <- mle2(response ~ dnorm(mean=invLink( detFunc2(predictor,a,b, L)), sd=s),
+            data=mydata,
+            start=list("a"=20,"b"=0.25, L = 100, 's'=20))
+
+
+```

@@ -41,10 +41,9 @@ $\lambda = \text{exp}(f(x_i))$ \
 $f(x_i) = \alpha + \beta x_i$ \
 
 These functions describe a Poisson regression.\
-$Y_i$ is the ith instance of a response variable.\
-$x_i$ is the ith instance of a predictor variable.\
-$\lambda_i$ is the rate parameter of the Poisson distribution, from which $Y_{i}$ is modeled as a draw.\
-$f(x_i)$ is a function relating the predictor variable $x_i$ to the expected value for it's associated response variable.\
+$Y_i$ is the ith instance of a response variable. This equation is the **generalized linear model** describing the data as a stochastic draw from the Poisson distribution.\
+$\lambda_i$ is the rate parameter of the Poisson distribution, from which $Y_{i}$ is modeled as a draw. This equation is the **link function** between the deterministic function and the parameter for the model\
+$f(x_i)$ is a function relating the predictor variable $x_i$ to the expected value for it's associated response variable. This is the **deterministic function** of the linear model\
 
 
 ### Question 2
