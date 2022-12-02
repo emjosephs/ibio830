@@ -32,6 +32,34 @@ detFunc2 <- function(x,a,b, L){
 
 ```
 
+## Group 3
+
+```{r}
+mydata=read.csv('~/Documents/ibio830/battles/group3sim.data.csv')
+
+plot(mydata$predictor, mydata$response)
+
+detFunc <- function(x,a,b){
+	return(exp(a+b*x)/(1+exp(a+b*x)))
+}
+
+invLink <- function(z){ # specifying inverse link function
+	return(exp(z))
+}
+
+mod <- mle2(response ~ dpois(lambda=invLink( detFunc(predictor,a,b))),
+            data=mydata,
+            start=list("a"=-5.3,"b"=.6))
+
+
+mod
+
+## from their code
+## a <- -5.3
+## b <- 0.61
+
+```
+
 ## Group 5
 
 ```{r}
