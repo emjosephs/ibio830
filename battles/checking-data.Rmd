@@ -35,6 +35,7 @@ detFunc2 <- function(x,a,b, L){
 ## Group 3
 
 ```{r}
+library(bbmle)
 mydata=read.csv('~/Documents/ibio830/battles/group3sim.data.csv')
 
 plot(mydata$predictor, mydata$response)
@@ -79,6 +80,30 @@ mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor,a,b)), sd=s),
 
 
 mod
+```
+
+## Group 5 actually
+
+```{r}
+mydata <- read.csv('~/Documents/ibio830/battles/SI_battle_Team5_data.csv')
+
+detFunc <- function(x,a,b){
+	return(a * (x^-b))
+}
+
+invLink <- function(z){
+	return(z)
+}
+
+mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor,a,b)), sd=s),
+            data=mydata,
+            start=list("a"=1000,"b"=2, 's'=0.05))
+
+
+mod
+
+## looks good
+
 ```
 
 ## Group 9
