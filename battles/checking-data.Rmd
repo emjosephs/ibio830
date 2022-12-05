@@ -118,6 +118,8 @@ mod
 ```{r}
 mydata <- read.csv('~/Documents/ibio830/battles/housefly_dataframe.csv')
 
+plot(mydata$predictor, mydata$response)
+
 
 #alpha <- -5
 #beta <- 0.005
