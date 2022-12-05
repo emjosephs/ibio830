@@ -102,7 +102,43 @@ mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor,a,b)), sd=s),
 
 mod
 
+#n = 1000
+#x = 1:n
+#a = 1
+#b = 0.2
+#s = 0.05
+#y = as.integer(rnorm(n, mean = invLink(myDet(x, a, b)), sd = s) * 1000)
+
 ## looks good
+
+```
+
+## Group 7
+
+```{r}
+mydata <- read.csv('~/Documents/ibio830/battles/housefly_dataframe.csv')
+
+
+#alpha <- -5
+#beta <- 0.005
+#deterministic_func <- exp(alpha+beta*data)/(1+exp(alpha+beta*data))
+#sample <- rbinom(length(data), size=1e3 , prob=deterministic_func)
+
+detFunc <- function(x,a,b){
+	return(exp(a+b*x)/(1+exp(a+b*x)))
+}
+
+invLink <- function(x){
+	return(	p <- 1/(1+exp(-x)))
+}
+
+mod <- mle2(response ~ dbinom(size=1000,prob=invLink( detFunc(predictor,a,b))),
+            data=mydata,
+            start=list("a"=-5,"b"=0.005))
+
+
+mod
+
 
 ```
 
