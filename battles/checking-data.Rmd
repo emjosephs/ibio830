@@ -64,7 +64,7 @@ mod
 ```
 
 
-## Group 3
+## Group 3 -- IS GOOD
 
 ```{r}
 library(bbmle)
@@ -205,28 +205,22 @@ mod
 
 ```
 
+## Group 8
+
 ## Group 9
 
 ```{r}
-makepoint<-function(x){
-  y<-rnorm(1, mean=70+100/(1+exp(-.25*(x-75))), sd=20)
-  return(y)
-}
-points<-sapply(seq(from=50,to=100, length.out=1000),makepoint)
-pointxs<-as.data.frame(seq(from=50,to=100, length.out=1000))
-mdata<-as.data.frame(cbind(pointxs,points))
-colnames(mdata)<-c("predictor","response")
-mdata<-subset(mdata,response>0)
-plot(mdata)
-
+#a<--5.2
+#b<-.083
+#makepoint<-function(x){
+#  y<-rnorm(1, mean=exp(a+b*x)/(1+exp(a+b*x)), sd=0.075)
+#  return(y)
+#}
 ## is the same as the other definition of the logistic regression?
 
 
 ## load data
-mydata <- read.csv('~/Documents/ibio830/battles/Group9data.csv')
-
-
-n.reps <- 1e2
+mydata <- read.csv('~/Documents/ibio830/battles/newgroup9data.csv')
 
 detFunc <- function(x,a,b){
 	return(exp(a+b*x)/(1+exp(a+b*x)))
@@ -242,19 +236,24 @@ names(mydata) <- c("response","predictor")
 ##
 mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor,a,b)), sd=s),
             data=mydata,
-            start=list("a"=20,"b"=0.25, 's'=20))
-
-## try their deterministic function
-detFunc2 <- function(x,a,b, L){
-	return(L/(1+exp(a*(x-b))))
-}
+            start=list("a"=5,"b"=0.08, 's'=20))
 
 
-mod <- mle2(response ~ dnorm(mean=invLink( detFunc2(predictor,a,b, L)), sd=s),
-            data=mydata,
-            start=list("a"=20,"b"=0.25, L = 100, 's'=20))
-
+mod
 
 ```
 
+WTF exponential
 
+```{r}
+
+myP = runif(n=1000, min=0, max=100)
+myDet <- function(x){2*x+1}
+
+myR = rexp(1000, rate=myDet(myP))
+
+plot(myP, myR)
+
+
+
+```

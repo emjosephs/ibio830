@@ -1,0 +1,62 @@
+---
+title: "Group 8: The Salt Bayes - data simulation"
+author: "River Mathieu, DeShae Dillard, Bruna Amaral, Chris Brown, Laura Marmolejo"
+output:
+  html_document: default
+language: R
+---
+
+### Background
+
+Striped cucumber beetles (*Acalymma vittatum* F.) are a pest that eats plants in the Cucurbitaceae family. They have the potential to seriously harm cucurbit plants and can transmit diseases that can further affect plant growth. To understand how cucumber beetle infestations may affect the growth and reproduction of cucumber plants, we counted the number of seeds produced by individual cucumber plants that had different numbers of cucumber beetles present.
+
+```{r, echo = F}
+picb <- "https://ag.umass.edu/sites/ag.umass.edu/files/fact-sheets/images/week_of_june_26_053.jpg"
+```
+<center><img src="`r picb`" width="500" ></center>
+<center>Striped cucumber beetles eating a cucumber plant.</center>
+
+
+### Code
+
+Code to simulate how insect herbivory (number of insects) influence the production of seeds (number of seeds) in cucumbers
+\
+Simulate number of insects in 1000 different plants that were sampled, and plug it in a linear model (deterministic function)
+```{r, echo = F, include=FALSE}
+library(tidyverse)
+```
+
+```{r, echo = T}
+insecs <- runif(min = 1, max = 100, 1000) %>% round(0)
+b <- 5        ## intercept
+a <- -0.04    ## slope (effect of herbivory)
+
+## linear model function
+create_y <- function(a,b,x){
+  return((a*x) + b)
+}
+
+y <- create_y(a,b,insecs)
+
+plot(insecs,y)
+```
+ 
+Create the probability distribution to generate the data. We are using a poisson function with an exponential link.
+
+```{r}
+## poisson distribution with an exponential link
+nseeds <- rpois(length(insecs), lambda = exp(create_y(a,b,insecs)))
+head(nseeds)
+plot(insecs, nseeds, xlab = "Number of insects", ylab = "Simulated number of seeds")
+```
+
+Create a matrix with the number of insects and simulated number of seeds in the cucumber
+```{r, echo = T}
+data <- as.data.frame(cbind(insecs, nseeds))
+colnames(data) <- c("predictor", "response")
+
+write_csv(data, file = "data.csv")
+
+head(data)
+```
+ 

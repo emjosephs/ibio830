@@ -79,7 +79,7 @@ opposing team used to simulate their data will win **_eternal glory_**.
 ### Inference
 
  - Once you have the data, infer the parameters of the model 
- used to simulate the data
+ used to simulate the data with a generalized linear model.
  
  - This means you'll have to make choices about what distribution, 
  deterministic function, and possibly link function to use
