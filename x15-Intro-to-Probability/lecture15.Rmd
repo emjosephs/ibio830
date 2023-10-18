@@ -39,23 +39,6 @@ I am Emily Josephs
 	knitr::include_graphics("figs/kittykitty.jpg")
 ```
 
-## Fun around Lansing: Hawk Island Park
-
-```{r, out.width="500px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/hawkisland.jpg")
-```
-
-
-## Fun around Lansing: Hawk Island Park
-
-```{r, out.width="300px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/hawkislandmap.jpg")
-```
-
-\
-
-Free parking at the Scott's Woods entrance
-
 ## 1st semester goals 
 
 1. Data into spreadsheet
@@ -141,6 +124,14 @@ but a solid secondary goal is _future_ understanding.
 
 5. don't be afraid of office hours!!
 
+## Office hours!
+
+Change from syllabus:
+
+Office hours are Mondays 2-4pm in PLB 266 or on zoom.
+
+Zoom Room: https://msu.zoom.us/my/emjos (Password: plantsrule)
+
 ## Why am I doing this to you? {.build}
 
 Many of you got into this business because of a love of nature, 
@@ -152,7 +143,46 @@ into a love of _patterns_, and give you the tools to do so!
 Biology has become a driver of quantitative methods in STEM 
 because interesting patterns are sublte and complicated.
 
-Also, employment!
+Also, coding and stats is a very useful skill.
+
+## Simulating data
+
+Simulations?
+
+```{r, out.width="500px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/sims.jpg")
+```
+
+## Simulating data
+
+One of the most powerful tools that we'll have in our statistics learning toolkit are simulations.
+
+Simulations let you generate data that you know should look a certain way, so you can test your intuitions.
+
+Simulations also let you do the same thing over and over and over.
+
+## Simulating data {.build}
+
+```{r}
+thisClass = 1:35
+
+thisClass
+```
+
+```{r}
+sample(thisClass, size=1)
+
+```
+
+## Simulating data {.build}
+
+```{r}
+sample(thisClass, size=1)
+```
+
+```{r}
+sample(thisClass, size=1)
+```
 
 ## Today's lecture - Intro to Probability! {.build}
 
@@ -276,7 +306,7 @@ sample(numbers,1)
 
 \
 
-Working in breakout rooms, figure out a way 
+Working in teams, figure out a way 
 to use a large-scale simulation (1e5 trials) to 
 estimate the probability of picking a 5 in the following set:
 
@@ -447,7 +477,7 @@ numbers <- c(1,2,3,4,5)
 If I draw **two** numbers at once, 
 what's the probability that they sum to 6?
 
-Return to breakout rooms and update your simulations to test this.
+Return to teams and update your simulations to test this.
 
 
 ```{r cache=TRUE}
