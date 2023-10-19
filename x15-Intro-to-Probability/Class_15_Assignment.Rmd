@@ -8,7 +8,7 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_15_Assignment.Rmd") -->
 
-#### Due by midnight on Oct 26 (the night before class on Oct 27)
+#### Due by midnight on Oct 25 (the night before class on Oct 26)
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment15.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -27,7 +27,7 @@ It is due before our next class.
 
 2. use simulations to build intuition
 
-3. use your R skillz: function building, data visualization, etc.
+3. use your R skills: function building, data visualization, etc.
 
 \
 

@@ -1,7 +1,7 @@
 ---
 title: "Lecture 15 - Intro to Probability"
 author: "Emily Josephs"
-date: "October 20, 2022"
+date: "October 19, 2023"
 output:
   ioslides_presentation:
     transition: 0
