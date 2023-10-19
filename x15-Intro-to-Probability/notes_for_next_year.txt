@@ -1,3 +1,10 @@
+From 2023
+Still didn't get to conditional probability.
+For next time, make examples dice not picking numbers because replacement got confusing.
+Work on the code solutions to make them less terrible.
+
+
+
 From 2022
 Didn't get to conditional probability this time. Think about how to streamline?
 
