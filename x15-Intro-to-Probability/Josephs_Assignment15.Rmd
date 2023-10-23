@@ -46,7 +46,7 @@ Define the following terms:
  - simple event 
  
  \
- ** a single experiment (ie drawing a random number) with a single outcome (ie the number drawn)**
+ **a single experiment (ie drawing a random number) with a single outcome (ie the number drawn)**
  \
  
  - complex event
@@ -102,7 +102,7 @@ and it should return the probability (from simulations), that two or more
 share a birthday.
 
 
-
+This is how I solved the problem:
 ```{r, echo=T}
 
 ## Write a function where you
@@ -120,6 +120,24 @@ myOut = sapply(1:1e4,function(x){birthdaySharing(myP)})##
   return(sum(myOut)/1e4)}
 
 birthdaySim(10)
+```
+
+Here is another, more elegant but hard-to-read solution:
+
+```{r,echo=TRUE}
+sim.bday <- function(N){
+	prop.twinsies <- sum(
+					replicate(1e5,
+						length(
+							unique(
+								sample(1:365,N,replace=TRUE)
+							)
+						) < N)
+				   )/1e5
+	return(prop.twinsies)
+}
+```
+
 ```
 
 3b) Using this function, determine how many people must be in a room for 

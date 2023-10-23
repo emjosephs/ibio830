@@ -181,7 +181,7 @@ When in doubt, start w/ the pseudocode
 
 	# draw N birthdays from the year (w/ replacement!)
 
-	# if the total number of birthdays is < N
+	# if there are birthday duplicates
 	#	log as a "bday twinsies" event
 
 # Run this function for each simulation
@@ -197,7 +197,7 @@ When in doubt, start w/ the pseudocode
 birthdaySharing <- function(myN){
   # draw N birthdays from the year (w/ replacement!)
   birthdays = sample(1:365, myN, replace=T)
-  	# if the total number of birthdays is < N
+  	# if there are birthday duplicates
   if (sum(duplicated(birthdays))>0) { 
     		#	log as a "bday twinsies" event
     myOut = TRUE} else {myOut = FALSE}
@@ -209,10 +209,37 @@ birthdaySim <- function(myP){
 myOut = sapply(1:1e5,function(x){birthdaySharing(myP)})
 #	return the proportion of simulations with birthday twinsies
   return(sum(myOut)/1e5)}
+
+birthdaySims <- sapply(1:30,function(n){birthdaySim(n)})
 ```
 
-```{r, echo=TRUE, eval=F}
-which(sapply(1:30,function(n){birthdaySim(n)}) > 0.5)[1]
+## Another solution {.build}
+```{r, echo=T}
+sim.bday <- function(N){
+	prop.twinsies <- sum(
+					replicate(1e5,
+						length(
+							unique(
+								sample(1:365,N,replace=TRUE)
+							)
+						) < N)
+				   )/1e5
+	return(prop.twinsies)
+}
+
+```
+
+## My solution {.build}
+
+```{r, echo=TRUE, eval=T}
+plot(birthdaySims, xlab="room size",
+     ylab = "proportion of sims with birthday twinsies")
+```
+
+## My solution {.build}
+
+```{r}
+which(birthdaySims > 0.5)[1]
 ```
 
 
