@@ -290,6 +290,7 @@ and count the number of heads that you get.
 	+ {HHH, HHT, HTH, THH, TTH, THT, HTT, TTT}
 
 - Some questions to answer in your team:
+
 1. What is the probability of the sequence THH?
 2. What is the probability I get exactly 2 heads out of 3 flips?
 3. What is the probabilty I **_do not_** get exactly 2 heads out of 3 flips?
@@ -539,11 +540,32 @@ plot(0:4,choose(4,0:4),pch=19,cex=1.5,xlim=c(0,8),
 ## Coin-flipping: a probability distribution
 ### how many permutations of _n_ events give _k_ successes?
 
-Pascal's Triangle! (See also Halayudha in the 900s CE)
+Pascal's Triangle!
 
 ```{r, out.width="705px",out.height="328px",echo=FALSE,fig.align="center"}
 	knitr::include_graphics("figs/pascals_triangle.png")
 ```
+
+## Coin-flipping: a probability distribution
+
+```{r, out.width="600px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/PascalTriangleAnimated2.gif")
+```
+
+## Not just Pascal's triangle
+Khayyam's triangle (Persia, 1100s)
+
+Yang Hui's triangle (China, 1200s)
+
+Tartaglia's triangle (Italy, 1500s)
+
+Pascal's triangle (France, 1600s)
+
+## Yang Hui's triangle
+```{r, out.width="300px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/Yanghui_triangle.gif")
+```
+
 
 ## Coin-flipping: a probability distribution
 ### how many permutations of _n_ events give _k_ successes?
@@ -624,6 +646,15 @@ $\ {{n}\choose{k}}p^k (1-p)^{n-k}$
 	}
 ```
 
+## Coin-flipping: probability distribution function {.build}
+
+```{r,fig.width=6.5,fig.height=5.5,fig.align="center",echo=TRUE, eval=F}
+	par(oma=c(3,0,0,0))
+	plot(coin.flip.prob(n=100,k=0:100,p=0.5),
+			xlab="heads",ylab="probability",
+			pch=20,col=adjustcolor(1,0.7))
+```
+
 
 ## Coin-flipping: probability distribution function {.build}
 
@@ -633,6 +664,13 @@ $\ {{n}\choose{k}}p^k (1-p)^{n-k}$
 			xlab="heads",ylab="probability",
 			pch=20,col=adjustcolor(1,0.7))
 ```
+
+## Coin-flipping: probability distribution function
+<div class="centered">
+$\ {{n}\choose{k}}p^k (1-p)^{n-k}$
+</div>
+
+What if we change P?
 
 ## {.build}
 
