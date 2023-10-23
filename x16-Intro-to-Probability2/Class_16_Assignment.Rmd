@@ -67,7 +67,7 @@ describe what each part means (or is doing).
 \
 \
 
-2b) Using the function of this equation that you coded up in class, calculate the probability of 
+2b) Using the function of this equation that you coded up in class (or from the slides), calculate the probability of 
 seeing 71 successes out of 531 trials, where the probability of success is 0.12345.
 
 \
