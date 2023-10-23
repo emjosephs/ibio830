@@ -1,7 +1,7 @@
 ---
 title: "Lecture 16 - Intro to Probability, pt. II"
 author: "Emily Josephs"
-date: "October 27, 2022"
+date: "October 26, 2023"
 output:
   ioslides_presentation:
     transition: 0
@@ -289,7 +289,7 @@ and count the number of heads that you get.
 - This is the **state space** (the list of all possible outcomes)
 	+ {HHH, HHT, HTH, THH, TTH, THT, HTT, TTT}
 
-- Some questions to answer in your breakout room:
+- Some questions to answer in your team:
 1. What is the probability of the sequence THH?
 2. What is the probability I get exactly 2 heads out of 3 flips?
 3. What is the probabilty I **_do not_** get exactly 2 heads out of 3 flips?
