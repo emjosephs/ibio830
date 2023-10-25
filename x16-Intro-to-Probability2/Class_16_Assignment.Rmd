@@ -8,7 +8,7 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_16_Assignment.Rmd") -->
 
-#### Due by the beginning of next class (11/2)
+#### Due by midnight the day before the next class (10/30)
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment16.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -67,7 +67,7 @@ describe what each part means (or is doing).
 \
 \
 
-2b) Using the function of this equation that you coded up in class, calculate the probability of 
+2b) Using the function of this equation that you coded up in class (or from the slides), calculate the probability of 
 seeing 71 successes out of 531 trials, where the probability of success is 0.12345.
 
 \

@@ -422,10 +422,15 @@ two.draws <- replicate(nDraws,
 ```			  
 
 ```{r}
-## get the proportion of draws that are equal to 
-length(	which(	unlist(
-			lapply(two.draws,	function(x){sum(x==c(4,5))}))==2)
-)/nDraws
+## go through list, which ones are equal to 2
+is45 <- lapply(two.draws, function(x){
+  sum(x==c(4,5))==2
+})
+
+#count them
+prop45 <- sum(unlist(is45))/nDraws
+
+prop45
 ```
 
 ## Probability: shared events {.build}

@@ -181,7 +181,7 @@ When in doubt, start w/ the pseudocode
 
 	# draw N birthdays from the year (w/ replacement!)
 
-	# if the total number of birthdays is < N
+	# if there are birthday duplicates
 	#	log as a "bday twinsies" event
 
 # Run this function for each simulation
@@ -197,7 +197,7 @@ When in doubt, start w/ the pseudocode
 birthdaySharing <- function(myN){
   # draw N birthdays from the year (w/ replacement!)
   birthdays = sample(1:365, myN, replace=T)
-  	# if the total number of birthdays is < N
+  	# if there are birthday duplicates
   if (sum(duplicated(birthdays))>0) { 
     		#	log as a "bday twinsies" event
     myOut = TRUE} else {myOut = FALSE}
@@ -209,10 +209,37 @@ birthdaySim <- function(myP){
 myOut = sapply(1:1e5,function(x){birthdaySharing(myP)})
 #	return the proportion of simulations with birthday twinsies
   return(sum(myOut)/1e5)}
+
+birthdaySims <- sapply(1:30,function(n){birthdaySim(n)})
 ```
 
-```{r, echo=TRUE, eval=F}
-which(sapply(1:30,function(n){birthdaySim(n)}) > 0.5)[1]
+## Another solution {.build}
+```{r, echo=T}
+sim.bday <- function(N){
+	prop.twinsies <- sum(
+					replicate(1e5,
+						length(
+							unique(
+								sample(1:365,N,replace=TRUE)
+							)
+						) < N)
+				   )/1e5
+	return(prop.twinsies)
+}
+
+```
+
+## My solution {.build}
+
+```{r, echo=TRUE, eval=T}
+plot(birthdaySims, xlab="room size",
+     ylab = "proportion of sims with birthday twinsies")
+```
+
+## My solution {.build}
+
+```{r}
+which(birthdaySims > 0.5)[1]
 ```
 
 
@@ -263,14 +290,7 @@ p(A') &= \frac{365}{365} \times \frac{364}{365} \times \ldots  \times \frac{365-
 
 3. Probability distributions
 
-## Coin-flipping {.build}
-
-Let's say I hand you a quarter and ask you to flip it 3 times 
-and count the number of heads that you get.
-
-
-
-```{r}
+```{r, eval=F, echo=F}
 flips <- function(nFlips){
 	flips <- sample(c('H','T'), nFlips, replace=TRUE)
 	return(flips)
@@ -278,7 +298,7 @@ flips <- function(nFlips){
 
 flips(3)
 
-mySims = replicate(100, flips(3), simplify=TRUE)
+#mySims = replicate(100, flips(3), simplify=TRUE)
 ```
 
 ## Coin-flipping {.build}
@@ -290,6 +310,7 @@ and count the number of heads that you get.
 	+ {HHH, HHT, HTH, THH, TTH, THT, HTT, TTT}
 
 - Some questions to answer in your teams:
+
 1. What is the probability of the sequence THH?
 2. What is the probability I get exactly 2 heads out of 3 flips?
 3. What is the probabilty I **_do not_** get exactly 2 heads out of 3 flips?
@@ -539,11 +560,32 @@ plot(0:4,choose(4,0:4),pch=19,cex=1.5,xlim=c(0,8),
 ## Coin-flipping: a probability distribution
 ### how many permutations of _n_ events give _k_ successes?
 
-Pascal's Triangle! (See also Halayudha in the 900s CE)
+Pascal's Triangle!
 
 ```{r, out.width="705px",out.height="328px",echo=FALSE,fig.align="center"}
 	knitr::include_graphics("figs/pascals_triangle.png")
 ```
+
+## Coin-flipping: a probability distribution
+
+```{r, out.width="600px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/PascalTriangleAnimated2.gif")
+```
+
+## Not just Pascal's triangle
+Khayyam's triangle (Persia, 1100s)
+
+Yang Hui's triangle (China, 1200s)
+
+Tartaglia's triangle (Italy, 1500s)
+
+Pascal's triangle (France, 1600s)
+
+## Yang Hui's triangle
+```{r, out.width="300px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/Yanghui_triangle.gif")
+```
+
 
 ## Coin-flipping: a probability distribution
 ### how many permutations of _n_ events give _k_ successes?
@@ -624,6 +666,15 @@ $\ {{n}\choose{k}}p^k (1-p)^{n-k}$
 	}
 ```
 
+## Coin-flipping: probability distribution function {.build}
+
+```{r,fig.width=6.5,fig.height=5.5,fig.align="center",echo=TRUE, eval=F}
+	par(oma=c(3,0,0,0))
+	plot(coin.flip.prob(n=100,k=0:100,p=0.5),
+			xlab="heads",ylab="probability",
+			pch=20,col=adjustcolor(1,0.7))
+```
+
 
 ## Coin-flipping: probability distribution function {.build}
 
@@ -633,6 +684,13 @@ $\ {{n}\choose{k}}p^k (1-p)^{n-k}$
 			xlab="heads",ylab="probability",
 			pch=20,col=adjustcolor(1,0.7))
 ```
+
+## Coin-flipping: probability distribution function
+<div class="centered">
+$\ {{n}\choose{k}}p^k (1-p)^{n-k}$
+</div>
+
+What if we change P?
 
 ## {.build}
 
