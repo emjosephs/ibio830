@@ -484,27 +484,29 @@ two components:
 
 \
 
-Let's generalize!
+Let's generalize for more flips!
 
 _n_ = number of trials \
 _k_ = number of successes \
-_p_ = probability of success (for coin flips, we've assumed 1/2) \
+_p_ = probability of heads (assume 1/2) \
 
 ## Coin-flipping: a probability distribution {.build}
 
-_n_ = number of trials \
-_k_ = number of successes \
-_p_ = probability of success (for coin flips, we've assumed 1/2) \
+
+_n_ = number of flips \
+_k_ = number of heads \
+_p_ = probability of heads (assume 1/2) \
 
 Two components to calculating the probability of _k_ successes: 
 
-Part 1: what's the probability of the **shared event** comprised of _k_ successes and _n_-_k_ failures?
+Part 1: what's the probability of the **shared event** comprised of a specific sequence of heads and tails??
 
 <div class="centered">
-$\Large p^k \times (1-p)^{n-k}$
+$\Large (1/2)^{n}$
 </div>
 
-Part 2: how many permutations of _n_ events give _k_ successes?
+Part 2: how many permutations of _n_ events give _k_ heads?
+
 
 
 ## Coin-flipping: a probability distribution {.build}
@@ -613,16 +615,16 @@ $\large x! = x \times (x-1) \times (x-2) \times \dots \times 1$
 
 ## Coin-flipping: a probability distribution {.build}
 
-_n_ = number of trials \
-_k_ = number of successes \
-_p_ = probability of success (for coin flips, we've assumed 1/2) \
+_n_ = number of flips \
+_k_ = number of heads
+_p_ = probability of heads (assume 1/2) \
 
 Two components to calculating the probability of _k_ successes: 
 
-Part 1: what's the probability of the **shared event** comprised of _k_ successes and _n_-_k_ failures?
+Part 1: what's the probability of each **shared event**
 
 <div class="centered">
-$\Large p^k \times (1-p)^{n-k}$
+$\Large (1/2)^{n}$
 </div>
 
 Part 2: how many permutations give _k_ successes?
@@ -633,17 +635,17 @@ $\Large {{n}\choose{k}} = \frac{n!}{k!(n-k)!}$
 
 ## Coin-flipping: probability distribution function
 
-_n_ trials, _k_ successes, _p_ probability of success \
+_n_ trials, _k_ successes, 1/2 probability of success \
 
 <div class="centered">
-$\ {{n}\choose{k}}p^k (1-p)^{n-k}$
+$\ {{n}\choose{k}}(1/2)^{n}$
 </div>
 
 \
 
 Work in groups to write a function that returns 
 the probability of a number of heads (_k_) given a probability of 
-flipping heads (_p_) and a number of flips (_n_).
+flipping heads of 1/2 and a number of flips (_n_).
 
 Hint - check out the function `choose()`
 
@@ -651,17 +653,17 @@ Make a plot with 1 to 100 on the x axis, and the y axis shows your probability o
 
 ## Coin-flipping: probability distribution function
 
-_n_ trials, _k_ successes, _p_ probability of success \
+_n_ trials, _k_ successes, 1/2 probability of success \
 
 
 <div class="centered">
-$\ {{n}\choose{k}}p^k (1-p)^{n-k}$
+$\ {{n}\choose{k}}(1/2)^{n}$
 </div>
 
 \
 ```{r}
-	coin.flip.prob <- function(n,k,p){
-		prob <- choose(n,k) * p^k * (1-p)^(n-k)
+	coin.flip.prob <- function(n,k){
+		prob <- choose(n,k) * (1/2)^n
 		return(prob)
 	}
 ```
@@ -670,7 +672,7 @@ $\ {{n}\choose{k}}p^k (1-p)^{n-k}$
 
 ```{r,fig.width=6.5,fig.height=5.5,fig.align="center",echo=TRUE, eval=F}
 	par(oma=c(3,0,0,0))
-	plot(coin.flip.prob(n=100,k=0:100,p=0.5),
+	plot(coin.flip.prob(n=100,k=0:100),
 			xlab="heads",ylab="probability",
 			pch=20,col=adjustcolor(1,0.7))
 ```
@@ -680,17 +682,66 @@ $\ {{n}\choose{k}}p^k (1-p)^{n-k}$
 
 ```{r,fig.width=6.5,fig.height=5.5,fig.align="center",echo=FALSE}
 	par(oma=c(3,0,0,0))
-	plot(coin.flip.prob(n=100,k=0:100,p=0.5),
+	plot(coin.flip.prob(n=100,k=0:100),
 			xlab="heads",ylab="probability",
 			pch=20,col=adjustcolor(1,0.7))
 ```
 
-## Coin-flipping: probability distribution function
+## Coin-flipping: probability distribution function {.build}
+What if we change p?
+
+If p(heads) = 0.1 and you flip a coin 3 times,
+
+p(HHH) = ?\
+p(TTT) = ?\
+p(THH) = ?\
+
+## Coin-flipping: probability distribution function {.build}
+If p(heads) = 0.1 and you flip a coin 3 times,
+
+p(HHH) = $(0.1)^{3}$ = 0.001\
+p(TTT) = $(0.9)^{3}$ =0.729\
+p(THH) = $(0.9)^{1} \times (0.1)^{2}$ = 0.009\   
+
+## Generalizing for different values of p
+
+_n_ = number of trials \
+_k_ = number of successes \
+_p_ = probability of success (for coin flips, assume 1/2) \
+
+Two components to calculating the probability of _k_ successes: 
+
+Part 1: what's the probability of the **shared event** comprised of _k_ successes and _n_-_k_ failures?
+
 <div class="centered">
-$\ {{n}\choose{k}}p^k (1-p)^{n-k}$
+$\Large p^k \times (1-p)^{n-k}$
 </div>
 
-What if we change P?
+Part 2: 
+<div class="centered">
+$\ {{n}\choose{k}}$
+</div>
+
+## The binomial distribution!!!
+
+<div class="centered">
+$\Large {{n}\choose{k}} p^k \times (1-p)^{n-k}$
+
+</div>
+
+## Write a function!
+Work in your teams to edit your function from before to account for variable values of p.
+
+## Write a function
+
+\
+```{r}
+	coin.flip.prob <- function(n,k,p){
+		prob <- choose(n,k) * p^k * (1-p)^(n-k)
+		return(prob)
+	}
+```
+
 
 ## {.build}
 

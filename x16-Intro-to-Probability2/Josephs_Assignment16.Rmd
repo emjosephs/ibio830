@@ -8,7 +8,7 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_16_Assignment.Rmd") -->
 
-#### Due by the beginning of next class (11/2)
+#### Due by the beginning of next class (10/30)
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment16.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -110,7 +110,7 @@ has an active flu infection?\
 P(Infection in Ingham County) = 600/280000 = 0.002142857\
 P(Not infected in Ingham County) = 1 - 600/280000 = 0.9978571\
 \
-Next we use this to figure out the probability that no one in the class has the flu. We can repurpose our coin flip function from above.\
+Next we use this to figure out the probability that no one in the class has the flu. We can repurpose our coin flip function from above. In this case "success" is having the flu and we are interested in the probability of no successes/no flu.\
 ```{r, echo=T}
 pNoFlu = coinFlipProb(n=55, k=0, p=0.002142857)
 pNoFlu
