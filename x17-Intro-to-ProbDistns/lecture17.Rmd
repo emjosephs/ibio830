@@ -376,11 +376,11 @@ including tools for simulating data, and calculations for the expected mean and 
 
 ## Get to know a distribution!
 
-Make an Rmarkdown info cheatsheet, including:
+Make presentation on google slides, including:
 
 1. A brief history of the distribution (wikipedia is your friend, citations unnecessary)
 2. A walkthrough of the notation, with an explanation of all parameters
 3. Description of mean and variance, with some intuition-(and character!)-building discussion
 4. State the bounds of the distribution (if there are any), and state whether it is continuous or discrete
 5. Examples of data that are well described by the distribution (preferably biological, better if it's from your field)
-6. Shiny demo
+6. Shiny demo (In a separate Rmarkdown file)
