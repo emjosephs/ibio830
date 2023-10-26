@@ -1,7 +1,7 @@
 ---
 title: "Lecture 17 - Introduction to Probability Distributions"
 author: "Emily Josephs"
-date: "November 1 2022"
+date: "October 31 2023"
 output:
   ioslides_presentation:
     transition: 0.001
@@ -207,7 +207,7 @@ rbinom(n=1,size=100,p=0.6)
 rbinom(n=1,size=100,p=0.6)
 ```
 
-## Breakout room exercise
+## Team exercise
 Use `rbinom` to sample 1000 draws from the binomial distribution. Pick your own value of *p*.
 
 Plot the histogram of the values that you get.
@@ -233,7 +233,7 @@ and
 $\Large \mathbb{V}ar(X) = np(1-p)$
 </div>
 
-Check to make sure that your estimates from the breakout rooms match these values.
+Check to make sure that your estimates from the teams match these values.
 
 ## Wait what's a variance? {.build}
 
