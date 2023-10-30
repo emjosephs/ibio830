@@ -1,0 +1,1 @@
+make getting the prob of flu in the homework clearer and make them not have to calculate it all.
