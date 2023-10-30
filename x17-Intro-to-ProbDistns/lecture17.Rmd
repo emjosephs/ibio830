@@ -59,13 +59,125 @@ that contains **_k_** successes?
 
 the probability of each success is ______
 
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
 so the probability of $k$ successes is ______
+
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
 
 the probability of each fail is ______
 
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+the probability of each fail is $1-p$
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+the probability of each fail is $1-p$
+
 if there are $n$ trials and $k$ successes, there are ____ fails
 
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+the probability of each fail is $1-p$
+
+if there are $n$ trials and $k$ successes, there are $n-k$ fails
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+the probability of each fail is $1-p$
+
+if there are $n$ trials and $k$ successes, there are $n-k$ fails
+
 so the probability of all the fails is _____
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+the probability of each fail is $1-p$
+
+if there are $n$ trials and $k$ successes, there are $n-k$ fails
+
+so the probability of all the fails is $(1-p)^{n-k}$
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+the probability of each fail is $1-p$
+
+if there are $n$ trials and $k$ successes, there are $n-k$ fails
+
+so the probability of all the fails is $(1-p)^{n-k}$
 
 and the probability of a particular sequence of **_n_** trials containing **_k_** successes is ______
 
@@ -75,24 +187,22 @@ and the probability of a particular sequence of **_n_** trials containing **_k_*
 What is the probability of any _particular_ sequence of **_n_** trials 
 that contains **_k_** successes?
 
-Well, what do we know?
-
 the probability of each success is $p$
  
 so the probability of $k$ successes is $p^k$
  
-the probability of each tail is $1-p$
+the probability of each fail is $1-p$
  
 if there are $n$ trials and $k$ successes, there are $n-k$ fails
  
-so the probability of $n-k$ fails is $(1-p)^{(n-k)}$
+so the probability of all fails is $(1-p)^{(n-k)}$
  
 and the probability of a particular sequence of **_n_** trials containing **_k_** successes is $p^k \times (1-p)^{(n-k)}$
 
 
 ## The binomial distribution  {.build}
 
-and the probability of a particular sequence of **_n_** trials containing **_k_** successes is $p^k \times (1-p)^{(n-k)}$
+The probability of a particular sequence of **_n_** trials containing **_k_** successes is $p^k \times (1-p)^{(n-k)}$
 
 Now we need to know _how many ways there are_ of getting a sequence of 
 **_n=100_** trials containing **_k=43_** successes.
@@ -366,13 +476,13 @@ including tools for simulating data, and calculations for the expected mean and 
 	+ the probability of any value in a continuous distribution is 0, but the _relative_ probability 
 	can be described by a **_probability density function_**
 
-## Shiny Demo!
-
 ## Get to know a distribution!
 
 **continuous**: beta, exponential, gamma, lognormal, normal, uniform
 
 **discrete**: poisson, geometric, negative binomial
+
+## Shiny demo!!
 
 ## Get to know a distribution!
 
