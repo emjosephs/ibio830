@@ -105,6 +105,10 @@ and the probability that a randomly selected person has an active COVID infectio
 and it should return the probability (from simulations), 
 that no one in the room has an active flu infection.
 
+Note that for simulations, you want to use sample() to simulation whether people
+do or do not have COVID, not the coin flip probability
+function from earlier in homework.
+
 \
 \
 \
