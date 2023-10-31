@@ -86,48 +86,36 @@ coinFlipProb(n=531,k=71,p=.12345)
 
 ### Question 3
 
-October in the Northern Hemisphere marks the start of flu season.
-If our class were meeting in person, what is the probability 
-that no one in the classroom would have an active case of the flu?
-
-\
-\
-
-For the purposes of this calculation, assume the following:
-
--there are 55 people in our class\
--each of us can be treated as a random draw from Ingham County\
--there are ~280,000 people in Ingham County\
--over the last 5 days, the average per-day number of newly detected flu cases in Ingham County is 40\
--someone infected with the flu is infectious for 5 days\
--only 1 in every 3 flu infections is detected.\
+Data from Dr. Josephs' undergraduate class exams suggests that at any point, 
+1% of students at MSU have an active COVID infection.
+What is the probability that no one in our classroom would has an active case of COVID?
 
 3a) What is the analytical probability that no one in our classroom 
-has an active flu infection?\
+has an active COVID infection? Assume there are 35 people in the classroom.
 \
 **First we need to figure out how many people actually have the flu.**\
-40 infections per day x 5 days x 3 actual cases per detected case = 600.\
-P(Infection in Ingham County) = 600/280000 = 0.002142857\
-P(Not infected in Ingham County) = 1 - 600/280000 = 0.9978571\
 \
-Next we use this to figure out the probability that no one in the class has the flu. We can repurpose our coin flip function from above. In this case "success" is having the flu and we are interested in the probability of no successes/no flu.\
+We can repurpose our coin flip function from above. In this case "success" is having COVID and we are interested in the probability of no successes/no flu.\
 ```{r, echo=T}
-pNoFlu = coinFlipProb(n=55, k=0, p=0.002142857)
+pNoFlu = coinFlipProb(n=35, k=0, p=0.01)
 pNoFlu
 ```
 
 3b) What is the probability at least one person in the room **_does_** have an active 
 flu infection\
 \
-**P(Someone has the flu) = 1 - P(no one has the flu) = 0.1112915**
+**P(Someone has the flu) = 1 - P(no one has the flu)**
+```{r, echo=T}
+1-pNoFlu
+```
 \
 \
-3c) What is probability 2 people in the room are infected?
+3c) What is probability that 2 people in the room are infected?
 
 **Again we can repurpose the coin flip probability function.
 
 ```{r, echo=T}
-p2flu = coinFlipProb(55,2,0.002142857)
+p2flu = coinFlipProb(35,2,0.01)
 p2flu
 ```
 
@@ -159,11 +147,11 @@ classSims <- function(myP, myN){
  return(1-probSick) 
 }
 
-classSims(myP = 0.002142857, myN = 55)
+classSims(myP = 0.01, myN = 35)
 
 ```
 
-A more elegant function for simulating the flu
+A more elegant function for simulating the sickness.
 ```{r, eval=F, echo=T}
 simFlu <- function(N,pInf,nReps){
 	sims <- replicate(nReps,
