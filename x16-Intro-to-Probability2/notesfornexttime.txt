@@ -2,3 +2,7 @@
 
 walk through an example of using sample to get at does someone have the flu or not for one person.
 
+have the homework start with the simulations and then use the binomial dist. Ask them which is easier?
+
+
+
