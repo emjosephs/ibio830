@@ -281,6 +281,23 @@ choose(n=2, k=1)
 ```
 
 
+## A reminder about simulations {.build}
+
+We have talked about two tools for understanding probability: simulations and analytical solutions.
+
+Analytical solutions involve directly calculating probabilities.
+
+Simulations involve using tools like sample() to mimic the process creating probabilities.
+
+Simulations can be different every time you run them.
+
+## A reminder about simulations
+
+```{r, out.width="500px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("../x15-Intro-to-Probability/figs/sims.jpg")
+```
+
+
 ## Probability distributions: the binomial {.build}
 
 If a random variable **_X_** is binomially distributed, we write:
