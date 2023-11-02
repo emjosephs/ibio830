@@ -1,7 +1,7 @@
 ---
 title: "Lecture 19 - Introduction to Likelihood"
 author: "Emily Josephs"
-date: "November 8 2022"
+date: "November 7 2023"
 output:
   ioslides_presentation:
     transition: 0.001
@@ -16,13 +16,6 @@ output:
 	options(digits=3)
 	set.seed(123)
 ```
-
-## GO VOTE
-
-Seriously, if you can, please log out and go vote.
-
-https://mvic.sos.state.mi.us/
-
 
 
 ## Today:
@@ -52,23 +45,6 @@ As the number of samples increases, the sample average converges on the
 expected value.
 
 Discovered by our friend Jacob/James/Jaccques Bernoulli!
-
-## The Law of Large Numbers {.build}
-
-Say I give you a coin that flips heads with a probability of 1/2.
-
-Now you flip the coin 20 times, and get a heads **every** time!
-
-Which has a higher probability of happening on the 21st flip: heads or tails?
-
-
-## Beware the gambler's fallacy!
-
-Probability is the same, because the flips are independent!
-
-$p(21 \text{ heads in 21 flips}) = {{n=21}\choose{k=21}} \times (0.5)^{21} = `r choose(21,21) * (0.5)^{21}`$
-
-$p(21 \text{ heads} \; | \; 20 \text{ heads}) = 0.5$
 
 ## Visualizing the Law of Large Numbers
 
@@ -134,18 +110,22 @@ $p(21 \text{ heads} \; | \; 20 \text{ heads}) = 0.5$
 ```
 
 
+## The law of large numbers in population genetics
 
-How would this look different if there was memory?
+This is why genetic drift is stronger in small populations!!
 
+https://cjbattey.shinyapps.io/driftR/
+
+## Introduction to Likelihood
+
+Team discussion problem: Someone hands us a coin and we flip it 100 times and get 46 heads. 
+
+Is the coin fair? (probability of heads = 50%)
+
+What is the _most likely_ probability of flipping heads for this coin?
 
 
 ## Introduction to Likelihood {.build}
-
-The **likelihood** of the data is the probability of the 
-data as a function of some unknown parameters.
-
-
-## Introduction to Likelihood
 
 The **likelihood** of the data is the probability of the 
 data as a function of some unknown parameters.
@@ -209,12 +189,9 @@ or repeating a random process an infinite number of times)
 but we can take _samples_ to try to learn about --  
 or **_estimate_** -- parameters.  
 
+## Back to the coin flip problem {.build}
 
-## Calculating likelihood {.build}
-
-Someone hands us a coin and we flip it 100 times and get 46 heads. 
-What is the _most likely_ probability of flipping heads?
-
+We flip a coin 100 times and get 46 heads.
 ```{r, echo=FALSE}
 n.heads <- 46
 ```
@@ -228,27 +205,15 @@ $\large 46 \sim B(n=100,p=??)$
 </div>
 
 <div class="centered">
-$\large prob(X=46 \mid p, n=100)$
+$\large p(observation) = p(X=46 \mid p, n=100)$
 </div>
 
 \
 \
 
-There is some _true_ probability of flipping heads (_p_),
-and we get $n$ observations of the process.
-
-How do we go about figuring out what $p$ is?
-
-## Calculating likelihood
-
-Coin flips are *________ distributed*
-
-
-## Calculating likelihood
-
-Coin flips are *binomially distributed*
-
 ## Calculating likelihood with math? {.build}
+
+What is the probabiliy that the coin is fair?
 
 <div class="centered">
 $\large X \sim B(n=100,p=0.5)$\
@@ -313,105 +278,6 @@ that maximize the likelihood of the data.
 
 The MLE is our best guess at the true value of the unknown 
 **_population_** (or process) parameter.
-
-
-## How do we find the MLE? {.build}
-
-Haphazard and grid searches are inefficient and often impractical.
-
-There are a number of sophisticated algorithms for doing 
-ML inference, many of which leverage classic techniques for 
-finding the maximum of an arbitary function.
-\
-
-For example, if $f(x)$ is the likelihood function,
-maximum $f(x)$ happens when $f'(x) = 0$ and $f''(x) < 0$
-
-## How do we find the MLE?
-
-```{r,echo=FALSE,fig.height=5.5,fig.width=6}
-	# calculate likelihood of the data if p = 0.1
-	p <- seq(0,1,length.out=1e3)
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.08),
-		xlab="probability of success",ylab="p(data)",
-		type='n')
-		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
-	 points(0.3,dbinom(x=n.heads,size=100,p=0.3),pch=19)
-	 arrows(x0 = 0.3-0.03,x1 = 0.3 + 0.015,
-	 		y0 = dbinom(x=n.heads,size=100,p=0.3) + 0.002,
-	 		y1 = dbinom(x=n.heads,size=100,p=0.3) + 0.004,length=0.1)
-```
-
-## How do we find the MLE?
-
-```{r,echo=FALSE,fig.height=5.5,fig.width=6}
-	# calculate likelihood of the data if p = 0.1
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.08),
-		xlab="probability of success",ylab="p(data)",
-		type='n')
-		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
-	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
-	 points(0.6,dbinom(x=n.heads,size=100,p=0.6),pch=19)
-	 arrows(x0 = 0.6,x1 = 0.6 + 0.03,
-	 		y0 = dbinom(x=n.heads,size=100,p=0.6) + 0.004,
-	 		y1 = dbinom(x=n.heads,size=100,p=0.6) + 0.001,length=0.1)
-```
-
-## How do we find the MLE?
-
-```{r,echo=FALSE,fig.height=5.5,fig.width=6}
-	# calculate likelihood of the data if p = 0.1
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.08),
-		xlab="probability of success",ylab="p(data)",
-		type='n')
-		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
-	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
-	 points(0.6,dbinom(x=n.heads,size=100,p=0.6))
-	 points(0.4,dbinom(x=n.heads,size=100,p=0.4),pch=19)
-	 arrows(x0 = 0.4-0.03,x1 = 0.4 - 0.025,
-	 		y0 = dbinom(x=n.heads,size=100,p=0.4) - 0.001,
-	 		y1 = dbinom(x=n.heads,size=100,p=0.4) + 0.003,length=0.1)
-```
-
-## How do we find the MLE?
-
-```{r,echo=FALSE,fig.height=5.5,fig.width=6}
-	# calculate likelihood of the data if p = 0.1
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.08),
-		xlab="probability of success",ylab="p(data)",
-		type='n')
-		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
-	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
-	 points(0.6,dbinom(x=n.heads,size=100,p=0.6))
-	 points(0.4,dbinom(x=n.heads,size=100,p=0.4))
-	 points(0.5,dbinom(x=n.heads,size=100,p=0.5),pch=19)
-	 arrows(x0 = 0.5+0.025,x1 = 0.5 + 0.03,
-	 		y0 = dbinom(x=n.heads,size=100,p=0.5) + 0.003,
-	 		y1 = dbinom(x=n.heads,size=100,p=0.5) - 0.001,length=0.1)
-```
-
-## How do we find the MLE?
-
-```{r,echo=FALSE,fig.height=5.5,fig.width=6}
-	# calculate likelihood of the data if p = 0.1
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.08),
-		xlab="probability of success",ylab="p(data)",
-		type='n')
-		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
-	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
-	 points(0.6,dbinom(x=n.heads,size=100,p=0.6))
-	 points(0.4,dbinom(x=n.heads,size=100,p=0.4))
-	 points(0.5,dbinom(x=n.heads,size=100,p=0.5))
-	 points(0.46,dbinom(x=n.heads,size=100,p=0.46),pch=19)
-	 arrows(x0 = 0.46-0.03,x1 = 0.46 + 0.03,
-	 		y0 = dbinom(x=n.heads,size=100,p=0.46) + 0.002,
-	 		y1 = dbinom(x=n.heads,size=100,p=0.46) + 0.002,length=0.1)
-```
 
 ## How do we find the MLE? {.build}
 
@@ -704,3 +570,109 @@ that maximize the likelihood of the data.
 
 When we have multiple observations, we calculate their likelihood as the 
 product of their individual likelihoods, or (better) the sum of their **_log likelihoods_**.
+
+
+
+### extra stuff
+
+## How do we find the MLE? {.build}
+
+Haphazard and grid searches are inefficient and often impractical.
+
+There are a number of sophisticated algorithms for doing 
+ML inference, many of which leverage classic techniques for 
+finding the maximum of an arbitary function.
+\
+
+For example, if $f(x)$ is the likelihood function,
+maximum $f(x)$ happens when $f'(x) = 0$ and $f''(x) < 0$
+
+## How do we find the MLE?
+
+```{r}
+n.heads=46
+```
+
+```{r,echo=FALSE,fig.height=5.5,fig.width=6}
+	# calculate likelihood of the data if p = 0.1
+	p <- seq(0,1,length.out=1e3)
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.08),
+		xlab="probability of success",ylab="p(data)",
+		type='n')
+		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
+	 points(0.3,dbinom(x=n.heads,size=100,p=0.3),pch=19)
+	 arrows(x0 = 0.3-0.03,x1 = 0.3 + 0.015,
+	 		y0 = dbinom(x=n.heads,size=100,p=0.3) + 0.002,
+	 		y1 = dbinom(x=n.heads,size=100,p=0.3) + 0.004,length=0.1)
+```
+
+## How do we find the MLE?
+
+```{r,echo=FALSE,fig.height=5.5,fig.width=6}
+	# calculate likelihood of the data if p = 0.1
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.08),
+		xlab="probability of success",ylab="p(data)",
+		type='n')
+		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
+	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
+	 points(0.6,dbinom(x=n.heads,size=100,p=0.6),pch=19)
+	 arrows(x0 = 0.6,x1 = 0.6 + 0.03,
+	 		y0 = dbinom(x=n.heads,size=100,p=0.6) + 0.004,
+	 		y1 = dbinom(x=n.heads,size=100,p=0.6) + 0.001,length=0.1)
+```
+
+## How do we find the MLE?
+
+```{r,echo=FALSE,fig.height=5.5,fig.width=6}
+	# calculate likelihood of the data if p = 0.1
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.08),
+		xlab="probability of success",ylab="p(data)",
+		type='n')
+		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
+	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
+	 points(0.6,dbinom(x=n.heads,size=100,p=0.6))
+	 points(0.4,dbinom(x=n.heads,size=100,p=0.4),pch=19)
+	 arrows(x0 = 0.4-0.03,x1 = 0.4 - 0.025,
+	 		y0 = dbinom(x=n.heads,size=100,p=0.4) - 0.001,
+	 		y1 = dbinom(x=n.heads,size=100,p=0.4) + 0.003,length=0.1)
+```
+
+## How do we find the MLE?
+
+```{r,echo=FALSE,fig.height=5.5,fig.width=6}
+	# calculate likelihood of the data if p = 0.1
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.08),
+		xlab="probability of success",ylab="p(data)",
+		type='n')
+		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
+	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
+	 points(0.6,dbinom(x=n.heads,size=100,p=0.6))
+	 points(0.4,dbinom(x=n.heads,size=100,p=0.4))
+	 points(0.5,dbinom(x=n.heads,size=100,p=0.5),pch=19)
+	 arrows(x0 = 0.5+0.025,x1 = 0.5 + 0.03,
+	 		y0 = dbinom(x=n.heads,size=100,p=0.5) + 0.003,
+	 		y1 = dbinom(x=n.heads,size=100,p=0.5) - 0.001,length=0.1)
+```
+
+## How do we find the MLE?
+
+```{r,echo=FALSE,fig.height=5.5,fig.width=6}
+	# calculate likelihood of the data if p = 0.1
+	plot(p,dbinom(x=n.heads,size=100,p=p),
+		xlim=c(0,1),ylim=c(0,0.08),
+		xlab="probability of success",ylab="p(data)",
+		type='n')
+		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
+	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
+	 points(0.6,dbinom(x=n.heads,size=100,p=0.6))
+	 points(0.4,dbinom(x=n.heads,size=100,p=0.4))
+	 points(0.5,dbinom(x=n.heads,size=100,p=0.5))
+	 points(0.46,dbinom(x=n.heads,size=100,p=0.46),pch=19)
+	 arrows(x0 = 0.46-0.03,x1 = 0.46 + 0.03,
+	 		y0 = dbinom(x=n.heads,size=100,p=0.46) + 0.002,
+	 		y1 = dbinom(x=n.heads,size=100,p=0.46) + 0.002,length=0.1)
+```
