@@ -1,7 +1,7 @@
 ---
 title: "Lecture 20 - Intro to Bayesian Statistics"
 author: "Emily Josephs"
-date: "November 10 2022"
+date: "November 9 2023"
 output:
   ioslides_presentation:
     transition: 0.001

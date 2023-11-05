@@ -8,7 +8,8 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_20_Assignment.Rmd") -->
 
-#### Due by the beginning of next class (11/15)
+
+#### Due by 11:59pm on 11/13
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment20.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -33,26 +34,6 @@ It is due before our next class.
 
 ### Question 1
 
-1. Write down Bayes' Theorem using $D$ to denote "data" and $H$ to denote "the hypothesis"
-
-$\Large p(H \mid D) = \frac{p(D \mid H)p(H)}{p(D)}$
-
-2. Label the different components using the following list of concepts:
-	- the posterior probability of the hypothesis
-	- the marginal likelihood of the data
-	- the prior probability of the hypothesis
-	- the likelihood of the data given the hypothesis
-
-$p(H \mid D)$ is the posterior probability of the hypothesis 
-
-$p(D \mid H)$ is the likelihood of the data given the hypothesis
-
-$p(H)$ is the prior probability of the hypothesis
-
-$p(D)$ is the marginal likelihood of the data
-
-### Question 2
-
 RSV (respiratory syncytial virus) is
 a flu-like illness that infects virtually all children in their 
 first few years of life. 
@@ -66,22 +47,16 @@ Given that result, what is the probability the child is actually infected with R
 
 In your calculations, assume the following:\
 
--There are ~7,000 kids under the age of 2 in Ingham County\
 -The child can be treated as a random draw from the <2yos of Ingham County\
--over the last 10 days, the average per-day number of new detected cases of active RSV infection in Ingham County is 5\
--someone infected with RSV is infectious for 7 days\
--only 1 out of every 3 RSV infections is detected and reported.\
+-The probability that any child under two years old in Ingham County has RSV is 0.015.
 \
 
 **Answer**\
 We want to determine p(RSV | positive test).
 
-p(RSV) = proportion of kids with RSV in Ingham county\
-= Number of cases / number of kids\
-= Number of detected cases x time a case is infections x number of cases per detected case
+p(RSV) = proportion of kids with RSV in Ingham county
 ```{r}
-pRSV = (5*7*3)/7000
-pRSV
+pRSV = 0.015
 ```
 
 p(positive test | RSV) = likelihood of getting a positive test given RSV = .917
@@ -89,7 +64,7 @@ p(positive test | RSV) = likelihood of getting a positive test given RSV = .917
 pPosRSV = 0.917
 ```
 
-p(Positive result) =
+p(Positive result) =\
 p(positive result | RSV) x p(RSV) + p(positive result | no RSV) x p(no RSV)
 = 0.917 x 0.015 +  (1-0.989) x (1-0.015)
 ```{r}
