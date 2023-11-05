@@ -8,7 +8,7 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_19_Assignment.Rmd") -->
 
-#### Due by midnight before the beginning of next class (11/10)
+#### Due by 11:59 pm on 11/08
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment19.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -23,40 +23,35 @@ It is due before our next class.
 
 **This homework assignment will test your abilities to:**
 
-1. think critically and creatively about probability distributions
 
-2. extrapolate from in-class exercises to apply likelihood-based inference to arbitrary distributions
+1. extrapolate from in-class exercises to apply likelihood-based inference to arbitrary distributions
 
-3. use your R skillz: function building, data visualization, etc.
+2. use your R skillz: function building, data visualization, etc.
 
 \
 
+
 ### Question 1
-
-What is the log product rule, and how/why is it used for likelihood-based inference?
-
-The log product rule is that log(A x B) = log(A) + log(B). 
-It's important for likelihood-based inference because it allows you to calculate the likelihood of multiple events without breaking your computer with small numbers
-
-
-### Question 2
 
 Everything from class used the binomial distribution, so let's try using the Poisson distribution instead.
 \
 \
 \
-a) If $X \sim \text{Pois}(\lambda)$, calculate $P(2 | \lambda=4)$
+a) If $X \sim \text{Pois}(\lambda)$, calculate $P(2 | \lambda=4)$ (hint, use the dpois function in R)
 \
 ```{r, echo=T}
 myProb = dpois(x=2, lambda=4)
 myProb
 ```
 
-b) You make 2 draws from the Poisson distribution and get 2 the first time, and 3 the second time. What is the probability of this outcome of $\lambda$ is 4?
+b) You make 2 draws from the Poisson distribution and get 2 the first time, and 3 the second time. What is the probability of this outcome if $\lambda$ is 4? (This is the same as asking you to calculate $P(X={2,3}| \lambda=4)$.)
 
 ```{r, echo=T}
 myProb2 = prod(sapply(c(2,3), function(x){dpois(x, lambda=4)}))
 myProb2
+
+## you could also code this:
+myProb2 = dpois(2, lambda=4)*dpois(3, lambda=4)
 ```
 
 c) What is the log-likelihood of the outcome from part b?
@@ -70,7 +65,7 @@ myLogLike
 ### Question 3
 
 Use maximum likelihood inference to estimate 
-the parameter values I used to simulate data from a Poisson distribution, 
+the parameter value (lambda) I used to simulate data from a Poisson distribution, 
 which are saved as a .Robj file in the Class 19 folder.
 You should refer to the lecture .Rmd file for helpful reference 
 code that you can cannibalize.
@@ -103,18 +98,11 @@ hist(poisson.data)
 #	simple events that make up the shared event
 #
 
-## pick a set of lambdas based on the histogram
+## pick a set of lambdas for the grid search based on the histogram
 lambdas <- seq(0,8,length.out=1000)
 
 
 ## write a function to calculate the log-likelihood of the data for a given lambda
-myLogLikeF = function(l){sum(
-    sapply(
-        poisson.data, 
-        function(x){
-          dpois(x, lambda=l, log=T)
-          }))}
-
 myLogLikeF = function(l){sum(dpois(poisson.data, lambda=l, log=T))}
   
 # run your function on all the lambdas in your set

@@ -8,7 +8,7 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_19_Assignment.Rmd") -->
 
-#### Due by midnight before the beginning of next class on 11/09
+#### Due by 11:59 pm on 11/08
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment19.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -23,9 +23,7 @@ It is due before our next class.
 
 **This homework assignment will test your abilities to:**
 
-1. think critically and creatively about probability distributions
-
-2. extrapolate from in-class exercises to apply likelihood-based inference to arbitrary distributions
+1. extrapolate from in-class exercises to apply likelihood-based inference to arbitrary distributions
 
 3. use your R skills: function building, data visualization, etc.
 
@@ -33,23 +31,16 @@ It is due before our next class.
 
 ### Question 1
 
-What is the log product rule, and how/why is it used for likelihood-based inference?
-\
-\
-\
-
-### Question 2
-
 Everything from class used the binomial distribution, so let's try using the Poisson distribution instead.
 \
 \
 
-a) If $X \sim \text{Pois}(\lambda)$, calculate $P(X=2 | \lambda=4)$
+a) If $X \sim \text{Pois}(\lambda)$, calculate $P(X=2 | \lambda=4)$ (hint, use the dpois function in R)
 \
 \
 \
 \
-b) You make 2 draws from the Poisson distribution and get 2 the first time, and 3 the second time. What is the probability of this outcome f $\lambda = 4$?
+b) You make 2 draws from the Poisson distribution and get 2 the first time, and 3 the second time. What is the probability of this outcome uf $\lambda = 4$?
 This is the same as asking you to calculate $P(X={2,3}| \lambda=4)$.
 \
 \
@@ -65,7 +56,7 @@ c) What is the log-likelihood of the outcome from part b?
 ### Question 3
 
 Use maximum likelihood inference to estimate 
-the parameter values I used to simulate data from a Poisson distribution, 
+the parameter value (lambda) I used to simulate data from a Poisson distribution, 
 which are saved as a .Robj file in the Class 19 folder.
 You can refer to the lecture for helpful reference 
 code that you can cannibalize.
@@ -95,7 +86,7 @@ I've included pseudocode below to help you on your journey, but you don't need t
 #	simple events that make up the shared event
 #
 
-## pick a set of lambdas based on the histogram
+## pick a set of lambdas based on the histogram to use in he grid search
 
 ## write a function to calculate the log-likelihood of the data for a given lambda
 
