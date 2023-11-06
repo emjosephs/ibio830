@@ -15,40 +15,6 @@ output:
 	options(digits=5)
 ```
 
-## Quick Recap
-
-1. Probability
-
-2. Probability distributions
-
-3. Likelihood
-
-
-## Quick Recap
-
-1. Probability: Figuring out how likely it is that an event (or many events, combinations of events) will happen.
-
-2. Probability distributions
-
-3. Likelihood
-
-## Quick Recap
-
-1. Probability: Figuring out how likely it is that an event (or many events, combinations of events) will happen.
-
-2. Probability distributions: Calculating the probability of event(s) based on specific parameters.
-
-3. Likelihood
-
-## Quick Recap
-
-1. Probability: Figuring out how likely it is that an event (or many events, combinations of events) will happen.
-
-2. Probability distributions: Calculating the probability of event(s) based on specific parameters.
-
-3. Likelihood: Given a set of events, what are the most likely parameters?
-
-
 ## Bird's-eye view {.build}
 
 Step 7: say something _quantitative_ and _objective_ about 
@@ -108,27 +74,42 @@ Step 3: understand the concept of likelihood
 
 Step 2: understand the rules of probability
 
-## Deriving Bayes Theorem {.build}
+## What is Bayes theorem?
+```{r, out.width="500px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/bayesmeme.jpg")
+```
+
+## Recap of conditional probabilities
+- a **_conditional probability_** is the probability of one outcome _conditional_ on another
+
+- written as p(A | B), read as "probability of A _given_ B"
+
+- probability of the intersection of A and B, divided by the probability of B
+
+<div class ="centered">
+$\Huge p(A|B) = \frac{p(A ~ \cap ~ B)}{p(B)}$
+</div>
+
+## Recap of conditional probabilities
+
+```{r, out.width="500px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("../x15-Intro-to-Probability/figs/conditionalprob.jpg")
+```
+
+<div class ="centered">
+$\Huge p(A|B) = \frac{p(A ~ \cap ~ B)}{p(B)}$
+</div>
+
+## Conditional probability cont
 
 Say we have a hypothesis $H$ that the probability that a given coin flips heads is 0.5.
 
 And we have observed data $D$ of a large number of flips from that coin.
 
-## Deriving Bayes Theorem {.build}
+If we know the probability of data given a hypothesis,
+can we calculate the probability of a hypothesis given the data?
 
-We might be interested in the  conditional probability of our data $D$ given hypothesis $H$.
-
-<div class="centered">
-$\Large{p(D \mid H) = \frac{P(H \  \cap \ D)}{P(H)}}$
-</div>
-
-We also know, based on how conditional probabilities work, the conditional probability of our hypothesis $H$ given our data $D$.
-
-<div class="centered">
-$\Large{p(H \mid D) = \frac{P(D \  \cap \ H)}{P(D)}}$
-</div>
-
-We can combine these two equations and rearrange.
+$p(D|H)$ -> $p(H|D)$
 
 ## Deriving Bayes Theorem {.build}
 
@@ -166,22 +147,30 @@ $p(H)$ is the _prior probability_ of $H$
 
 $p(D)$ is the _marginal likelihood_ or _model evidence_ of D
 
-## Bayes Theorem - Example {.build}
+## Probability problem {.build}
 
 ```{r,echo=FALSE}
-pr.cancer <- 0.0001
-pr.false.pos <- 0.001
-sensitivity <- 0.9
-n.people <- 1e7
+pr.hepatitis <- 0.001
+pr.false.pos <- 0.05
+sensitivity <- 0.99
+n.people <- 1e6
 ```
 
-- Using data collected in 1975, we know that the proportion of people that develop thyroid cancer is `r pr.cancer`.
+- The proportion of people that develop hepatitis C is `r pr.hepatitis`.
 
-- The probability that a biopsy correctly identifies these people as having cancer is `r sensitivity`.
+- The probability that a test correctly identifies someone with hepatitis as having hepatitis is `r sensitivity`.
 
-- The probability of a “false positive” (the test saying there was cancer when there wasn't) is `r pr.false.pos`.
+- If someone doesn't have hepatitis, they will test negative for the disease with probability `r 1- pr.false.pos`.
 
-**What is the probability that a person with a positive result actually has cancer?**
+**What is the probability that a person with a positive result actually has hepatitis?**
+
+## Probability problem {.build}
+
+```{r, out.width="700px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/docfig.jpeg")
+```
+
+
 
 ## Bayes Theorem - Example {.build}
 
@@ -189,30 +178,30 @@ ${p(H \mid D) = \frac{P(D \  \mid \ H) \times P(H)}{P(D)}}$
 
 What's H, and what's D?
 
-"H" is cancer, and "D" is the positive result.
+"H" is hepatitis, and "D" is the positive result.
 
 \
 \
 
-$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+$p(\text{hepatitis} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{hepatitis}) \; \times \; p(\text{hepatitis})}{p(\text{PosRes})}$
 
 
 ## Bayes Theorem - Example {.build}
-$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+$p(\text{hepatitis} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{hepatitis}) \; \times \; p(\text{hepatitis})}{p(\text{PosRes})}$
 
-$p(\text{PosRes} \; \mid \; \text{Cancer}) =$
+$p(\text{PosRes} \; \mid \; \text{hepatitis}) =$
 
-$p(\text{Cancer}) =$
+$p(\text{hepatitis}) =$
 
 $p(\text{PosRes}) =$
 
 
 ## Bayes Theorem - Example
-$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
+$p(\text{hepatitis} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{hepatitis}) \; \times \; p(\text{hepatitis})}{p(\text{PosRes})}$
 
-$p(\text{PosRes} \; \mid \; \text{Cancer}) =$ test sensitivity (`r sensitivity`)
+$p(\text{PosRes} \; \mid \; \text{hepatitis}) =$ test sensitivity (`r sensitivity`)
 
-$p(\text{Cancer}) =$ cancer frequency (`r pr.cancer`)
+$p(\text{hepatitis}) =$ hepatitis frequency (`r pr.hepatitis`)
 
 $p(\text{PosRes}) =$ ???
 	
@@ -220,58 +209,58 @@ $p(\text{PosRes}) =$ ???
 
 What about $p(\text{PosRes})$?
 
-We can break all positive results down into positive results where one has cancer, and positive results where one doesn't have cancer.
+We can break all positive results down into positive results where one has hepatitis, and positive results where one doesn't have hepatitis.
 
 $\begin{aligned}
-p(\text{PosRes}) = \: &p(\text{Cancer}) \times p(\text{PosRes} \mid \text{Cancer}) \\
-&+ p(\text{noCancer}) \times p(\text{PosRes} \mid \text{noCancer})
+p(\text{PosRes}) = \: &p(\text{hepatitis}) \times p(\text{PosRes} \mid \text{hepatitis}) \\
+&+ p(\text{nohepatitis}) \times p(\text{PosRes} \mid \text{nohepatitis})
 \end{aligned}$
 
-$p(\text{PosRes}) =$ `r pr.cancer` $\times$ `r sensitivity` $+$ `r 1-pr.cancer` $\times$ `r pr.false.pos`
+$p(\text{PosRes}) =$ `r pr.hepatitis` $\times$ `r sensitivity` $+$ `r 1-pr.hepatitis` $\times$ `r pr.false.pos`
 
-$p(\text{PosRes}) =$ `r pr.cancer*sensitivity + (1-pr.cancer)*pr.false.pos`
-
-## Bayes Theorem - Example
-
-$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{Cancer}) \; \times \; p(\text{Cancer})}{p(\text{PosRes})}$
-
-$p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
-
-$p(\text{Cancer}) =$ `r pr.cancer`
-
-$p(\text{noCancer}) =$ `r 1 - pr.cancer`
-
-$p(\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
-
-$p(\text{PosRes}) =$ `r pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos`
-
+$p(\text{PosRes}) =$ `r pr.hepatitis*sensitivity + (1-pr.hepatitis)*pr.false.pos`
 
 ## Bayes Theorem - Example
 
-$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{`r (sensitivity * pr.cancer)`}{`r (pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos)`}$
+$p(\text{hepatitis} \; \mid \; \text{PosRes}) = \frac{p(\text{PosRes} \; \mid \; \text{hepatitis}) \; \times \; p(\text{hepatitis})}{p(\text{PosRes})}$
 
-$p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
+$p(\text{PosRes} \; \mid \; \text{hepatitis}) =$ `r sensitivity`
 
-$p(\text{Cancer}) =$ `r pr.cancer`
+$p(\text{hepatitis}) =$ `r pr.hepatitis`
 
-$p(\text{noCancer}) =$ `r 1 - pr.cancer`
+$p(\text{nohepatitis}) =$ `r 1 - pr.hepatitis`
 
-$p(\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
+$p(\text{PosRes} \mid \text{nohepatitis}) =$ `r pr.false.pos`
 
-$p(\text{PosRes}) =$ `r pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos`
+$p(\text{PosRes}) =$ `r pr.hepatitis * sensitivity + (1-pr.hepatitis) * pr.false.pos`
+
 
 ## Bayes Theorem - Example
-$p(\text{Cancer} \; \mid \; \text{PosRes}) = \frac{`r (sensitivity * pr.cancer)`}{`r (pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos)`}$ = `r (sensitivity*pr.cancer)/(pr.cancer*sensitivity + (1-pr.cancer)*pr.false.pos)`
 
-$p(\text{PosRes} \; \mid \; \text{Cancer}) =$ `r sensitivity`
+$p(\text{hepatitis} \; \mid \; \text{PosRes}) = \frac{`r (sensitivity * pr.hepatitis)`}{`r (pr.hepatitis * sensitivity + (1-pr.hepatitis) * pr.false.pos)`}$
 
-$p(\text{Cancer}) =$ `r pr.cancer`
+$p(\text{PosRes} \; \mid \; \text{hepatitis}) =$ `r sensitivity`
 
-$p(\text{noCancer}) =$ `r 1 - pr.cancer`
+$p(\text{hepatitis}) =$ `r pr.hepatitis`
 
-$p(\text{PosRes} \mid \text{noCancer}) =$ `r pr.false.pos`
+$p(\text{nohepatitis}) =$ `r 1 - pr.hepatitis`
 
-$p(\text{PosRes}) =$ `r pr.cancer * sensitivity + (1-pr.cancer) * pr.false.pos`
+$p(\text{PosRes} \mid \text{nohepatitis}) =$ `r pr.false.pos`
+
+$p(\text{PosRes}) =$ `r pr.hepatitis * sensitivity + (1-pr.hepatitis) * pr.false.pos`
+
+## Bayes Theorem - Example
+$p(\text{hepatitis} \; \mid \; \text{PosRes}) = \frac{`r (sensitivity * pr.hepatitis)`}{`r (pr.hepatitis * sensitivity + (1-pr.hepatitis) * pr.false.pos)`}$ = `r (sensitivity*pr.hepatitis)/(pr.hepatitis*sensitivity + (1-pr.hepatitis)*pr.false.pos)`
+
+$p(\text{PosRes} \; \mid \; \text{hepatitis}) =$ `r sensitivity`
+
+$p(\text{hepatitis}) =$ `r pr.hepatitis`
+
+$p(\text{nohepatitis}) =$ `r 1 - pr.hepatitis`
+
+$p(\text{PosRes} \mid \text{nohepatitis}) =$ `r pr.false.pos`
+
+$p(\text{PosRes}) =$ `r pr.hepatitis * sensitivity + (1-pr.hepatitis) * pr.false.pos`
 
 
 ## Bayes'd & Confused {.build}
@@ -280,26 +269,15 @@ What's going on here?
 
 We know the false positive rate is only `r pr.false.pos`, 
 so if a person gets a "positive" diagnosis, 
-shouldn't there be a `r 1 - pr.false.pos` that they have cancer?
+shouldn't there be a `r 1 - pr.false.pos` that they have hepatitis?
 
 Yes, but think about the numbers!
 
 ## Bayes'd & Confused {.build}
 
-Out of `r n.people` people: 
-
- - there will be `r n.people * pr.cancer` cancer victims
- 
-	 + of whom `r n.people * pr.cancer * sensitivity` will be correctly diagnosed.
-
-Of the remaining `r n.people * (1 - pr.cancer)` healthy people:
- 
- - there will be `r (n.people * (1 - pr.cancer)) * pr.false.pos` false positives.
- 
- So if there's a positive diagnosis, the probability that a person actually has cancer is 
-$\frac{`r n.people * pr.cancer * sensitivity` }{`r n.people * pr.cancer * sensitivity` + `r (n.people * (1 - pr.cancer)) * pr.false.pos`}$
-= `r n.people * pr.cancer * sensitivity/(n.people * pr.cancer * sensitivity + (n.people * (1 - pr.cancer)) * pr.false.pos)`
-
+```{r, out.width="500px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/docfig.jpeg")
+```
 
 
 ## Bayes Theorem - Goats and Doors {.build}
@@ -326,7 +304,7 @@ There are 3 doors. One hides $1,000,000, and there are goats behind the other tw
 
  - After I open the door, I ask whether you want to switch your guess to the _other_ door.
 
- - **Should you switch your guess?!** (POLL: A for switch and B for stay)
+ - **Should you switch your guess?!** 
 
 ## Goats & Doors (Monty Hall)
 
@@ -491,7 +469,14 @@ $p(H1 \; \mid \; D3) = \frac{1}{3}$
 $p(H2 \; \mid \; D3) = \frac{2}{3}$
 
 
-## Again with the coins {.build}
+## But what about priors? {.build}
+
+```{r, out.width="400px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/bayescomic.jpeg")
+```
+
+
+## The coins again {.build}
 
 We flip a coin 10 times. What is our likelihood of getting 4 heads if the coin is fair (p=0.5)?
 

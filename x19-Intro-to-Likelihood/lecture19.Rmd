@@ -18,104 +18,6 @@ output:
 ```
 
 
-## Today:
- * Law of large numbers
- * Introduction to likelihood
-
-## The Law of Large Numbers {.build}
-
-$X \sim B(n=100, p=0.3)$
-
-```{r,echo=FALSE}
-par(mfrow=c(1,2))
-	x1 <- rbinom(5,size=100,prob=0.3)
-	x2 <- rbinom(5e6,size=100,prob=0.3)
-		hist(x1,col="slateblue",main=sprintf("5 samples\nE[X] - mean(X) = %s",signif(30-mean(x1),3)),xlim=c(0,100))
-			abline(v=mean(x1),col="red",lwd=2)
-			abline(v=100*0.3,col="green",lwd=2)
-		hist(x2,col="slateblue",main=sprintf("5e6 samples\nE[X] - mean(X) = %s",signif(30-mean(x2),3)),xlim=c(0,100))
-			abline(v=mean(x2),col="red",lwd=2)
-			abline(v=100*0.3,col="green",lwd=2)
-		legend(x="topright",lty=1,col=c("red","green"),legend=c("sample mean","expectation"),cex=0.7)
-```
-
-## The Law of Large Numbers {.build}
-
-As the number of samples increases, the sample average converges on the 
-expected value.
-
-Discovered by our friend Jacob/James/Jaccques Bernoulli!
-
-## Visualizing the Law of Large Numbers
-
-```{r,echo=TRUE,eval=F}
-	draw.running.mean <- function(r,n){
-		replicate(r,{
-			x1 <- rnorm(n,mean=0,sd=0.5)
-			x1.mean <- cumsum(x1)/(1:n)
-			lines(1:n,x1.mean,col=adjustcolor(1,0.2))
-		})
-		return(invisible(0))
-	}
-	n <- 1e2
-	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
-			xlab="number of draws from a normal",
-			ylab="running mean")
-		draw.running.mean(r = 1,n = 100)
-		abline(h=0,col=2)
-```
-
-## Visualizing the Law of Large Numbers
-
-```{r,echo=F,eval=T, cache=T}
-	draw.running.mean <- function(r,n){
-		replicate(r,{
-			x1 <- rnorm(n,mean=0,sd=0.5)
-			x1.mean <- cumsum(x1)/(1:n)
-			lines(1:n,x1.mean,col=adjustcolor(1,0.2))
-		})
-		return(invisible(0))
-	}
-	n <- 1e2
-	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
-			xlab="number of draws from a normal",
-			ylab="running mean")
-		draw.running.mean(r = 1,n = 100)
-		abline(h=0,col=2)
-```
-
-
-## Visualizing the Law of Large Numbers
-
-```{r,echo=FALSE,cache=TRUE}
-	n <- 1e2
-	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
-			xlab="number of draws from a normal",
-			ylab="running mean")
-		draw.running.mean(r = 1,n = 100)
-		abline(h=0,col=2)
-```
-
-
-## Visualizing the Law of Large Numbers
-
-```{r,echo=FALSE,cache=TRUE}
-
-	n <- 1e2
-	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
-			xlab="number of draws from a normal",
-			ylab="running mean")
-		draw.running.mean(r = 100,n = n)
-		abline(h=0,col=2)
-```
-
-
-## The law of large numbers in population genetics
-
-This is why genetic drift is stronger in small populations!!
-
-https://cjbattey.shinyapps.io/driftR/
-
 ## Introduction to Likelihood
 
 Team discussion problem: Someone hands us a coin and we flip it 100 times and get 46 heads. 
@@ -335,13 +237,9 @@ But calculating the probability of something that has _already happened_ seems *
 But, that's not really what we're doing - 
 
 We're calculating the probability of the observed data as a draw from some distribution,
-**_given_** the values of the parameters of that distribution
+**_given_** the values of the parameters of that distribution.
 
-## Maximum Likelihood - not bananas*
-
-"Things that happened were more likely to happen than things that didn't."
-
-     -Will Wetzel
+Our goal is to use these probabilities to estimate the distribution parameters.
 
 
 ## Maximum Likelihood: recap
@@ -389,42 +287,12 @@ $p(X={46,47,48}) = p(X=46) \times p(X=47) \times p(X=48)$
 n.heads <- c(46,47,48)
 ```
 
-If _p_(heads)=0.5 and _n_=100, what is $p(X={46,47,48})$? 
+If _p_(heads)=0.5 and _n_=100, how would we use code to
+estimate $p(X={46,47,48})$? 
 
-Poll: \
-
-A - sum(dbinom(x=c(46,47,48), size=100, prob=0.5)) \
-B - prod(dbinom(x=c(46,47,48), size=100, prob=0.5)) \
-C - dbinom(46, size=100, prob=0.5) \
-D - prod(dnorm(c(46,47,48), mean=50, sd=1)) \
-
-## Multiple observations
-
-$p(X={46,47,48}) = p(X=46) \times p(X=47) \times p(X=48)$
-
-If _p_(heads)=0.5 and _n_=100, what is $p(X={46,47,48})$? 
-
-Poll: \
-
-A - sum(dbinom(x=c(46,47,48), size=100, prob=0.5)) \
-**B - prod(dbinom(x=c(46,47,48), size=100, prob=0.5))** \
-C - dbinom(46, size=100, prob=0.5) \
-D - prod(dnorm(c(46,47,48), mean=50, sd=1)) \
-
-## Multiple observations {.build}
-
-$p(X={46,47,48}) = p(X=46) \times p(X=47) \times p(X=48)$
-
-If _p_(heads)=0.5 and _n_=100, what is $p(X={46,47,48})$? 
-
-```{r}
-dbinom(x=46, size=100, prob=0.5) * 
-dbinom(x=47, size=100, prob=0.5) * 
-dbinom(x=48, size=100, prob=0.5)
-prod(dbinom(x=c(46,47,48) ,size=100, prob=0.5))
+```{r, echo=T, eval=T}
+prod(dbinom(x=c(46,47,48), size=100, prob=0.5))
 ```
-
-## Multiple observations {.build}
 
 What if we want to know the likelihood of 10 observations?
 ```{r}
@@ -571,9 +439,103 @@ that maximize the likelihood of the data.
 When we have multiple observations, we calculate their likelihood as the 
 product of their individual likelihoods, or (better) the sum of their **_log likelihoods_**.
 
+## The Law of Large Numbers {.build}
+
+$X \sim B(n=100, p=0.3)$
+
+```{r,echo=FALSE}
+par(mfrow=c(1,2))
+	x1 <- rbinom(5,size=100,prob=0.3)
+	x2 <- rbinom(5e6,size=100,prob=0.3)
+		hist(x1,col="slateblue",main=sprintf("5 samples\nE[X] - mean(X) = %s",signif(30-mean(x1),3)),xlim=c(0,100))
+			abline(v=mean(x1),col="red",lwd=2)
+			abline(v=100*0.3,col="green",lwd=2)
+		hist(x2,col="slateblue",main=sprintf("5e6 samples\nE[X] - mean(X) = %s",signif(30-mean(x2),3)),xlim=c(0,100))
+			abline(v=mean(x2),col="red",lwd=2)
+			abline(v=100*0.3,col="green",lwd=2)
+		legend(x="topright",lty=1,col=c("red","green"),legend=c("sample mean","expectation"),cex=0.7)
+```
+
+## The Law of Large Numbers {.build}
+
+As the number of samples increases, the sample average converges on the 
+expected value.
+
+Discovered by our friend Jacob/James/Jaccques Bernoulli!
+
+## Visualizing the Law of Large Numbers
+
+```{r,echo=TRUE,eval=F}
+	draw.running.mean <- function(r,n){
+		replicate(r,{
+			x1 <- rnorm(n,mean=0,sd=0.5)
+			x1.mean <- cumsum(x1)/(1:n)
+			lines(1:n,x1.mean,col=adjustcolor(1,0.2))
+		})
+		return(invisible(0))
+	}
+	n <- 1e2
+	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
+			xlab="number of draws from a normal",
+			ylab="running mean")
+		draw.running.mean(r = 1,n = 100)
+		abline(h=0,col=2)
+```
+
+## Visualizing the Law of Large Numbers
+
+```{r,echo=F,eval=T, cache=T}
+	draw.running.mean <- function(r,n){
+		replicate(r,{
+			x1 <- rnorm(n,mean=0,sd=0.5)
+			x1.mean <- cumsum(x1)/(1:n)
+			lines(1:n,x1.mean,col=adjustcolor(1,0.2))
+		})
+		return(invisible(0))
+	}
+	n <- 1e2
+	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
+			xlab="number of draws from a normal",
+			ylab="running mean")
+		draw.running.mean(r = 1,n = 100)
+		abline(h=0,col=2)
+```
 
 
-### extra stuff
+## Visualizing the Law of Large Numbers
+
+```{r,echo=FALSE,cache=TRUE}
+	n <- 1e2
+	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
+			xlab="number of draws from a normal",
+			ylab="running mean")
+		draw.running.mean(r = 1,n = 100)
+		abline(h=0,col=2)
+```
+
+
+## Visualizing the Law of Large Numbers
+
+```{r,echo=FALSE,cache=TRUE}
+
+	n <- 1e2
+	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
+			xlab="number of draws from a normal",
+			ylab="running mean")
+		draw.running.mean(r = 100,n = n)
+		abline(h=0,col=2)
+```
+
+
+## The law of large numbers in population genetics
+
+This is why genetic drift is stronger in small populations!!
+
+https://cjbattey.shinyapps.io/driftR/
+
+
+
+## EXTRA STUFF
 
 ## How do we find the MLE? {.build}
 
