@@ -15,6 +15,101 @@ output:
 	options(digits=5)
 ```
 
+## The Law of Large Numbers {.build}
+
+$X \sim B(n=100, p=0.3)$
+
+```{r,echo=FALSE}
+par(mfrow=c(1,2))
+	x1 <- rbinom(5,size=100,prob=0.3)
+	x2 <- rbinom(5e6,size=100,prob=0.3)
+		hist(x1,col="slateblue",main=sprintf("5 samples\nE[X] - mean(X) = %s",signif(30-mean(x1),3)),xlim=c(0,100))
+			abline(v=mean(x1),col="red",lwd=2)
+			abline(v=100*0.3,col="green",lwd=2)
+		hist(x2,col="slateblue",main=sprintf("5e6 samples\nE[X] - mean(X) = %s",signif(30-mean(x2),3)),xlim=c(0,100))
+			abline(v=mean(x2),col="red",lwd=2)
+			abline(v=100*0.3,col="green",lwd=2)
+		legend(x="topright",lty=1,col=c("red","green"),legend=c("sample mean","expectation"),cex=0.7)
+```
+
+## The Law of Large Numbers {.build}
+
+As the number of samples increases, the sample average converges on the 
+expected value.
+
+Discovered by our friend Jacob/James/Jaccques Bernoulli!
+
+## Visualizing the Law of Large Numbers
+
+```{r,echo=TRUE,eval=F}
+	draw.running.mean <- function(r,n){
+		replicate(r,{
+			x1 <- rnorm(n,mean=0,sd=0.5)
+			x1.mean <- cumsum(x1)/(1:n)
+			lines(1:n,x1.mean,col=adjustcolor(1,0.2))
+		})
+		return(invisible(0))
+	}
+	n <- 1e2
+	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
+			xlab="number of draws from a normal",
+			ylab="running mean")
+		draw.running.mean(r = 1,n = 100)
+		abline(h=0,col=2)
+```
+
+## Visualizing the Law of Large Numbers
+
+```{r,echo=F,eval=T, cache=T}
+	draw.running.mean <- function(r,n){
+		replicate(r,{
+			x1 <- rnorm(n,mean=0,sd=0.5)
+			x1.mean <- cumsum(x1)/(1:n)
+			lines(1:n,x1.mean,col=adjustcolor(1,0.2))
+		})
+		return(invisible(0))
+	}
+	n <- 1e2
+	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
+			xlab="number of draws from a normal",
+			ylab="running mean")
+		draw.running.mean(r = 1,n = 100)
+		abline(h=0,col=2)
+```
+
+
+## Visualizing the Law of Large Numbers
+
+```{r,echo=FALSE,cache=TRUE}
+	n <- 1e2
+	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
+			xlab="number of draws from a normal",
+			ylab="running mean")
+		draw.running.mean(r = 1,n = 100)
+		abline(h=0,col=2)
+```
+
+
+## Visualizing the Law of Large Numbers
+
+```{r,echo=FALSE,cache=TRUE}
+
+	n <- 1e2
+	plot(0,xlim=c(0,n),ylim=c(-0.5,0.5),type='n',
+			xlab="number of draws from a normal",
+			ylab="running mean")
+		draw.running.mean(r = 100,n = n)
+		abline(h=0,col=2)
+```
+
+
+## The law of large numbers in population genetics
+
+This is why genetic drift is stronger in small populations!!
+
+https://cjbattey.shinyapps.io/driftR/
+
+
 ## Bird's-eye view {.build}
 
 Step 7: say something _quantitative_ and _objective_ about 
@@ -692,7 +787,7 @@ plot(p.seq,lnL1,ylim=c(-15,5),type='l',col=2,lwd=2,
 			# col=c("purple","blue","green"))
 ```
 
-## How do priors affect the posterior?
+## How do priors affect the posterior? {.build}
 
 ```{r,echo=FALSE,,fig.height=5.5,fig.width=7.5}
 
@@ -723,6 +818,8 @@ plot(p.seq,lnL2,ylim=c(-15,5),type='l',col=2,lwd=2,
 								# lnL.foo(flips,20,0.001) + pr2.foo(0.001) ),1)),
 			# col=c("purple","blue","green"))
 ```
+
+Why is the posterior for aliens the same as the likelihood?
 
 ## Prior to posterior {.build}
 
