@@ -787,7 +787,7 @@ plot(p.seq,lnL1,ylim=c(-15,5),type='l',col=2,lwd=2,
 			# col=c("purple","blue","green"))
 ```
 
-## How do priors affect the posterior? {.build}
+## What if we add more observations? {.build}
 
 ```{r,echo=FALSE,,fig.height=5.5,fig.width=7.5}
 
@@ -819,9 +819,8 @@ plot(p.seq,lnL2,ylim=c(-15,5),type='l',col=2,lwd=2,
 			# col=c("purple","blue","green"))
 ```
 
-Why is the posterior for aliens the same as the likelihood?
 
-## Prior to posterior {.build}
+## Why is the posterior w/ uniform prior the same as the likelihood? {.build}
 
 $p(H \; \mid \; D) = \frac{p(D \; \mid \; H) \; \times \; p(H)}{p(D)}$
 
