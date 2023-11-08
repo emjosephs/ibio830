@@ -34,40 +34,72 @@ It is due before our next class.
 
 ### Question 1
 
-RSV (respiratory syncytial virus) is
-a flu-like illness that infects virtually all children in their 
-first few years of life. 
+Imagine that you are an alien who is new to earth. You are given a penny, which you flip 10 times. You get heads 5 times.
 
-To detect RSV, healthcare providers generally administer antigen tests, 
-which are cheaper and faster (although generally less accurate) than PCR-based tests.
-The most commonly used RSV antigen test has a 91.7% sensitivity and a 98.9% specificity. 
-A child shows some symptoms of RSV, so we get him
-an antigen test, which comes back positive. 
-Given that result, what is the probability the child is actually infected with RSV?
+a) What is the likelihood of getting 4 flips out of 10 heads if the underlying probability of heads is 0.5?
 
-In your calculations, assume the following:\
 
--The child can be treated as a random draw from the <2yos of Ingham County\
--The probability that any child under two years old in Ingham County has RSV is 0.015.
+
+b) What is the probability that p(heads) = 0.5 given that you've flipped the coin 10 times and gotten 4 heads?
+(Hint: use Bayes theorem!)
+(Hint 2: As an alien, you think the prior probability of p=0.5 is fairly low, like 0.0001)
+(Hint 3: p(data) will be one, since it's the sum of the probabilities of getting this data across all possible parameters)
+
+
+
+c) A friendly human tells you that most coins are fair. This causes you, the alien, to change your mind about the prior probability that
+p(heads) = 0.5. You now think that the prior is 0.75. Recalculate the posterior probability given this new prior.
+
+
+
+
+
+d) Explain briefly, in words, how the prior probability affects the posterior probability based on your answers in parts A and B.
+
 
 
 
 ### Question 3
 
-3a) Building on the results from Question 2, 
-write an R function that explores how the probability the child is actually infected with RSV 
-given a positive result from an antigen test 
-is dependent on the number of infected toddlers in Ingham County.
-The function should take as its arguments: \
- -the percentage of toddlers in Ingham County who are actively infected \
- -the sensitivity of the antigen test (from Question 2)\
- -the specificity of the antigen test (from Question 2)\
- 
-and it should return the probability a given toddler is infected with RSV given the positive test result.
+The code below is what was used in the lecture to calculate the posterior probability of getting 4 heads out of 10 coin flips 
+across a range of potential probabilities of heads and the prior that we are aliens and don't know how coins work.
+```{r, echo=T}
+## this function calculates the log likelihood of the flip data
+	lnL.foo <- function(flips,n,p){
+		lnL <- sum(dbinom(flips,n,p,log=TRUE))
+		return(lnL)
+	}
+
+#set the number of flips that give heads
+flips1 <- 4
+
+#make a grid of possible values of p
+p.seq <- seq(1e-4,1-1e-4,length.out=500)
+
+#calculate-likelihoods for the grid of p
+	lnL1 <- sapply(p.seq,function(p){lnL.foo(flips1,n=10,p=p)})
+	
+#set a prior as if we are aliens
+	pr <- dunif(p.seq,log=TRUE)
+
+#calculate the log posterior probability
+	ps <- lnL1 + pr
+	
+#plot the data
+plot(p.seq,ps,ylim=c(-15,5),type='l',col=2,lwd=2,ylab="log posterior probability",xlab="values of p",
+	 	main=sprintf("10 coin flips (%s heads)",flips1))
+	
+```
+
+a) Look over the code abve. When the code calculates the posterior probability (ps1), it adds the log likelihood (lnL1) to the prior (pr1).
+How is this different from the standard Bayes theorem we learned about in class? Why is it different?
 
 
-
-
-3b) At what background level of RSV prevalence in Ingham County does 
-the probability of a given toddler actually being infected given a positive antigen test result go above 0.9?
+b) Edit the code from part a to calculate and plot the log posterior probability of flipping a coin 100 times and getting heads 40 times. 
+How does the posterior probability differ from the probabilities in part a? Why?
+	
+```{r, echo=T}
+#editted code goes here.	
+	
+```
 
