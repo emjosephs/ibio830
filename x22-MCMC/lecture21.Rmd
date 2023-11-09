@@ -1,7 +1,7 @@
 ---
 title: "Lecture 21 - Intro to MCMC"
 author: "Emily Josephs"
-date: "November 15, 2022"
+date: "November 14, 2023"
 output:
   ioslides_presentation:
     transition: 0
@@ -16,6 +16,43 @@ output:
 	options(digits=5)
 ```
 
+## Bayes-spotting
+
+```{r, out.width="700px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/structure.png")
+```
+
+
+(Pritchard, Stephens, and Donnelley 2000)
+
+## Bayesian inference in Structure
+"The Bayesian approach provides a coherent framework for incorporating the inherent uncertainty of parameter estimates into the inference procedure and for evaluating the strength of evidence for the inferred clustering. It also eases the incorporation of various sorts of prior information that may be available, such as information about the geographic sampling location of individuals."
+
+(Pritchard, Stephens, and Donnelley 2000)
+
+## The model underlying Structure
+
+$Pr(Z,P∣X)∝Pr(Z)Pr(P)Pr(X∣Z,P)$
+
+$X$ = genotypes of individuals (the data)\
+$Z$ = the populations each individual comes from\
+$P$ = the allele frequencies in these populations\
+(note $Pr$ stands for probability here)\
+
+## Priors in Structure
+
+$Pr(z_{i} = k) = 1/K$
+
+The probability that the $i^{th}$ individual is from a specific pop is equal to 1 divided by the total numbers of pops.
+
+They note in discussion that you could adjust this if you had geographic information about individuals.
+
+The prior for the allele frequencies also comes from a uniform distribution.
+
+Read more here in the original paper https://doi.org/10.1093/genetics/155.2.945
+and perspective from Novembre 10.1534/genetics.116.195164
+
+
 ## Class goals
 
 - Understand the intuition behind MCMC
@@ -26,21 +63,9 @@ output:
 Recall: 
 
 
-$\large{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$
+$\large{p(H \; \mid \; D) = \frac{p(D \; \mid \; H) \; \times \; p(H)}{p(D)}}$
 
-$p(D \; \mid \; \theta)$ is the _likelihood_ of the data given the model
-
-## Maximum likelihood recap {.build}
-
-We can calculate the likelihood of observed data given values of the parameters of a distribution
-
-_Maximum likelihood (ML) inference_ is a method for estimating the values 
-of the parameters of a statistical model that maximize the likelihood 
-of the observed data.
-
-The _maximum likelihood estimate_ (MLE) is the parameter value
-(or, if there are multiple parameters, the vector of parameter values) 
-that maximize the likelihood of the data.
+$p(D \; \mid \; H)$ is the _likelihood_ of the data given the model
 
 ## Likelihood vs probability {.build}
 $X \sim \text{Pois}(2)$
@@ -61,70 +86,6 @@ plot(seq(1,8,length.out=100), myLikelihoods, xlab = "potential lambdas", ylab = 
 
 ```
 
-## Likelihood vs probability {.build}
-
-Probability tells us the likelihood of all different outcomes based on known parameters.
-
-Likelihood tells us about the probability of a known outcome at all parameters.
-
-## Maximum Likelihood recap
-
-```{r,echo=FALSE}
-l.binom <- function(p,n.heads){
-	binom.prob <- dbinom(x=n.heads,size=100,prob=p)
-	return(binom.prob)
-}
-p <- seq(0,1,length.out=1e3)
-n.heads <- rbinom(1,100,0.6)
-mle <- optimize(f = l.binom,n.heads=n.heads,lower=0,upper=1,maximum=TRUE)
-plot(p,dbinom(x=n.heads,size=100,p=p),
-	xlab="probability of success",ylab="p(data)",type='n',
-	"main"="One Parameter")
-	lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
-	points(mle$maximum,mle$objective,pch=8,cex=2)
-	arrows(x0 = mle$maximum - 0.15,
-		   x1 = mle$maximum - 0.03,
-		   y0=mle$objective-0.005,
-		   y1=mle$objective,length=0.15,lwd=2)
-	text(x=mle$maximum - 0.21,y=mle$objective-0.011,labels="MLE",cex=2)
-```
-
-```{r,eval=FALSE}
-	mle <- optimize(f = l.binom,n.heads = rbinom(1,100,0.6),lower=0,upper=1,maximum=TRUE)
-```
-
-## Maximum Likelihood recap
-
-```{r,cache=TRUE,echo=FALSE,fig.height=5,fig.width=6}
-data <- rnorm(5e3,mean=0.7,sd=1.6)
-grid.steps <- 100
-mu.seq <- seq(0,1,length.out=grid.steps)
-sd.seq <- seq(1,2,length.out=grid.steps)
-lnL <- matrix(NA,nrow=grid.steps,ncol=grid.steps)
-	for(i in 1:grid.steps){
-		for(j in 1:grid.steps){
-			lnL[i,j] <- sum(dnorm(data,
-								  mean=mu.seq[i],
-								  sd=sd.seq[j],log=TRUE))
-		}
-	}
-l.norm <- function(pars,x){
-	norm.prob <- -sum(dnorm(x=x,mean=pars[1],sd=pars[2],log=TRUE))
-	return(norm.prob)
-}
-mle.pars <- optim(par=list("mu"=1,"sigma"=1),fn=l.norm,x=data)$par
-image(z=lnL,x=mu.seq,y=sd.seq,xlab="mu",ylab="sigma","main"="Two Parameters")
-	points(0.7,1.6,pch=8,col=4)
-	points(mle.pars[1],mle.pars[2],pch=8,col=2)
-arrows(x0 = 0.55,
-	   x1 = mle.pars[1] - 0.02,
-	   y0 = 1.5,
-	   y1 = mle.pars[2] - 0.009,
-	   length=0.15,lwd=2)
-text(x=0.461,y=1.45,labels="MLE",cex=2)
-	
-```
-
 ## ML vs. Bayesian inference {.build}
 
 Maximum likelihood inference:
@@ -137,7 +98,7 @@ Maximum likelihood inference:
 Bayesian inference:
 
  - focused on describing the _posterior distribution_ - 
-	+ a distribution of the probability of $p(\theta \mid \text{D})$
+	+ a distribution of the probability of $p(H \mid \text{D})$
 	over parameter values
 
  - for complicated problems, uses a Markov chain Monte Carlo 
@@ -323,52 +284,52 @@ The Law of Large Numbers!
 
 ## Using MCMC to sample the posterior distribution {.build}
 
-$\Large{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$
+$\Large{p(H \; \mid \; D) = \frac{p(D \; \mid \; H) \; \times \; p(H)}{p(D)}}$
 
-We want to find the $\theta$ associated with the highest $p(\theta \mid D)$.
+We want to find the $H$ associated with the highest $p(H \mid D)$.
 
 ## MCMC: Metropolis-Hastings algorithm {.build}
 
-1\. Initiate chain with an arbitrarily chosen value for parameter $\theta$
-2\. Calculate the numerator of Bayes' Theorem using $\theta$
+1\. Initiate chain with an arbitrarily chosen value for parameter $H$
+2\. Calculate the numerator of Bayes' Theorem using $H$
 
 <div class="centered">
-$\large{p(\text{D} \; \mid \; \theta) \times p(\theta)}$
+$\large{p(\text{D} \; \mid \; H) \times p(H)}$
 </div>
 
-3\. Propose an updated parameter value, $\theta'$\
-4\. Calculate $p(\text{D} \; \mid \; \theta') \times p(\theta')$\
+3\. Propose an updated parameter value, $H'$\
+4\. Calculate $p(\text{D} \; \mid \; H') \times p(H')$\
 5\. Calculate $R$
 
 <div class="centered">
-$R = \frac{\Large{p(\text{D} \; \mid \; \theta') \; \times \; p(\theta')}}{\Large{p(\text{D} \; \mid \; \theta) \; \times \; p(\theta)}}$
+$R = \frac{\Large{p(\text{D} \; \mid \; H') \; \times \; p(H')}}{\Large{p(\text{D} \; \mid \; H) \; \times \; p(H)}}$
 </div>
 
-6\. If R $\geq$ U(0,1), accept the proposed update, ($\theta \gets \theta'$)\
-  Elsewise, $\theta \gets \theta$
+6\. If R $\geq$ U(0,1), accept the proposed update, ($H \gets H'$)\
+  Elsewise, $H \gets H$
 
 Repeat steps 3-6 many times.
 
 ## MCMC: Metropolis-Hastings algorithm
 <span style="color:lightgray">
-1\. Initiate chain with an arbitrarily chosen value for parameter $\theta$
-2\. Calculate the numerator of Bayes' Theorem using $\theta$</span>
+1\. Initiate chain with an arbitrarily chosen value for parameter $H$
+2\. Calculate the numerator of Bayes' Theorem using $H$</span>
 
 <div class="centered">
-<span style="color:lightgray"> $\large{p(\text{D} \; \mid \; \theta) \times p(\theta)}$</span>
+<span style="color:lightgray"> $\large{p(\text{D} \; \mid \; H) \times p(H)}$</span>
 </div>
 
-3\. Propose an updated parameter value, $\theta'$\
+3\. Propose an updated parameter value, $H'$\
 <span style="color:lightgray">
-4\. Calculate $p(\text{D} \; \mid \; \theta') \times p(\theta')$\
+4\. Calculate $p(\text{D} \; \mid \; H') \times p(H')$\
 5\. Calculate $R$</span>
 
 <div class="centered">
-<span style="color:lightgray">$R = \frac{\Large{p(\text{D} \; \mid \; \theta') \; \times \; p(\theta')}}{\Large{p(\text{D} \; \mid \; \theta) \; \times \; p(\theta)}}$</span>
+<span style="color:lightgray">$R = \frac{\Large{p(\text{D} \; \mid \; H') \; \times \; p(H')}}{\Large{p(\text{D} \; \mid \; H) \; \times \; p(H)}}$</span>
 </div>
 <span style="color:lightgray">
-6\. If R $\geq$ U(0,1), accept the proposed update, ($\theta' \gets \theta$)\
-  Elsewise, $\theta \gets \theta$
+6\. If R $\geq$ U(0,1), accept the proposed update, ($H' \gets H$)\
+  Elsewise, $H \gets H$
 
 <span style="color:lightgray">Repeat steps 3-6 many times.</span>
 
@@ -378,66 +339,66 @@ How do we propose a new parameter value?
 
 The simplest proposal mechanism is just to add a small, normally distributed random value to the current value:
 
-$\LARGE{x \sim \mathcal{N}(\mu=0,\sigma)\\ \theta' = \theta + x}$
+$\LARGE{x \sim \mathcal{N}(\mu=0,\sigma)\\ H' = H + x}$
 
 ## MCMC: Metropolis-Hastings algorithm
 <span style="color:lightgray">
-1\. Initiate chain with an arbitrarily chosen value for parameter $\theta$
-2\. Calculate the numerator of Bayes' Theorem using $\theta$</span>
+1\. Initiate chain with an arbitrarily chosen value for parameter $H$
+2\. Calculate the numerator of Bayes' Theorem using $H$</span>
 
 <div class="centered">
-<span style="color:lightgray"> $\large{p(\text{D} \; \mid \; \theta) \times p(\theta)}$</span>
+<span style="color:lightgray"> $\large{p(\text{D} \; \mid \; H) \times p(H)}$</span>
 </div>
 
-3\. Propose an updated parameter value, $\theta'$\
+3\. Propose an updated parameter value, $H'$\
 <span style="color:lightgray">
-4\. Calculate $p(\text{D} \; \mid \; \theta') \times p(\theta')$\
+4\. Calculate $p(\text{D} \; \mid \; H') \times p(H')$\
 5\. Calculate $R$</span>
 
 <div class="centered">
-<span style="color:lightgray">$R = \frac{\Large{p(\text{D} \; \mid \; \theta') \; \times \; p(\theta')}}{\Large{p(\text{D} \; \mid \; \theta) \; \times \; p(\theta)}}$</span>
+<span style="color:lightgray">$R = \frac{\Large{p(\text{D} \; \mid \; H') \; \times \; p(H')}}{\Large{p(\text{D} \; \mid \; H) \; \times \; p(H)}}$</span>
 </div>
 <span style="color:lightgray">
-6\. If R $\geq$ U(0,1), accept the proposed update, ($\theta \gets \theta'$)\
-  Elsewise, $\theta \gets \theta$
+6\. If R $\geq$ U(0,1), accept the proposed update, ($H \gets H'$)\
+  Elsewise, $H \gets H$
 
 <span style="color:lightgray">Repeat steps 3-6 many times.</span>
 
 ## MCMC: Metropolis-Hastings algorithm
 <span style="color:lightgray">
-1\. Initiate chain with an arbitrarily chosen value for parameter $\theta$
-2\. Calculate the numerator of Bayes' Theorem using $\theta$</span>
+1\. Initiate chain with an arbitrarily chosen value for parameter $H$
+2\. Calculate the numerator of Bayes' Theorem using $H$</span>
 
 <div class="centered">
-<span style="color:lightgray"> $\large{p(\text{D} \; \mid \; \theta) \times p(\theta)}$</span>
+<span style="color:lightgray"> $\large{p(\text{D} \; \mid \; H) \times p(H)}$</span>
 </div>
 
 <span style="color:lightgray">
-3\. Propose an updated parameter value, $\theta'$\
-4\. Calculate $p(\text{D} \; \mid \; \theta') \times p(\theta')$\
+3\. Propose an updated parameter value, $H'$\
+4\. Calculate $p(\text{D} \; \mid \; H') \times p(H')$\
 5\. Calculate $R$</span>
 
 <div class="centered">
-$R = \frac{\Large{p(\text{D} \; \mid \; \theta') \; \times \; p(\theta')}}{\Large{p(\text{D} \; \mid \; \theta) \; \times \; p(\theta)}}$
+$R = \frac{\Large{p(\text{D} \; \mid \; H') \; \times \; p(H')}}{\Large{p(\text{D} \; \mid \; H) \; \times \; p(H)}}$
 </div>
 <span style="color:lightgray">
-6\. If R $\geq$ U(0,1), accept the proposed update, ($\theta \gets \theta'$)\
-  Elsewise, $\theta \gets \theta$
+6\. If R $\geq$ U(0,1), accept the proposed update, ($H \gets H'$)\
+  Elsewise, $H \gets H$
 
 <span style="color:lightgray">Repeat steps 3-6 many times.</span>
 
 ## MCMC: p(D)
 
-Notice, we're calculating only the numerator of Bayes' Theorem for $\theta$ and $\theta'$.
+Notice, we're calculating only the numerator of Bayes' Theorem for $H$ and $H'$.
 
 Why aren't we calculating the denominator?  Because it cancels out!
 
 <div class="centered">
 $\large 
 \begin{align}
-R &= \frac{  \frac{p(\text{D} \; \mid \; \theta') \; \times \; p(\theta')}{p(D)}}{  \frac{p(\text{D} \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}} \\
+R &= \frac{  \frac{p(\text{D} \; \mid \; H') \; \times \; p(H')}{p(D)}}{  \frac{p(\text{D} \; \mid \; H) \; \times \; p(H)}{p(D)}} \\
 \\
-&= \frac{p(\text{D} \; \mid \; \theta') \; \times \; p(\theta')}{p(\text{D} \; \mid \; \theta) \; \times \; p(\theta)}
+&= \frac{p(\text{D} \; \mid \; H') \; \times \; p(H')}{p(\text{D} \; \mid \; H) \; \times \; p(H)}
 \end{align}$
 </div>
 
@@ -491,7 +452,7 @@ ln.post <- function(flips,n,p){
 		points(p,ln.post(flips,10,p),pch=19,cex=2)
 ```
 
-## MCMC: Updating to $\theta$'
+## MCMC: Updating to $H$'
 
 ```{r,echo=FALSE,fig.width=7.5,fig.height=5}
 	plot(0,xlim=c(0,1),ylim=c(-15,0),type='n',ylab="posterior probability",xlab="values of p")
@@ -502,7 +463,7 @@ ln.post <- function(flips,n,p){
 		u <- runif(1)
 ```
 
-## Poll! A to stay, B to move to $\theta$'
+## Poll! A to stay, B to move to $H$'
 
 ```{r,echo=FALSE,fig.width=7.5,fig.height=5}
 	plot(0,xlim=c(0,1),ylim=c(-15,0),type='n',ylab="posterior probability",xlab="values of p")
@@ -695,7 +656,7 @@ is the posterior distribution.
 As Bayesians:
 
  - we're focused on describing the _posterior distribution_ - 
-	+ a distribution of the probability of $p(\theta \mid \text{D})$
+	+ a distribution of the probability of $p(H \mid \text{D})$
 	over parameter values
 
  - for complicated problems, we use a Markov chain Monte Carlo 
