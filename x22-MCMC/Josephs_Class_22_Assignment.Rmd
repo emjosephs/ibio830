@@ -8,7 +8,6 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_22_Assignment.Rmd") -->
 
-#### Due by midnight before the beginning of next class (11/17)
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment22.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -121,11 +120,16 @@ load('poisData.Robj')
 
 myMCMC = mcmcPoisson(poisData, 500)
 
+#a plot of my estimate of lambda over time
 plot(myMCMC$lambdaSamples, xlab = "steps", ylab = "lambda estimate")
+
+#a plot of the posterior probability over time
 plot(myMCMC$postProbSamples, xlab = "steps", ylab = "posterior probability")
 
+#a histogram of the frequency of lambdas over the time of the MCMC run
 hist(myMCMC$lambdaSamples, xlab = "lambda", col = "darkgray", border="white", breaks=100)
 
+#relationship between lambda and the posterior probability
 plot(myMCMC$lambdaSamples, myMCMC$postProbSamples, xlab = "lambda", ylab = "posterior probability", bty="n")
 
 ```

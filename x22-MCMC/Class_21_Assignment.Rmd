@@ -8,9 +8,9 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_22_Assignment.Rmd") -->
 
-#### Due by midnight before the beginning of next class (11/17)
+#### Due by 11:59 on 11/15
 
-Save this Rmarkdown script as a file named “YourlastName_Assignment22.Rmd”. 
+Save this Rmarkdown script as a file named “YourlastName_Assignment21.Rmd”. 
 For each question, fill out the answer and, where requested, 
 provide the relevant R code using "```" and the echo = TRUE argument.
 
