@@ -1,7 +1,7 @@
 ---
 title: "Lecture 23 - Deterministic functions & model building"
-author: "Gideon Bradburd"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "Emily Josephs"
+date: "November 16 2023"
 output:
   ioslides_presentation:
     transition: 0.0

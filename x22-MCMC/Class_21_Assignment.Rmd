@@ -15,7 +15,7 @@ For each question, fill out the answer and, where requested,
 provide the relevant R code using "```" and the echo = TRUE argument.
 
 When finished, Knit your script together into an html report, 
-saved as “YourlastName_Assignment22.html” and upload the 
+saved as “YourlastName_Assignment21.html” and upload the 
 resulting file to the D2L site (in today’s class folder) to turn it in. 
 It is due before our next class.
 
@@ -45,6 +45,8 @@ This code is uncommented - please write a comment for each line
 explaining what that line is doing. It may help to load in poisData.Robj from d2l and work through the code line by line to see what it's doing.
 
 ```{r}
+
+load('poisData.Robj')
 
 calcPostProb <- function(poisData,lambda){
 	lnL <- sum(dpois(x=poisData,lambda=lambda,log=TRUE))
@@ -85,7 +87,8 @@ mcmcPoisson <- function(poisData, n.iter){
 
 Use the code above to do inference on the rate parameter (lambda)
 I used to simulate the Poisson-distributed data saved in the 
-.Robj file in the Class 21 homework folder on D2L.
+.Robj file in the Class 21 homework folder on D2L. Note that the object that
+will be loaded from the poisData.robj file is called poisData.
 
 Provide some visualizations of the results of your MCMC run.
 Use your imagination here - if you were a data scientist, 
