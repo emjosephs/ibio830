@@ -67,24 +67,57 @@ $\large{p(H \; \mid \; D) = \frac{p(D \; \mid \; H) \; \times \; p(H)}{p(D)}}$
 
 $p(D \; \mid \; H)$ is the _likelihood_ of the data given the model
 
-## Likelihood vs probability {.build}
-$X \sim \text{Pois}(2)$
-```{r, echo=TRUE, out.width="500px"}
-myprobs = rpois(n=1000, lambda=2)
-hist(myprobs, breaks=10, border="white", xlab = "X", main="")
+## Prior probability distributions {.build}
+
+```{r,echo=FALSE,,fig.height=5.5,fig.width=7.5}
+flips1 <- 4
+flips2 <- 52
+p.seq <- seq(1e-4,1-1e-4,length.out=500)
+
+	lnL.foo <- function(flips,n,p){
+		lnL <- sum(dbinom(flips,n,p,log=TRUE))
+		return(lnL)
+	}
+
+	lnL1 <- sapply(p.seq,function(p){lnL.foo(flips1,n=10,p=p)})
+	lnL2 <- sapply(p.seq,function(p){lnL.foo(flips2,n=100,p=p)})
+	pr1 <- dunif(p.seq,log=TRUE)
+	pr2 <- dbeta(p.seq,3,3,log=TRUE)
+	pr3 <- dbeta(p.seq,1/10,1/10,log=TRUE)	
+
+plot(p.seq,type='n',ylim=c(-2,2),xlim=c(0,1),ylab="log prior probability",main="Possible Priors",xlab="values of p")
+		lines(p.seq,pr1,lwd=3,col="blue")
+			text(x=0.5,y=0.2,col="blue",font=2,labels="aliens",cex=2)
+		lines(p.seq,pr2,lwd=3,col="green")
+			text(x=0.5,y=1,col="green",font=2,labels=">1 rodeo",cex=2)
+		lines(p.seq,pr3,lwd=3,col="purple")
+			text(x=0.5,y=-1.45,col="purple",font=2,labels="shifty dude",cex=2)
+		
 ```
 
+## How do priors affect the posterior?
 
-## Likelihood vs probability {.build}
-$P(X=2 \mid X \sim \text{Pois}(\lambda = 2))$
-
-```{r, echo=TRUE, out.width="500px"}
-
-myLikelihoods = sapply(seq(1,8,length.out=100), function(l){
-  dpois(2, lambda=l, log=F)})
-plot(seq(1,8,length.out=100), myLikelihoods, xlab = "potential lambdas", ylab = "likelihood of drawing 2")
-
+```{r,echo=FALSE,fig.height=5.5,fig.width=7.5}
+plot(p.seq,lnL1,ylim=c(-15,5),type='l',col=2,lwd=2,ylab="log posterior probability",xlab="values of p",
+	 	main=sprintf("10 coin flips (%s heads)",flips1))
+	legend(x="topleft",lty=1,col=c("red","blue","green","purple"),
+			legend=c("log-likelihood","uniform prior",">1 rodeo prior","shifty dude prior"),
+			lwd=3)
 ```
+
+## How do priors affect the posterior?
+
+```{r,echo=FALSE,fig.height=5.5,fig.width=7.5}
+plot(p.seq,lnL1,ylim=c(-15,5),type='l',col=2,lwd=2,ylab="log posterior probability",xlab="values of p",
+	 	main=sprintf("10 coin flips (%s heads)",flips1))
+	lines(p.seq,lnL1+pr1,col="blue",lwd=2,lty=2)
+	lines(p.seq,lnL1+pr2,col="green",lwd=2,lty=2)
+	lines(p.seq,lnL1+pr3,col="purple",lwd=2,lty=2)
+	legend(x="topleft",lty=1,col=c("red","blue","green","purple"),
+			legend=c("log-likelihood","uniform prior",">1 rodeo prior","shifty dude prior"),
+			lwd=3)
+```
+
 
 ## ML vs. Bayesian inference {.build}
 
