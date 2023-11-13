@@ -1,5 +1,5 @@
 ---
-title: "Lecture 23 - Deterministic functions & model building"
+title: "Lecture 22 - Deterministic functions & model building"
 author: "Emily Josephs"
 date: "November 16 2023"
 output:
@@ -113,7 +113,7 @@ plot(n.mites,dry.wt.fungus,
  - By how much does each additional mite decrease the fungal load on a plant leaf?
 
 
-## Model building
+## Modeling leaf damage
 
 We already know that different data can be well described 
 by different probability distributions.
@@ -122,7 +122,7 @@ by different probability distributions.
 \
 
 <div class="centered">
-$\large \text{outcomes} \sim \text{Distribution}(\theta)$
+$\large \text{outcomes} \sim \text{Distribution}(H)$
 </div>
 
 \
@@ -130,7 +130,7 @@ $\large \text{outcomes} \sim \text{Distribution}(\theta)$
 
 E.g., plant damage caused by fungal load
 
-## Model building {.build}
+## How is leaf damage distributed? {.build}
 
 ```{r,echo=FALSE}
 hist(leaf.dmg,xlim=range(leaf.dmg)+c(-30,30),col=adjustcolor(1,0.5),
@@ -138,11 +138,11 @@ hist(leaf.dmg,xlim=range(leaf.dmg)+c(-30,30),col=adjustcolor(1,0.5),
 ```
 
 <div class="centered">
-$\large \text{LeafDamage} \sim \mathcal{N}(\vec{\theta}=\{\mu,\sigma\})$
+$\large \text{LeafDamage} \sim \mathcal{N}(\vec{H}=\{\mu,\sigma\})$
 </div>
 
 
-## Model building {.build}
+## What is the mean of this distribution? {.build}
 
 The idea behind model building is that you can plug 
 a deterministic function into the parameters of a model:
@@ -151,17 +151,17 @@ a deterministic function into the parameters of a model:
 \
 
 <div class="centered">
-$\large \text{outcomes} \sim \text{Distribution}(\theta)$
+$\large \text{outcomes} \sim \text{Distribution}(H)$
 </div>
 
 \
 \
 
 <div class="centered">
-$\large \text{outcome}_i \sim \text{Distribution}(\theta_i = f(\text{predictor}_i))$
+$\large \text{outcome}_i \sim \text{Distribution}(H_i = f(\text{predictor}_i))$
 </div>
 
-## Model building {.build}
+## Leaf damage is normally distributed, with a mean of... {.build}
 
 ```{r,echo=FALSE,fig.width=7,fig.height=3.5}
 par(mfrow=c(1,2))
@@ -173,7 +173,8 @@ plot(dry.wt.fungus,leaf.dmg,
 	 ylab="leaf damage relative to control (mg)",pch=19,col=adjustcolor(1,0.5))
 ```
 
-## Model building {.build}
+## Leaf damage is normally distributed, with a mean of... {.build}
+
 
 \
 \
@@ -185,7 +186,7 @@ $\large \text{LeafDamage} \sim \mathcal{N}(\mu,\sigma)$
 
 $\large \text{LeafDamage}_i \sim \mathcal{N}(\mu_i=f(\text{FungusWt}_i),\sigma)$
 
-## Model building
+## The deterministic equation in the model
 
 \
 \
@@ -197,7 +198,7 @@ $\large \text{LeafDamage} \sim \mathcal{N}(\mu,\sigma)$
 
 $\large \text{LeafDamage}_i \sim \mathcal{N}(\boldsymbol{\mu_i=f(\text{FungusWt}_i)},\sigma)$
 
-## Model building
+## A linear model of leaf damage
 
 <div class="centered">
 $\text{LeafDamage}_i \sim \mathcal{N}(\mu_i=f(\text{FungusWt}_i),\sigma)$
@@ -210,7 +211,7 @@ plot(dry.wt.fungus,leaf.dmg,
 	 ylab="leaf damage relative to control (mg)",pch=19,col=adjustcolor(1,0.5))
 ```
 
-## Model building
+## A linear model of leaf damage
 
 <div class="centered">
 $\text{LeafDamage}_i \sim \mathcal{N}(\mu_i=f(\text{FungusWt}_i),\sigma)$
@@ -225,7 +226,7 @@ abline(a=leaf.dmg.fungus.alpha,b=leaf.dmg.fungus.beta,col=2,lwd=3,lty=2)
 ```
 
 
-## Model building
+## A linear model of leaf damage
 
 <div class="centered">
 $\text{LeafDamage}_i \sim \mathcal{N}(\mu_i=f(\text{FungusWt}_i),\sigma)$
@@ -251,7 +252,7 @@ TeachingDemos::subplot(fun = {
 						y = c(0.15*max(leaf.dmg),0.45*max(leaf.dmg)))
 ```
 
-## Model building
+## A linear model of leaf damage
 
 <div class="centered">
 $\text{LeafDamage}_i \sim \mathcal{N}(\mu_i=f(\text{FungusWt}_i),\sigma)$
@@ -281,7 +282,7 @@ abline(a=leaf.dmg.fungus.alpha,b=leaf.dmg.fungus.beta,col=2,lwd=3,lty=2)
 ```
 
 
-## Model building
+## A linear model of leaf damage
 
 ```{r,echo=FALSE,fig.width=7.5,fig.height=5.5}
 plot(dry.wt.fungus,leaf.dmg,
@@ -293,7 +294,7 @@ abline(a=leaf.dmg.fungus.alpha,b=leaf.dmg.fungus.beta,col=2,lwd=3,lty=2)
 
 
 
-## Model building
+## A linear model of leaf damage
 
 ```{r,echo=FALSE,fig.width=7.5,fig.height=5.5}
 
@@ -310,7 +311,7 @@ segments(x0=pt1,x1=pt1,y0=-100,y1=lf.dmg(pt1),col="goldenrod1",lwd=3,lty=3)
 segments(x0=pt2,x1=pt2,y0=-100,y1=lf.dmg(pt2),col="goldenrod1",lwd=3,lty=3)
 ```
 
-## Model building
+## A linear model of leaf damage
 
 ```{r,echo=FALSE,fig.width=7.5,fig.height=5.5}
 plot(dry.wt.fungus,leaf.dmg,
@@ -327,7 +328,7 @@ text(x=pt1 + (pt2-pt1)/2,y=lf.dmg(pt2)+4,labels=(pt2-pt1),cex=2,col="blue")
 
 ```
 
-## Model building
+## A linear model of leaf damage
 
 ```{r,echo=FALSE,fig.width=7.5,fig.height=5.5}
 plot(dry.wt.fungus,leaf.dmg,
@@ -346,7 +347,7 @@ text(x=pt1 + (pt2-pt1)/2,y=lf.dmg(pt2)+4,labels=(pt2-pt1),cex=2,col="blue")
 
 ```
 
-## Model building {.build}
+## The linear part of the model {.build}
 
 \
 
@@ -365,7 +366,7 @@ $\large
 
 What are $\beta$ and $\alpha$?
 
-## Model building {.build}
+## The linear part of the model {.build}
 
 $\large \mu_i = \beta \times \text{FungusWt}_i + \alpha$
 
@@ -381,7 +382,7 @@ and gives us the change in expected response variable for each unit of predictor
 
 	+ i.e., how much more leaf damage we expect for each added milligram of fungus.
 
-## Model building
+## The linear part of the model {.build}
 
 ```{r,echo=FALSE,fig.width=7.5,fig.height=5.5}
 plot(dry.wt.fungus,leaf.dmg,
@@ -400,7 +401,7 @@ abline(h=leaf.dmg.fungus.alpha,lwd=3,col="forestgreen")
 text(x=max(dry.wt.fungus)-max(dry.wt.fungus)/5,y=leaf.dmg.fungus.alpha+2,labels="intercept",col="forestgreen",cex=2)
 ```
 
-## Model building {.build}
+## The linear part of the model {.build}
 
 $\large \text{LeafDamage}_i \sim \mathcal{N}(\boldsymbol{\mu_i=f(\text{FungusWt}_i)},\sigma)$
 
@@ -415,7 +416,7 @@ $\large \mu_i = \beta \times \text{FungusWt}_i + \alpha$
  	+ "Gaussian noise" aka data are normally distributed around predicted mean
 
 
-## Model building
+## Error in a linear model
 
 Gaussian noise ("normally distributed errors")
 
@@ -427,7 +428,7 @@ par(mfrow=c(1,2))
 		main="residuals",xlab="Leaf damage relative to control (residuals)")
 ```
 	
-## Model building
+## The two components of a linear model
 
 $\large \text{LeafDamage}_i \sim \mathcal{N}(\boldsymbol{\mu_i=f(\text{FungusWt}_i)},\sigma)$
 
@@ -459,10 +460,10 @@ So what are the parameters of this model?
  - $\beta$, $\alpha$, and $\sigma$
  
  <div class="centered">
-<span style="color:red">$\Huge{p(\theta \; \mid \; D) = \frac{p(D \; \mid \; \theta) \; \times \; p(\theta)}{p(D)}}$</span>
+<span style="color:red">$\Huge{p(H \; \mid \; D) = \frac{p(D \; \mid \; H) \; \times \; p(H)}{p(D)}}$</span>
 </div>
 
-## Parameter inference - linear regression {.build}
+## Linear regression with Bayes theorem {.build}
 
 <div class="centered"> 
 $\large
@@ -479,7 +480,7 @@ plot(dry.wt.fungus,leaf.dmg,
 	 xlim=range(c(0,range(dry.wt.fungus))))
 ```
 
-## Parameter inference - linear regression
+## Linear regression with Bayes theorem {.build}
 
 <div class="centered"> 
 $\large
@@ -497,7 +498,7 @@ $\large \alpha \sim \phantom{\mathcal{N}(\mu = 0,\sigma = 1)}$
 
 $\large \sigma \sim \phantom{\text{Exp}(\lambda = 1)}$
 
-## Parameter inference - linear regression
+## Linear regression with Bayes theorem {.build}
 
 <div class="centered"> 
 $\large
@@ -515,15 +516,17 @@ $\large \alpha \sim \mathcal{N}(\mu = 0,\sigma = 1e6)$
 
 $\large \sigma \sim \text{Exp}(\lambda = 0.01)$
 
-## Parameter inference - linear regression {.build}
+## Coding a linear regression {.build}
 
 ```{r,eval=FALSE}
-# Estimating the mean of a normal
+# Estimating the mean of a normal w/ log likelihood
 ln.L <- function(y,mu,sigma){
 	return(sum(
 		dnorm(y,mean=mu,sd=sigma,log=TRUE)
 	))
 }
+
+ln.L(leaf.dmg, 23, 10)
 ```
 
 ```{r}
@@ -534,39 +537,12 @@ ln.L <- function(y,x,alpha,beta,sigma){
 		dnorm(y,mean=alpha + beta * x,sd=sigma,log=TRUE)
 	))
 }
-#
-#
-#
-#
+
+#ln.L(leaf.dmg, dry.wt.fungus, 15, 2, 10)
 ```
 
-## Parameter inference - linear regression
-
-```{r,eval=FALSE}
-# Estimating the mean of a normal
-ln.L <- function(y,mu,sigma){
-	return(sum(
-		dnorm(y,mean=mu,sd=sigma,log=TRUE)
-	))
-}
-```
-
-```{r}
-# Estimating the **parameters** of a function 
-#		that determines the mean of a normal
-ln.L <- function(y,x,alpha,beta,sigma){
-	return(sum(
-		dnorm(y,mean=alpha + beta * x,sd=sigma,log=TRUE)
-	))
-}
-# y is the response variable
-# x is the predictor variable
-# alpha and beta are our intercept and slope
-# sigma is the same
-```
-
-## Parameter inference - linear regression
-
+## Linear regression with Bayes Theorem and MCMC
+(code is in the slide Rmd file)
 ```{r,echo=FALSE}
 ln.post.prob <- function(y,x,alpha,beta,sigma){
 	post.prob <- ifelse(sigma > 0,
@@ -579,7 +555,6 @@ ln.post.prob <- function(y,x,alpha,beta,sigma){
 }
 ```
 
-## Parameter inference - linear regression
 
 ```{r LinearRegressionMCMC,echo=FALSE,cache=TRUE}
 n.iter <- 1e6
@@ -624,7 +599,7 @@ for(i in 2:n.iter){
 	plot(sigma.sample,xlab="",ylab="",main="sigma",pch=20,col=adjustcolor(1,0.4)) ; abline(h= leaf.dmg.fungus.sigma,lwd=2,col=2)
 ```
 
-## Parameter inference - linear regression
+## Comparing model estimates with the data
 
 ```{r,fig.width=7.5,fig.height=5,cache=TRUE,echo=FALSE}
 	plot(dry.wt.fungus,leaf.dmg,pch=19,col=adjustcolor(1,0.5),
@@ -638,14 +613,14 @@ for(i in 2:n.iter){
 	abline(a= leaf.dmg.fungus.alpha,b= leaf.dmg.fungus.beta,col="blue",lwd=3)
 ```
 
-## Parameter inference - linear regression (w/ ML)
+## Linear regression w/ maximum likelihood
 
 ```{r}
 mydata <- data.frame("dry.wt.fungus" = dry.wt.fungus,"leaf.dmg" = leaf.dmg)
 head(mydata)
 ```
 
-## Parameter inference - linear regression (w/ ML)
+## Linear regression w/ maximum likelihood
 
 ```{r}
 mod1 <- lm(leaf.dmg ~ dry.wt.fungus,data=mydata)
@@ -674,7 +649,7 @@ plot(mydata)
  parameters of a probability distribution to estimate 
  the relationship between a predictor and response variable
  
- - $\large \text{outcome}_i \sim \text{Distribution}(\theta_i = f(\text{predictor}_i))$
+ - $\large \text{outcome}_i \sim \text{Distribution}(H_i = f(\text{predictor}_i))$
  
  - we can then do inference on the parameters of that deterministic 
  function
@@ -694,11 +669,11 @@ plot(n.mites,dry.wt.fungus,
 	 ylab="dry fungus weight per leaf(mg)",pch=19,col=adjustcolor(1,0.5))
 ```
 
-## Deterministic functions: nonlinearity! {.build}
+## How would we model this data? {.build}
 
 \
 
-$\large \text{outcome}_i \sim \text{Distribution}(\theta_i = f(\text{predictor}_i))$
+$\large \text{outcome}_i \sim \text{Distribution}(H_i = f(\text{predictor}_i))$
 
 \
 
@@ -707,11 +682,11 @@ $\large \text{FungusWt}_i \sim \mathcal{N}(\mu_i=f(\text{nMites}_i),\sigma)$
 
  + mu = a + b * nMites
 
-## Deterministic functions: nonlinearity!
+## How would we model this data? {.build}
 
 \
 
-$\large \text{outcome}_i \sim \text{Distribution}(\theta_i = f(\text{predictor}_i))$
+$\large \text{outcome}_i \sim \text{Distribution}(H_i = f(\text{predictor}_i))$
 
 \
 
@@ -721,7 +696,7 @@ $\large \text{FungusWt}_i \sim \mathcal{N}(\mu_i=f(\text{nMites}_i),\sigma)$
  + ~~mu = a + b * nMites~~
 
 
-## Deterministic functions: nonlinearity!
+## Is fungal weight a linear function of mite density?
 
 ```{r,fig.height=5,cache=TRUE,echo=FALSE}
 plot(n.mites,dry.wt.fungus,
@@ -730,7 +705,7 @@ plot(n.mites,dry.wt.fungus,
 	 ylab="dry fungus weight per leaf(mg)",pch=19,col=adjustcolor(1,0.5))
 ```
 
-## Deterministic functions: nonlinearity!
+## Is fungal weight a linear function of mite density?
 
 ```{r,fig.height=5,cache=TRUE,echo=FALSE}
 plot(n.mites,dry.wt.fungus,
@@ -743,7 +718,7 @@ segments(x0=pt1,x1=pt1,y0=-100,y1=fungus.mite.alpha*exp(fungus.mite.beta*pt1),co
 segments(x0=pt2,x1=pt2,y0=-100,y1=fungus.mite.alpha*exp(fungus.mite.beta*pt2),col="goldenrod1",lwd=3,lty=2)
 ```
 
-## Deterministic functions: nonlinearity!
+## Is fungal weight a linear function of mite density?
 
 ```{r,fig.height=5,cache=TRUE,echo=FALSE}
 plot(n.mites,dry.wt.fungus,
@@ -764,7 +739,6 @@ The negative exponential function
 
 $\Large y = a e^{-b x}$
 
-\
 \
  
 ```{r}
@@ -862,7 +836,7 @@ plot(x,logistic(x,2,1),type='l',xlab="",ylab="",main="")
 ## The power law {.columns-2 .build}
  
 $\Large y = ax^b$
-
+\
 ```{r,echo=FALSE}
 power.law <- function(x,a,b){
 	return(a*x^b)
@@ -881,7 +855,7 @@ legend(x="topright",col=c("blue","goldenrod1","red"),lwd=2,
  parameters of a probability distribution to estimate 
  the relationship between a predictor and response variable
  
- - $\large \text{outcome}_i \sim \text{Distribution}(\theta_i = f(\text{predictor}_i))$
+ - $\large \text{outcome}_i \sim \text{Distribution}(H_i = f(\text{predictor}_i))$
  
  - we can then do inference on the parameters of that deterministic 
  function
