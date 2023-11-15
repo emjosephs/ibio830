@@ -78,7 +78,10 @@ plot(dry.wt.fungus,leaf.dmg,
 	 main="Fungal prevalence increases leaf damage",
 	 xlab="dry fungus weight per leaf (mg)",
 	 ylab="leaf damage relative to control (mg)",pch=19,col=adjustcolor(1,0.5))
- ```
+
+miteData <- data.frame(n.mites,dry.wt.fungus, leaf.dmg)
+save(miteData, file="miteData.rda")
+```
  </div>
 
 ## E.g., Mite makes right
