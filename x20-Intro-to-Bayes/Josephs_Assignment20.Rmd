@@ -95,11 +95,36 @@ plot(p.seq,ps,ylim=c(-15,5),type='l',col=2,lwd=2,ylab="log posterior probability
 a) Look over the code abve. When the code calculates the posterior probability (ps1), it adds the log likelihood (lnL1) to the prior (pr1).
 How is this different from the standard Bayes theorem we learned about in class? Why is it different?
 
+We're adding because this is the log likelihood, not the likelihood.
+
 
 b) Edit the code from part a to calculate and plot the log posterior probability of flipping a coin 100 times and getting heads 40 times. 
 How does the posterior probability differ from the probabilities in part a? Why?
 	
 ```{r, echo=T}
 #editted code goes here.	
+
+#set the number of flips that give heads
+flips1 <- 40
+
+#make a grid of possible values of p
+p.seq <- seq(1e-4,1-1e-4,length.out=500)
+
+#calculate-likelihoods for the grid of p
+	lnL1 <- sapply(p.seq,function(p){lnL.foo(flips1,n=100,p=p)})
+	
+#set a prior as if we are aliens
+	pr <- dunif(p.seq,log=TRUE)
+
+#calculate the log posterior probability
+	ps <- lnL1 + pr
+	
+#plot the data
+plot(p.seq,ps,ylim=c(-15,5),type='l',col=2,lwd=2,ylab="log posterior probability",xlab="values of p",
+	 	main=sprintf("10 coin flips (%s heads)",flips1))
+	
 	
 ```
+
+
+The posterior distribution is narrower because we have gotten more data to inform the likelihood, so it ends up mattering more for the posterior than the prior did.
