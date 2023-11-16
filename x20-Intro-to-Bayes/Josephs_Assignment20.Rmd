@@ -46,7 +46,7 @@ b) What is the probability that p(heads) = 0.5 given that you've flipped the coi
 (Hint 2: As an alien, you think the prior probability of p=0.5 is fairly low, like 0.0001)
 (Hint 3: p(data) will be one, since it's the sum of the probabilities of getting this data across all possible parameters)
 ```{r}
-p.posterior = (dbinom(x=3,size=10,prob=0.5)*0.0001)
+p.posterior = (dbinom(x=4,size=10,prob=0.5)*0.0001)
 p.posterior
 ```
 
@@ -54,11 +54,13 @@ c) A friendly human tells you that most coins are fair. This causes you, the ali
 p(heads) = 0.5. You now think that the prior is 0.75. Recalculate the posterior probability given this new prior.
 
 ```{r}
-p.posterior = (dbinom(x=3,size=10,prob=0.5)*0.75)
+p.posterior = (dbinom(x=4,size=10,prob=0.5)*0.75)
 p.posterior
 ```
 
 d) Explain briefly, in words, how the prior probability affects the posterior probability.
+
+Having a prior expectation of fairness increased the posterior probability that the coin is fair and p=0.5
 
 ### Question 3
 

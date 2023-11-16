@@ -56,7 +56,8 @@ Step 1: be able to do stuff in R
   
 ## E.g., Mite makes right
 
-<div class="centered">
+Download "miteData.rda" from d2l.
+
 ```{r,echo=FALSE}
 n.samples <- 150
 n.mites <- sample(0:50,n.samples,replace=TRUE)
@@ -72,45 +73,38 @@ leaf.dmg.fungus.sigma <- 7
 lf.dmg <- function(x){
 	return(15+1.4*x)
 }
+#miteData <- data.frame(n.mites,dry.wt.fungus, leaf.dmg)
+save(n.mites, dry.wt.fungus, lf.dmg, file="miteData.rda")
+```
+
+```{r, echo=T, eval=F}
+load('miteData.rda')
+ls()
+```
+
+## How does dry fungus weight affect leaf damage?
+
+Use a plot to compare the data
+
+## How does dry fungus weight affect leaf damage?
+
+```{r, echo=F}
 mean.leaf.dmg <- leaf.dmg.fungus.beta*dry.wt.fungus + leaf.dmg.fungus.alpha
 leaf.dmg <- rnorm(n.samples,mean=mean.leaf.dmg,sd=leaf.dmg.fungus.sigma)
 plot(dry.wt.fungus,leaf.dmg,
 	 main="Fungal prevalence increases leaf damage",
 	 xlab="dry fungus weight per leaf (mg)",
 	 ylab="leaf damage relative to control (mg)",pch=19,col=adjustcolor(1,0.5))
- ```
- </div>
-
-## E.g., Mite makes right
-
-<div class="centered">
-```{r,echo=FALSE}
-plot(n.mites,dry.wt.fungus,
-	 main="Mites decrease fungal prevalence",
-	 xlab="Number of mites/cm2",
-	 ylab="dry fungus weight per leaf(mg)",pch=19,col=adjustcolor(1,0.5))
- ```
- </div>
- 
-## E.g., Mite makes right
-
-<div class="centered">
-```{r,echo=FALSE,fig.width=7,fig.height=3.5}
-par(mfrow=c(1,2),mar=c(4.5,4.5,1,1))
-plot(dry.wt.fungus,leaf.dmg,
-	 main="",
-	 xlab="dry fungus weight per leaf (mg)",
-	 ylab="leaf damage relative to control (mg)",pch=19,col=adjustcolor(1,0.5))
-plot(n.mites,dry.wt.fungus,
-	 main="",
-	 xlab="Number of mites/cm2",
-	 ylab="dry fungus weight per leaf(mg)",pch=19,col=adjustcolor(1,0.5))
 ```
-</div>
 
- - By how much does each additional mg of fungus increase the leaf damage?
- 
- - By how much does each additional mite decrease the fungal load on a plant leaf?
+
+
+## E.g., Mite makes right
+
+Our research question: 
+
+By how much does each additional mg of fungus increase the leaf damage?
+
 
 
 ## Modeling leaf damage
@@ -516,7 +510,7 @@ $\large \alpha \sim \mathcal{N}(\mu = 0,\sigma = 1e6)$
 
 $\large \sigma \sim \text{Exp}(\lambda = 0.01)$
 
-## Coding a linear regression {.build}
+## Coding a linear regression w/ Bayes {.build}
 
 ```{r,eval=FALSE}
 # Estimating the mean of a normal w/ log likelihood
