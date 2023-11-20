@@ -9,7 +9,7 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Review_Assignment.Rmd") -->
 
-#### Due by the beginning of next class (11/29)
+#### Due by 11:59 (11/27)
 
 Save this Rmarkdown script as a file named “YourlastName_ReviewAssignment.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -37,8 +37,9 @@ The rules are: you roll two 6-sided dice then flip two coins.
 If you roll a 7 AND both coins come up heads, you win the prize: 
 a large stuffed teddy bear.
 
-1a. Assuming the dice and coins are fair, 
-what is the probability that you win the teddy bear?
+1a. Assuming the dice and coins are fair, use the rules
+of probability that we learned in class to
+calculate the probability that you win the teddy bear?.
 
 
 1b. Write a function that simulates this game, and use it to confirm 
@@ -120,14 +121,14 @@ myMatrix = matrix(data=NA, nrow = nSteps, ncol=nSteps)
 Suppose there are two full bowls of cookies. 
 Bowl #1 has 10 chocolate chip and 30 snickerdoodles, 
 while bowl #2 has 20 of each. 
-Our friend Cookiemonster picks a bowl at random, and then picks a cookie at random. 
+Our friend Cookie monster picks a bowl at random, and then picks a cookie at random. 
 We have no reason to believe Cookiemonster treats one bowl differently from another, 
 likewise for the cookies. 
 The cookie turns out to be a snickerdoodle.
 
  
 3a. Use Bayes Theorem to calculate the analytical probability that 
-Cookiemonster picked it out of Bowl #1?
+Cookie monster picked the cookie out of Bowl #1?
 
 
 
