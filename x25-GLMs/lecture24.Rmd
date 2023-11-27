@@ -1,7 +1,7 @@
 ---
 title: "Lecture 24 - Model Building continued: GLMs and link functions"
 author: "Emily Josephs"
-date: "November 29 2022"
+date: "November 28 2023"
 output:
   ioslides_presentation:
     transition: 0.0
@@ -24,47 +24,121 @@ output:
 
 ## Model building: recap {.build}
 
- - we can plug a deterministic function into the 
- parameters of a probability distribution to estimate 
- the relationship between a predictor and response variable
+ - we can estimate the relationship between a predictor and 
+ response variable by modelling the response as a normal distribution
+ where the mean is a function of the predictor
  
- - $\large \text{outcome}_i \sim \text{Distribution}(\theta_i = f(\text{predictor}_i))$
+ - $\large \text{outcome}_i \sim \text{Normal}(\theta_i = f(\text{predictor}_i))$
  
- - we can then do inference on the parameters of that deterministic 
- function
- 	+ using, e.g., Bayesian or Maximum Likelihood inference
+ - we can then use Maximum Likelihood or Bayes theorem to infer
+ the parameters of the deterministic function.
  
- \
- - when we do, we're calculating the likelihood of each 
- data point as a draw from a distribution parameterized 
- by the particular value of the predictor variable associated with it.
 
 ## Model building: the story so far {.build}
 
- - we can plug a deterministic function into the 
- parameters of a probability distribution to estimate 
- the relationship between a predictor and response variable
-
-	+ started with linear relationship
+	started with linear relationship
 	
-	+ discussed nonlinear (2-parameter) deterministic functions
-		+ negative exponential
-		+ logistic
-		+ power law
+	discussed nonlinear (2-parameter) deterministic functions
+		negative exponential
+		logistic
+		power law
+ 
+ so far everything has used normal distributions 
+ 
+## They mite be giants
+
+```{r, out.width="650px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/mite_info.jpeg")
+```
+
+## Linear deterministic function w/ normally distributed errors.
+
+```{r, echo=FALSE}
+n.samples <- 150
+n.mites <- sample(0:50,n.samples,replace=TRUE)
+fungus.mite.beta <- -0.08
+fungus.mite.alpha <- 25
+fungus.mite.sigma <- 2
+mean.dry.wt.fungus <- fungus.mite.alpha * exp(fungus.mite.beta*n.mites)
+dry.wt.fungus <- rnorm(n.samples,mean=mean.dry.wt.fungus,sd=fungus.mite.sigma)
+dry.wt.fungus[dry.wt.fungus < 0] <- 0
+leaf.dmg.fungus.beta <- 1.4
+leaf.dmg.fungus.alpha <- 15
+leaf.dmg.fungus.sigma <- 7
+lf.dmg <- function(x){
+	return(15+1.4*x)
+}
+mean.leaf.dmg <- leaf.dmg.fungus.beta*dry.wt.fungus + leaf.dmg.fungus.alpha
+leaf.dmg <- rnorm(n.samples,mean=mean.leaf.dmg,sd=leaf.dmg.fungus.sigma)
+```
+
+<div class="centered">
+```{r,echo=FALSE,fig.width=5,fig.height=3.75}
+par(mar=c(4,4,1,1))
+plot(dry.wt.fungus,leaf.dmg,
+	 main="",
+	 xlab="fungus",
+	 ylab="leaf damage",pch=19,col=adjustcolor(1,0.5))
+```
+</div>
+
+## Linear deterministic function w/ normally distributed errors.
+
+<div class="centered">
+```{r,echo=FALSE,fig.width=5,fig.height=3.75}
+par(mar=c(4,4,1,1))
+plot(dry.wt.fungus,leaf.dmg,
+	 main="",
+	 xlab="fungus",
+	 ylab="leaf damage",pch=19,col=adjustcolor(1,0.5))
+abline(a=leaf.dmg.fungus.alpha,b=leaf.dmg.fungus.beta,col="blue",lwd=3)
+abline(h=leaf.dmg.fungus.alpha,lwd=3,col="forestgreen")
+```
+</div>
+
+$\large 
+\begin{aligned}
+y \sim \mathcal{N}(&\mu_i=f(x_i),\sigma) \\
+&\mu_i = \beta x_i + \alpha
+\end{aligned}$
+
+
+## Exponential deterministic function w/ normally-distributed errors
+
+<div class="centered">
+```{r,echo=FALSE,fig.width=5,fig.height=3.75}
+par(mar=c(4,4,1,1))
+plot(n.mites,dry.wt.fungus,
+	 main="",
+	 xlab="Number of mites/cm2",
+	 ylab="dry fungus weight per leaf (mg)",pch=19,col=adjustcolor(1,0.5))
+```
+</div>
+
+
+## Exponential deterministic function w/ normally-distributed errors.
+
+<div class="centered">
+```{r,echo=FALSE,fig.width=5,fig.height=3.75}
+par(mar=c(4,4,1,1))
+plot(n.mites,dry.wt.fungus,
+	 main="",
+	 xlab="Number of mites/cm2",
+	 ylab="dry fungus weight per leaf(mg)",pch=19,col=adjustcolor(1,0.5))
+abline(h=fungus.mite.alpha,col="forestgreen",lwd=3)
+lines(0:50 , fungus.mite.alpha * exp(fungus.mite.beta * 0:50),col="blue",lwd=3)
+```
+</div>
+
+$\large 
+\begin{aligned}
+y_i \sim \mathcal{N}(&\mu_i=f(x_i),\sigma) \\
+&\mu_i = \alpha e^{-\beta x_i}
+\end{aligned}$
+
 
   
 ## Model building: Normal no more {.build}
-
-<div class="centered">
-$\large \text{outcome}_i \sim \text{Distribution}(\theta_i = f(\text{predictor}_i))$
-</div>
-
-\
-\
-
-
-## 
-
 ```{r, out.width="650px",echo=FALSE,fig.align="center"}
 	knitr::include_graphics("figs/mite_info.jpeg")
 ```
@@ -86,7 +160,7 @@ $\large \text{outcome}_i \sim \text{Distribution}(\theta_i = f(\text{predictor}_
  
 ## Waiting for my mite
 
-Do big leaves catch mites faster?
+Do big leaves catch mites faster? How can we model waiting time?
 
 ```{r,echo=FALSE,fig.width=7}
 n.samples <- 1e4
@@ -97,13 +171,7 @@ mite.arrival.times <- rexp(n.samples, mt.time.lf.area.beta*leaf.area+ mt.time.lf
 plot(leaf.area,mite.arrival.times,xlab="leaf area",ylab="time to first mite",pch=20,col=adjustcolor(1,0.2))
 ```
 
-## Waiting for my mite
-
-How does leaf size affect wait time to first mite?
-
-What distribution models waiting time?
-
-Let's check out the exponential shiny demo
+(discuss amongst yourselves)
 
 ## Modeling with the exponential {.build}
 
@@ -168,129 +236,6 @@ ln.L <- function(y,x,alpha,beta){
 # x is the predictor variable
 # alpha and beta are our intercept and slope
 ```
-
-## Model building: recap {.build}
-
- - we can plug a deterministic function into the 
- parameters of a probability distribution to estimate 
- the relationship between a predictor and response variable
- 
- - $\large \text{outcome}_i \sim \text{Distribution}(\theta_i = f(\text{predictor}_i))$
- 
- - we can then do inference on the parameters of that deterministic 
- function
- 	+ using, e.g., Bayesian or Maximum Likelihood inference
- 
- \
- 
- - we can do this with any deterministic function and any probability distribution
- 
-## Model building
-
-```{r, out.width="700px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/dream.001.jpeg")
-```
-
-## Model building
-
-```{r, out.width="700px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/dream.002.jpeg")
-```
-
-## Mite makes right
-
-```{r, out.width="650px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/mite_info.jpeg")
-```
-
-## Mite makes right
-
-```{r, echo=FALSE}
-n.samples <- 150
-n.mites <- sample(0:50,n.samples,replace=TRUE)
-fungus.mite.beta <- -0.08
-fungus.mite.alpha <- 25
-fungus.mite.sigma <- 2
-mean.dry.wt.fungus <- fungus.mite.alpha * exp(fungus.mite.beta*n.mites)
-dry.wt.fungus <- rnorm(n.samples,mean=mean.dry.wt.fungus,sd=fungus.mite.sigma)
-dry.wt.fungus[dry.wt.fungus < 0] <- 0
-leaf.dmg.fungus.beta <- 1.4
-leaf.dmg.fungus.alpha <- 15
-leaf.dmg.fungus.sigma <- 7
-lf.dmg <- function(x){
-	return(15+1.4*x)
-}
-mean.leaf.dmg <- leaf.dmg.fungus.beta*dry.wt.fungus + leaf.dmg.fungus.alpha
-leaf.dmg <- rnorm(n.samples,mean=mean.leaf.dmg,sd=leaf.dmg.fungus.sigma)
-```
-
-<div class="centered">
-```{r,echo=FALSE,fig.width=5,fig.height=3.75}
-par(mar=c(4,4,1,1))
-plot(dry.wt.fungus,leaf.dmg,
-	 main="",
-	 xlab="fungus",
-	 ylab="leaf damage",pch=19,col=adjustcolor(1,0.5))
-```
-</div>
-
-
-## Mite makes right
-
-<div class="centered">
-```{r,echo=FALSE,fig.width=5,fig.height=3.75}
-par(mar=c(4,4,1,1))
-plot(dry.wt.fungus,leaf.dmg,
-	 main="",
-	 xlab="fungus",
-	 ylab="leaf damage",pch=19,col=adjustcolor(1,0.5))
-abline(a=leaf.dmg.fungus.alpha,b=leaf.dmg.fungus.beta,col="blue",lwd=3)
-abline(h=leaf.dmg.fungus.alpha,lwd=3,col="forestgreen")
-```
-</div>
-
-$\large 
-\begin{aligned}
-y \sim \mathcal{N}(&\mu_i=f(x_i),\sigma) \\
-&\mu_i = \beta x_i + \alpha
-\end{aligned}$
-
-
-## Mite makes right
-
-<div class="centered">
-```{r,echo=FALSE,fig.width=5,fig.height=3.75}
-par(mar=c(4,4,1,1))
-plot(n.mites,dry.wt.fungus,
-	 main="",
-	 xlab="Number of mites/cm2",
-	 ylab="dry fungus weight per leaf (mg)",pch=19,col=adjustcolor(1,0.5))
-```
-</div>
-
-
-## Mite makes right
-
-<div class="centered">
-```{r,echo=FALSE,fig.width=5,fig.height=3.75}
-par(mar=c(4,4,1,1))
-plot(n.mites,dry.wt.fungus,
-	 main="",
-	 xlab="Number of mites/cm2",
-	 ylab="dry fungus weight per leaf(mg)",pch=19,col=adjustcolor(1,0.5))
-abline(h=fungus.mite.alpha,col="forestgreen",lwd=3)
-lines(0:50 , fungus.mite.alpha * exp(fungus.mite.beta * 0:50),col="blue",lwd=3)
-```
-</div>
-
-$\large 
-\begin{aligned}
-y_i \sim \mathcal{N}(&\mu_i=f(x_i),\sigma) \\
-&\mu_i = \alpha e^{-\beta x_i}
-\end{aligned}$
-
-
-## Waiting for my mite
 
 <div class="centered">
 ```{r,echo=FALSE,fig.width=5,fig.height=3.75}
@@ -414,10 +359,6 @@ $p$ = probability of mite on leaf, (# of occupied leaves)/30
 
 ## Binomial regression {.build}
 
-$\large y \sim \text{Binomial}(n,p)$
-
-\
-
 $\large y_i \sim \text{Binomial}(n=30,p_i=f(x_i))$
 
 \
@@ -428,11 +369,9 @@ $\large p_i = \beta x_i + \alpha$
 
 What will go wrong here?
 
+Compare p in the binomial distribution to p in the linear equation.
+
 ## Binomial regression {.build}
-
-$\large y \sim \text{Binomial}(n,p)$
-
-\
 
 $\large p_i = \beta x_i + \alpha$ \
 ($x_{i}$ is plant height)
@@ -735,6 +674,7 @@ We can use our model coefficients to figure out our expectations for the data ba
 modelData <-  inv.logit.link(
   mod@coef[1] + mod@coef[2] * plant.height)
 plot(plant.height, modelData, col="darkred")
+points(plant.height,occ.lfs/30,col="gray")
 ```
 
 ## Is our model working?
@@ -744,9 +684,14 @@ We can look at the differences between our model predictions and the actual data
 myResiduals = occ.lfs/30-modelData
 hist(myResiduals, main="")
 ```
-
-We want them to look normally distributed around 0.
  
+## Is our model working?
+We can look at the residuals across the range of the predictor variable
+```{r, echo=T, out.width="500px"}
+plot(plant.height, myResiduals)
+```
+ 
+
 ## Another example of GLMs: fungus-induced mortality
 
 - When fungal outbreaks get particularly severe, 
@@ -795,13 +740,13 @@ $\large y_i \sim \text{Poisson}(\lambda_i = f(x_i))$
 
 $\large \lambda > 0$
 
-## Breakout room activity
+## Group activity
 
 Try out Poisson regression for yourself. 
 \
 \
 Download "GLM-class-activity.Rmd" and go through
-the exercise with your breakout room.
+the exercise with your group.
 
 
 ## Poisson regression
@@ -926,5 +871,5 @@ Note: a **linear model** is a _special case_ of a GLM, for which:
  
  - model comparison
  
- - Will is great!
+ - Lauren and Lais are great!
  
