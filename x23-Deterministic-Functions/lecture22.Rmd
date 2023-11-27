@@ -520,7 +520,7 @@ ln.L <- function(y,mu,sigma){
 	))
 }
 
-ln.L(leaf.dmg, 23, 10)
+#ln.L(leaf.dmg, 23, 10)
 ```
 
 ```{r}
