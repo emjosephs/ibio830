@@ -73,8 +73,10 @@ leaf.dmg.fungus.sigma <- 7
 lf.dmg <- function(x){
 	return(15+1.4*x)
 }
+mean.leaf.dmg <- leaf.dmg.fungus.beta*dry.wt.fungus + leaf.dmg.fungus.alpha
+leaf.dmg <- rnorm(n.samples,mean=mean.leaf.dmg,sd=leaf.dmg.fungus.sigma)
 #miteData <- data.frame(n.mites,dry.wt.fungus, leaf.dmg)
-save(n.mites, dry.wt.fungus, lf.dmg, file="miteData.rda")
+save(n.mites, dry.wt.fungus, leaf.dmg, file="miteData.rda")
 ```
 
 ```{r, echo=T, eval=F}
