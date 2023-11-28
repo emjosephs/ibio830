@@ -8,7 +8,7 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_24_Assignment.Rmd") -->
 
-#### Due by midnight before the next class (12/1)
+#### Due by 11:59 on Nov 30.
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment24.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -45,7 +45,6 @@ $f(x_i) = \alpha + \beta x_i$ \
 
 I used a mystery model to simulate the data saved in the "mysteryData.Robj" 
 file in the Class 24 homework folder on D2L.
-I've also included mysteryData.txt for anyone having issues loading Robj files.
 
 
 Below is code to run a normal linear regression on this data. Run the code and look at the output plots. 
@@ -85,7 +84,7 @@ plot(mysteryData$predictor, mysteryData$response, bty="n", col="darkgray")
 points(mysteryData$predictor, mod1Data,col="red",lwd=2)
   
 ## look at a histogram of the residuals
-hist(residuals, col = "gray", border="white")
+plot(mysteryData$predictor, residuals)
 
 ```
 
