@@ -30,5 +30,6 @@ predictor <- rnorm(1000, mean = 5.2, sd = 0.65)
 data_frame <- as.data.frame(cbind(response, predictor))
 plot(data_frame$response~data_frame$predictor,xlab="Time After Spray in Minutes",ylab="Amount of Pesticide in Hemolymph")
 
+write.csv(data_frame, file = "rbug-data.csv")
 ```
 
