@@ -1,0 +1,36 @@
+---
+title: "Inference Battles"
+author: "Anabelle, Cecil, Daniel, Rachel"
+date: "2023-11-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Field mice are moderately cold tolerant. However, they survive more frequently at temperatures above 5 C. This distribution shows the survival of individuals across a range of temperatures with a population size of 20.
+
+```{r, echo = FALSE}
+# deterministic function
+inv.logit.link <- function(x){
+  p <- 1/(1+exp(-x))
+  return(p)
+}
+
+temperature <- runif(1e3, -7, 15) # x parameter
+
+Probability_survival <- inv.logit.link(temperature) # probability of survival
+
+Mice <- rbinom(length(temperature),20, Probability_survival) #simulate survival
+
+plot(x = temperature, y = Mice)
+
+```
+
+```{r, eval=FALSE}
+mice_survive <- data.frame(temperature,Individuals)
+write.csv(mice_survive, file = "mice_survive.csv")
+
+```
+
