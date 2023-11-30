@@ -72,7 +72,7 @@ This one is good I think except for the weird detFunc -- how are they going to k
 myData <- read.csv('Hyrule at Stats Data Simualtion.csv')
 
 detFunc <- function(x,a,b){
-  return(exp(-a*(x-b))+50)
+  return(exp(-a*(x-b)))
 }
 
 # specify the inverse link function
