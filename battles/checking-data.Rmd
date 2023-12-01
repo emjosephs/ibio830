@@ -91,4 +91,34 @@ mod
 
 ```
 
+Mice -- this one is good!
+
+```{r}
+
+myData=read.csv('mice_survive.csv')
+
+invLink <- function(x){
+  p <- 1/(1+exp(-x))
+  return(p)
+}
+
+detFunc <- function(x,a,b){
+	return(a+b*x)
+}
+
+a=0
+b=1
+
+## its an binom dist. But where's the deterministic function? Is it just linear and a is 0, b is 1?
+
+mod <- mle2(Mice~ dbinom(size=20,prob=invLink( detFunc(temperature, a, b))),
+            data=myData,
+            start=list("a"=0,"b"=1))
+
+
+modData <- invLink( detFunc(myData$temperature, a, b))*20
+plot(myData$temperature, myData$Mice)
+points(myData$temperature, modData, col="darkred")
+
+```
 
