@@ -122,9 +122,7 @@ points(myData$temperature, modData, col="darkred")
 
 ```
 
-Statfish
-
--- something is wrong here with how they calculated the counts -- each count is out of 1000.
+Statfish-- this is fine I think.
 
 ```{r}
 myData = read.csv('Statfish-data.csv')
@@ -142,10 +140,12 @@ invLink <- function(x){
 }
 
 
-mod <- mle2(Mice~ dpois(lambda=invLink( detFunc(temperature, a, b))),
+mod <- mle2(Response~ dpois(lambda=invLink( detFunc(Predictor, a, b))),
             data=myData,
             start=list("a"=1,"b"=0.01))
 mod
+
+
 
 
 ```
