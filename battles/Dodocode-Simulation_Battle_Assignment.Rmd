@@ -41,5 +41,6 @@ plot(dodo_pop ~ timeline, xlab = "Time (Years)", ylab = "Population (in the thou
 
 myData <- data.frame("predictor" = timeline, "response" = dodo_pop)
 
+write.csv(myData, file = "dodo.csv")
 
 ```

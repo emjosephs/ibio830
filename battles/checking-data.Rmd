@@ -156,3 +156,31 @@ mod
 
 
 ```
+
+Dodocode
+
+There is an issue with how they generated their response variable, since they didn't specify n and the first entry of rexp is n.
+
+```{r}
+myData = read.csv('dodo.csv')
+
+detFunc <- function(x,a,b){ #defining a linear deterministic function
+  return(a + b*x)
+}
+
+a = 1e12
+b = 1e13
+
+invLink <- function(p){ #specifying inverse link function for an exponential distribution
+  return(-p ** -1)
+}
+
+mod <- mle2(response~ dexp(rate=invLink( detFunc(predictor, a, b))),
+            data=myData,
+            start=list("a"=1e12,"b"=1e13))
+mod
+
+
+
+
+```
