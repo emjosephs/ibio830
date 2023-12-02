@@ -1,0 +1,38 @@
+---
+title: "checking-Rbug.Rmd"
+output: html_document
+date: "2023-12-02"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(bbmle)
+setwd('~/Documents/ibio830/battles/')
+```
+
+```{r}
+set.seed(123)
+
+N0 <- 6
+decay <- 0.18
+
+x <- rnorm(1000)
+
+# Inverse function for the exponential decay
+inv.logit.link <- function(p){
+    x <- exp(p)
+}
+
+response <- rpois(1000, lambda = inv.logit.link(N0 * exp(-decay*x)))
+predictor <- rnorm(1000, mean = 5.2, sd = 0.65)
+
+data_frame <- as.data.frame(cbind(response, predictor))
+plot(data_frame$response~data_frame$predictor,xlab="Time After Spray in Minutes",ylab="Amount of Pesticide in Hemolymph")
+
+```
+
+```{r}
+##load data
+myData = read.csv('rbug-data.csv')
+
+```

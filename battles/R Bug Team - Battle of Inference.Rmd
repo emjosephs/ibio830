@@ -17,19 +17,23 @@ set.seed(123)
 N0 <- 6
 decay <- 0.18
 
-x <- rnorm(1000)
+# Setting function for the expontential decay
+detFunction <- function(x, a, b){
+  a*exp(-b*x)
+}
 
 # Inverse function for the exponential decay
 inv.logit.link <- function(p){
 	x <- exp(p)
 }
 
-response <- rpois(1000, lambda = inv.logit.link(N0 * exp(-decay*x)))
 predictor <- rnorm(1000, mean = 5.2, sd = 0.65)
+response <- rpois(1000, lambda = inv.logit.link(detFunction(predictor, N0, decay)))
 
 data_frame <- as.data.frame(cbind(response, predictor))
 plot(data_frame$response~data_frame$predictor,xlab="Time After Spray in Minutes",ylab="Amount of Pesticide in Hemolymph")
 
-write.csv(data_frame, file = "rbug-data.csv")
+# Writing our csv file
+write.csv(data_frame, "R bug Mystery Data 12022023.csv", row.names = FALSE)
 ```
 

@@ -5,7 +5,7 @@ date: "2022-12-01"
 ---
 
 Group silence of the lambdas 
-##come back to this one
+##come back to this one -- emailed them for changes.
 ```{r, echo=T}
 library(bbmle)
 setwd("~/Documents/ibio830/battles/")
@@ -15,57 +15,86 @@ myData = read.csv('silence-of-the-lambdaslinear_data.csv')
 
 a <- -1
 b <- -.41 
-  
-detFunc <- function(x,a,b){
-	return(a*x^b)
-}
 
 invLink <- function(z){
 	return(-z^-1)
 }
 
+  
+detFunc <- function(x,a,b){
+	return(a*(x^b))
+}
+
+detFunc2 <- function(x,a,b){
+  return(a+b*x)
+}
+
+myData$testResponse=rexp(1000, invLink(detFunc(myData$predictor,a,b)))
+
+mod2 <- mle2(testResponse ~ dexp(rate=invLink(detFunc(predictor,a,b))),
+             data=myData,
+             start=list("a"=-1, "b"=-0.41)
+             )
+
+### this issue is the det function
+
+
+
 
 ##
-#mod <- mle2(response ~ dexp(rate=invLink( detFunc(predictor,a,b))),
-#            data=myData,
-#            start=list("a"=.1,"b"=.1))
+mod <- mle2(response ~ dexp(rate=invLink( detFunc(predictor,a,b))),
+            data=myData,
+            start=list("a"=-1,"b"=-.41))
 
 #modData <- invLink(mod@coef[1]*myData$predictor^mod@coef[2])
-modData <- invLink(a*myData$predictor^b)
+modData <- a*myData$predictor^b
 
 
-#plot(myData$predictor, myData$response)
-#points(myData$predictor, modData, col="red")
+plot(myData$predictor, detFunc(myData$predictor, a, b), col="red")
+points(myData$predictor, myData$response)
 
 
 ```
 
 Group R Bug
-## come back to this
+## emailed to fix it
 
 ```{r}
 myData <- read.csv('rbug-data.csv')
 
 N0 <- 6
-decay <- -0.18
-  
+decay <- 0.18
+set.seed(123)
+x <- rnorm(1000)
+
 detFunc <- function(x,a,b){
-	return(a*x^b)
+	return(exp(-a*(x*-b)))
 }
 
 invLink <- function(z){
 	return(exp(z))
 }
 
+response <- rpois(1000, lambda = invLink(N0 * exp(-decay*x)))
+myData$response2<-response
+
 mod <- mle2(response ~ dpois(lambda=invLink( detFunc(predictor,N0,decay))),
             data=myData,
-            start=list("a"=6,"b"=-.18))
+            start=list("a"=0,"b"=0))
+
+mod
 
 
-modData = invLink(detFunc(myData$predictor, N0, decay))
+
+mod2 <- mle2(response2 ~ dpois(lambda=invLink( detFunc(x,a,b))),
+            data=myData,
+            start=list("a"=6,"b"=0.1))
+
+mod2
+
 
 plot(myData$predictor, myData$response)
-points(myData$predictor,modData)
+points(myData$predictor,modData, col='red')
 
 
 ```
@@ -79,6 +108,11 @@ myData <- read.csv('Hyrule at Stats Data Simualtion.csv')
 detFunc <- function(x,a,b){
   return(exp(-a*(x-b)))
 }
+
+#detFunc <- function(x,a,b){
+#  return(exp(-a*(x-b))+50)
+#}
+
 
 # specify the inverse link function
 invLink <- function(z){
@@ -182,5 +216,14 @@ mod
 
 
 
+
+```
+
+Dodocode take 2
+
+```{r}
+myData=read.csv('R bug Mystery Data 12022023.csv')
+
+plot(myData$predictor, myData$response)
 
 ```
