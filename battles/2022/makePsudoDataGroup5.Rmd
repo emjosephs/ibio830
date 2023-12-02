@@ -1,0 +1,48 @@
+---
+title: "Make Sim data"
+author: "Mia Stevens,"
+date: "2022-12-01"
+output: html_document
+---
+
+```{r}
+
+# make data       #####
+set.seed(666)
+  # so everyone gets the same numbers
+x<-seq(0,10,length.out=1000)
+  # make x axis
+
+a<-.3
+b<-.6
+p<-rnorm(1000,mean=exp(a+b*x)/(1 + exp(a+b*x)),sd=.05)
+  # make y axis using normal distributed erros
+
+plot(p~x)
+# quick plot
+
+
+# make into data frame    ####
+dd <- data.frame(
+  x=x,
+  p=p
+)
+head(dd)
+names(dd)[2] <- 'y'
+
+# pretty graph          ####
+library(ggplot2)
+ggplot(data=dd, aes(x=x, y=p)) +
+  geom_point() + geom_smooth()
+  
+# prep and export       ####
+
+names(dd) <- c("predictor", 'response')
+
+#write.csv(dd,file = "/Users/admin/Documents/statsMethodsG5YellowPerchGrowthRate.csv",row.names = F)
+```
+
+
+## Explain data
+
+Our data here shows samples of yellow perch length and age measurements. The x-axis is the age of the yellow perch ranging from zero to ten years old, and the y-axis is the length of the perch in feet. We want to know what the deterministic function of the data is, along with the parameters and error distribution we should use to make future predictions of length and age for this perch population.

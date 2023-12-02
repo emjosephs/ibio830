@@ -4,255 +4,182 @@ output: html_document
 date: "2022-12-01"
 ---
 
-```{r, echo=F}
+Group silence of the lambdas 
+##come back to this one
+```{r, echo=T}
 library(bbmle)
+setwd("~/Documents/ibio830/battles/")
 
-detFunc <- function(x,a,b){
-	return(exp(a+b*x)/(1+exp(a+b*x)))
-}
-
-invLink <- function(z){
-	return(z)
-}
-
-names(mydata) <- c("response","predictor")
+myData = read.csv('silence-of-the-lambdaslinear_data.csv')
 
 
-##
-mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor,a,b)), sd=s),
-            data=mydata,
-            start=list("a"=20,"b"=0.25, 's'=20))
-
-## try their deterministic function
-detFunc2 <- function(x,a,b, L){
-	return(L/(1+exp(a*(x-b))))
-}
-
-
-
-```
-
-## Group 2
-
-```{r}
-library(bbmle)
-mydata=read.csv('~/Documents/ibio830/battles/Group2Data.csv')
-
-##used weird package
-## predictor data is exponentially distributed. THat's tots fine
-## det function is exponential decay
-## distribution is exponential
-## a = -100
-## b = -.5
-
-plot(mydata$predictor, mydata$response)
-
+a <- -1
+b <- -.41 
+  
 detFunc <- function(x,a,b){
 	return(a*x^b)
 }
 
-invLink <- function(z){ # specifying inverse link function
-	return(-1/z)
-}
-
-mod <- mle2(response ~ dexp(rate=invLink( detFunc(predictor,a,b))),
-            data=mydata,
-            start=list("a"=-100,"b"=.5))
-
-mod
-
-```
-
-
-## Group 3 -- IS GOOD
-
-```{r}
-library(bbmle)
-mydata=read.csv('~/Documents/ibio830/battles/group3sim.data.csv')
-
-plot(mydata$predictor, mydata$response)
-
-detFunc <- function(x,a,b){
-	return(exp(a+b*x)/(1+exp(a+b*x)))
-}
-
-invLink <- function(z){ # specifying inverse link function
-	return(exp(z))
-}
-
-mod <- mle2(response ~ dpois(lambda=invLink( detFunc(predictor,a,b))),
-            data=mydata,
-            start=list("a"=-5.3,"b"=.6))
-
-
-mod
-
-## from their code
-## a <- -5.3
-## b <- 0.61
-
-```
-
-## Group 5
-
-```{r}
-mydata <- read.csv('~/Documents/ibio830/battles/statsMethodsG5YellowPerchGrowthRate.csv')
-
-detFunc <- function(x,a,b){
-	return(exp(a+b*x)/(1+exp(a+b*x)))
-}
-
 invLink <- function(z){
-	return(z)
+	return(-z^-1)
 }
-
-mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor,a,b)), sd=s),
-            data=mydata,
-            start=list("a"=0,"b"=1, 's'=1))
-
-
-mod
-```
-
-## Group 5 actually
-
-```{r}
-mydata <- read.csv('~/Documents/ibio830/battles/SI_battle_Team5_data.csv')
-
-detFunc <- function(x,a,b){
-	return(a * (x^-b))
-}
-
-invLink <- function(z){
-	return(z)
-}
-
-mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor,a,b)), sd=s),
-            data=mydata,
-            start=list("a"=1000,"b"=2, 's'=0.05))
-
-
-mod
-
-#n = 1000
-#x = 1:n
-#a = 1
-#b = 0.2
-#s = 0.05
-#y = as.integer(rnorm(n, mean = invLink(myDet(x, a, b)), sd = s) * 1000)
-
-## looks good
-
-```
-
-## Team 6
-
-```{r}
-mydata <- read.csv('~/Documents/ibio830/battles/DeathByPoissonData.csv')
-
-#deathAlpha <- -4.56
-#deathBeta <- 0.071
-#deaths <- rpois(length(contaminantLevel),lambda=exp(deathAlpha + deathBeta*contaminantLevel))
-
-
-
-detFunc <- function(x,a,b){
-	return(a + b*x)}
-
-invLink <- function(z){
-    return(exp(z))  
-}
-
-mod <- mle2(response ~ dpois(lambda=invLink( detFunc(predictor,a,b))),
-            data=mydata,
-            start=list("a"=-4,"b"=.7))
-
-
-mod
-
-
-
-```
-
-## Group 7
-
-```{r}
-mydata <- read.csv('~/Documents/ibio830/battles/housefly_dataframe.csv')
-
-plot(mydata$predictor, mydata$response)
-
-
-#alpha <- -5
-#beta <- 0.005
-#deterministic_func <- exp(alpha+beta*data)/(1+exp(alpha+beta*data))
-#sample <- rbinom(length(data), size=1e3 , prob=deterministic_func)
-
-detFunc <- function(x,a,b){
-	return(exp(a+b*x)/(1+exp(a+b*x)))
-}
-
-invLink <- function(x){
-	return(	p <- 1/(1+exp(-x)))
-}
-
-mod <- mle2(response ~ dbinom(size=1000,prob=invLink( detFunc(predictor,a,b))),
-            data=mydata,
-            start=list("a"=-5,"b"=0.005))
-
-
-mod
-
-
-```
-
-## Group 8
-
-## Group 9
-
-```{r}
-#a<--5.2
-#b<-.083
-#makepoint<-function(x){
-#  y<-rnorm(1, mean=exp(a+b*x)/(1+exp(a+b*x)), sd=0.075)
-#  return(y)
-#}
-## is the same as the other definition of the logistic regression?
-
-
-## load data
-mydata <- read.csv('~/Documents/ibio830/battles/newgroup9data.csv')
-
-detFunc <- function(x,a,b){
-	return(exp(a+b*x)/(1+exp(a+b*x)))
-}
-
-invLink <- function(z){
-	return(z)
-}
-
-names(mydata) <- c("response","predictor")
 
 
 ##
-mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor,a,b)), sd=s),
-            data=mydata,
-            start=list("a"=5,"b"=0.08, 's'=20))
+#mod <- mle2(response ~ dexp(rate=invLink( detFunc(predictor,a,b))),
+#            data=myData,
+#            start=list("a"=.1,"b"=.1))
 
+#modData <- invLink(mod@coef[1]*myData$predictor^mod@coef[2])
+modData <- invLink(a*myData$predictor^b)
+
+
+#plot(myData$predictor, myData$response)
+#points(myData$predictor, modData, col="red")
+
+
+```
+
+Group R Bug
+## come back to this
+
+```{r}
+myData <- read.csv('rbug-data.csv')
+
+N0 <- 6
+decay <- -0.18
+  
+detFunc <- function(x,a,b){
+	return(a*x^b)
+}
+
+invLink <- function(z){
+	return(exp(z))
+}
+
+mod <- mle2(response ~ dpois(lambda=invLink( detFunc(predictor,N0,decay))),
+            data=myData,
+            start=list("a"=6,"b"=-.18))
+
+
+modData = invLink(detFunc(myData$predictor, N0, decay))
+
+plot(myData$predictor, myData$response)
+points(myData$predictor,modData)
+
+
+```
+
+Team Hyrule
+This one is good I think except for the weird detFunc -- how are they going to know about the 50?
+
+```{r}
+myData <- read.csv('Hyrule at Stats Data Simualtion.csv')
+
+detFunc <- function(x,a,b){
+  return(exp(-a*(x-b)))
+}
+
+# specify the inverse link function
+invLink <- function(z){
+  return(z)
+}
+a<-.06
+b<-200
+s=10
+
+mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor, a, b)), sd = s),
+            data=myData,
+            start=list("a"=0,"b"=200, s=10))
 
 mod
 
 ```
 
-WTF exponential
+Mice -- this one is good!
 
 ```{r}
 
-myP = runif(n=1000, min=0, max=100)
-myDet <- function(x){2*x+1}
+myData=read.csv('mice_survive.csv')
 
-myR = rexp(1000, rate=myDet(myP))
+invLink <- function(x){
+  p <- 1/(1+exp(-x))
+  return(p)
+}
 
-plot(myP, myR)
+detFunc <- function(x,a,b){
+	return(a+b*x)
+}
+
+a=0
+b=1
+
+## its an binom dist. But where's the deterministic function? Is it just linear and a is 0, b is 1?
+
+mod <- mle2(Mice~ dbinom(size=20,prob=invLink( detFunc(temperature, a, b))),
+            data=myData,
+            start=list("a"=0,"b"=1))
+
+mod
+
+
+modData <- invLink( detFunc(myData$temperature, a, b))*20
+plot(myData$temperature, myData$Mice)
+points(myData$temperature, modData, col="darkred")
+
+```
+
+Statfish-- this is fine I think.
+
+```{r}
+myData = read.csv('Statfish-data.csv')
+
+detFunc <- function(x, a, b){
+  resp <- exp(a + b*x)/1+exp(a+b*x)
+  return(resp)
+}
+
+a = 1
+b = 0.01
+
+invLink <- function(x){
+ exp(x)
+}
+
+
+mod <- mle2(Response~ dpois(lambda=invLink( detFunc(Predictor, a, b))),
+            data=myData,
+            start=list("a"=1,"b"=0.01))
+mod
+
+
+
+
+```
+
+Dodocode
+
+There is an issue with how they generated their response variable, since they didn't specify n and the first entry of rexp is n.
+
+```{r}
+myData = read.csv('dodo.csv')
+
+detFunc <- function(x,a,b){ #defining a linear deterministic function
+  return(a + b*x)
+}
+
+a = 1e12
+b = 1e13
+
+invLink <- function(p){ #specifying inverse link function for an exponential distribution
+  return(-p ** -1)
+}
+
+mod <- mle2(response~ dexp(rate=invLink( detFunc(predictor, a, b))),
+            data=myData,
+            start=list("a"=1e12,"b"=1e13))
+mod
+
 
 
 

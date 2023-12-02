@@ -1,0 +1,35 @@
+---
+title: "R Bug Team"
+author: "William Smith, Bernard Frantz, Jacob Fitzharris, Ignatius Andika"
+date: "2023-11-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Deathoppers
+Planthoppers (Cicadellidae) are a diverse family of Hemipterans known to vector many plant diseases. Pesticides are a common control method but pesticides do not kill all individuals in a population. Our data describes persistence of pesticides within the hemolymph of surviving planthoppers after a spray. Our x-axis is the time after spray in minutes our y-axis is the amount of pesticide within the hemolymph.
+```{r, echo = T}
+set.seed(123)
+
+N0 <- 6
+decay <- 0.18
+
+x <- rnorm(1000)
+
+# Inverse function for the exponential decay
+inv.logit.link <- function(p){
+	x <- exp(p)
+}
+
+response <- rpois(1000, lambda = inv.logit.link(N0 * exp(-decay*x)))
+predictor <- rnorm(1000, mean = 5.2, sd = 0.65)
+
+data_frame <- as.data.frame(cbind(response, predictor))
+plot(data_frame$response~data_frame$predictor,xlab="Time After Spray in Minutes",ylab="Amount of Pesticide in Hemolymph")
+
+write.csv(data_frame, file = "rbug-data.csv")
+```
+

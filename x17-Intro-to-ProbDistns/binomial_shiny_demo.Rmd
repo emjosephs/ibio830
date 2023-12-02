@@ -92,7 +92,7 @@ library(shiny)
   # this is where you define the parameters of the distribution
   # (the binomial distribution has 2 parameters, `n' and `p',
   #		plus I have to define the number of replicates)
-inputPanel(
+ui<- inputPanel(
  # Input: probability of success
  sliderInput("p", "probability of success (p):",
              min = 0, max = 1,
@@ -109,7 +109,7 @@ inputPanel(
 
 # this function determines how the output 
 # of the sliders is plotted
-renderPlot({
+server <- renderPlot({
   	# simulate data from the appropriately parameterized distribution
     x <- rbinom(n = input$n.reps,size = input$n,prob = input$p)
 	# dynamically define a plot title that gives summaries of the data
@@ -123,4 +123,9 @@ renderPlot({
          main = plot.title,
          breaks=min(length(x),15))
 })
+
+
+
 ```
+
+

@@ -51,15 +51,9 @@ mod <- mle2(y ~ dnorm(mean=invLink( detFunc(x,a,b)), sd=s),
 ## use the model to generate data
 modData = mod@coef[1]+mydata$x*mod@coef[2]
 
-#get residuals from difference between actual data and the predicted data
-residuals <- mydata$y - modData
-
 ## look at the model-predicted data curve on top of the actual data
 plot(mydata$x, mydata$y, bty="n", col="darkgray")
 points(mydata$x, modData,col="red",lwd=2)
-  
-## look at a histogram of the residuals
-hist(residuals, col = "gray", border="white")
 ```
 
 
@@ -67,7 +61,7 @@ hist(residuals, col = "gray", border="white")
 
 Now, try a Poisson regression. Head to wikipedia and look up the link function for a Poisson regression: https://en.wikipedia.org/wiki/Generalized_linear_model#Link_function
 
-Code for running a Possion regression is below. I've added comments where things have changed from the previous version. Please discuss these changes with your group.
+Code for running a Possion regression is below. I've added comments where things have changed from the previous version. Please discuss what has changed with your group.
 
 ```{r}
 
@@ -78,33 +72,26 @@ detFunc <- function(x,a,b){
 
 # specify the inverse link function
 invLink <- function(z){
-    return(exp(z))  ### CHANGE -- this is the inverse-link function for the poisson distribution
+    return(exp(z))  ### CHANGE 
 }
 
 # run a regression with mle2()
 mydata <- data.frame("x"= dry.wt.fungus,"y"= mortality)
-mod <- mle2(y ~ dpois(lambda=invLink( detFunc(x,a,b))), ### CHANGE -- dnorm has now become dpois, and instead of a mean and sigma, we have a lambda value for the rate parameter
+mod <- mle2(y ~ dpois(lambda=invLink( detFunc(x,a,b))), ### CHANGE 
             data=mydata,
-            start=list("a"=0,"b"=0))  ## CHANGE -- we now only need to start with two parameters
+            start=list("a"=0,"b"=0))  ##  CHANGE 
 
 
-## use the model to generate data
-modData = exp(mod@coef[1]+mydata$x*mod@coef[2]) ##CHANGE -- we're using the inverse-link function to calculate the model-predicted data
+## use the model to generate predicted data
+modData = exp(mod@coef[1]+mydata$x*mod@coef[2]) ##CHANGE
 
-#get residuals from difference between actual data and the predicted data
-residuals <- mydata$y - modData
 
 ## look at the model-predicted data curve on top of the actual data
 plot(mydata$x, mydata$y, bty="n", col="darkgray")
 points(mydata$x, modData,col="red",lwd=2)
-  
-## look at a histogram of the residuals
-hist(residuals, col = "gray", border="white")
-
 
 ```
 
-Discuss this Poisson regression model with your group. Does it fit better than the normal GLM? If so, how do you know
+Discuss this Poisson regression model with your group. How is it different from the normal model? Which do you think fits better?
 \
 \
-I think the second model fits the data better because the residuals show a slightly better distribution around zero, although it's close. One lesson I take from this is that even when the data was generated through a non-normal process, the normal distribution can do a pretty good job of fitting the data!.
