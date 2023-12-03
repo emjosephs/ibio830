@@ -33,7 +33,7 @@ neg.inv.link <- function(p){ #specifying inverse link function for an exponentia
 }
 
 
-dodo_pop <- rexp(n= 1000, rate = neg.inv.link(detFunc(timeline,10,10))) #simulating response variable (dodo bird population (in thousands))
+dodo_pop <- rexp(n= 1000, rate = -neg.inv.link(detFunc(timeline,10,10))) #simulating response variable (dodo bird population (in thousands))
 
 plot(dodo_pop ~ timeline, xlab = "Time (Years)", ylab = "Population (in the thousands)", 
      main = "Dodo Bird Population Before Human Discovery", col = "seagreen")
@@ -41,6 +41,9 @@ plot(dodo_pop ~ timeline, xlab = "Time (Years)", ylab = "Population (in the thou
 par(mfrow = c(1,2))
 hist(dodo_pop)
 hist(rexp(n=1000, rate = 1))
+
+myData = data.frame("predictor"=timeline, "response"=dodo_pop)
+write.csv(myData, file="dododata.csv")
 
 
 ```
