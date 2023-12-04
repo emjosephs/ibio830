@@ -194,7 +194,7 @@ Statfish-- this is fine I think.
 myData = read.csv('Statfish-data.csv')
 
 detFunc <- function(x, a, b){
-  resp <- exp(a + b*x)/1+exp(a+b*x)
+  resp <- exp(a + b*x)/(1+exp(a+b*x))
   return(resp)
 }
 
@@ -266,3 +266,30 @@ mod <- mle2(response~ dexp(rate=-invLink( detFunc(predictor, a, b))),
 mod
 
 ```
+
+dodo take 3
+
+```{r}
+myData <- read.csv('dodo_population.csv')
+
+detFunc <- function(x,a,b){ #defining a linear deterministic function
+  return(a + b*x)
+}
+
+invLink <- function(p){ #specifying inverse link function for an exponential distribution
+  return(p ** -1)
+}
+
+a=10
+b=5
+
+
+mod <- mle2(response~ dexp(rate=invLink( detFunc(predictor, a, b))),
+            data=myData,
+            start=list("a"=10,"b"=10))
+mod
+
+```
+
+
+
