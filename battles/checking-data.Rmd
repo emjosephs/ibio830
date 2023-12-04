@@ -184,18 +184,18 @@ points(myData$temperature, modData, col="darkred")
 
 ```
 
-Statfish-- this is fine I think.
+Statfish
 
 ```{r}
-myData = read.csv('Statfish-data.csv')
+myData = read.csv('statfish-data.csv')
 
 detFunc <- function(x, a, b){
-  resp <- exp(a + b*x)/(1+exp(a+b*x))
-  return(resp)
+  return(a * x^b)
+  
 }
 
-a = 1
-b = 0.01
+a = 2
+b = 0.25
 
 invLink <- function(x){
  exp(x)
@@ -204,7 +204,7 @@ invLink <- function(x){
 
 mod <- mle2(Response~ dpois(lambda=invLink( detFunc(Predictor, a, b))),
             data=myData,
-            start=list("a"=1,"b"=0.01))
+            start=list("a"=2,"b"=0.25))
 mod
 
 
