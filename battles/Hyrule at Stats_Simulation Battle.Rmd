@@ -11,11 +11,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Team Name: Hyrule at Stats
 
-
 ```{r}
 
 detFunc <- function(x,a,b){
-  return(exp(-a*(x-b)))
+  return(a*exp(-b*x))
 }
 
 # specify the inverse link function
@@ -27,8 +26,8 @@ invLink <- function(z){
 
 c_p_ratio<- runif(1000,min=100, max=500) # Predictor
 
-a<-.06
-b<-200
+a<-10000
+b<-.016
 biomass<-rnorm(1000,mean=detFunc(c_p_ratio,a,b), sd=10) #Response variabale
 
 mydata<-data.frame("predictor" = c_p_ratio, "response"= biomass)
@@ -36,4 +35,3 @@ mydata<-data.frame("predictor" = c_p_ratio, "response"= biomass)
 plot(c_p_ratio,biomass)
 
 ```
-

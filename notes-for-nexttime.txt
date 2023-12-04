@@ -1,0 +1,1 @@
+in the battles, make the teams simulating the data actually show that a linear model works on their data, themselves.
