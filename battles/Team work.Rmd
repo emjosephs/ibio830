@@ -1,0 +1,50 @@
+---
+title: "Battle Assignment of Team Jerry/Emily/Charlie"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+### Model information
+
+Distribution: Normal distribution  
+Deterministic function: Exponential Decay(N(t)=N0*exp(-lambda*t))  
+Link function: g(mean)=mean, mean=N(t)  
+
+
+### Story and variables
+
+Northern Raccoon can resist and metabolize snake venom. If a raccoon is bit by a rattlesnake, the venom can be totally degraded within a certain period of time.  In a study, researchers injected a specific volume of snake venom into the bodies of raccoon, and observed the metabolism of toxin. By doing this experiment, people can better understand the resistance ability of raccoon to snake venom.
+
+Predictor variable: metabolic time  
+Response variable: Residual toxin
+
+
+### Data Simulation
+
+```{r}
+
+## The parameters of the model
+alpha<-100    # Initial venom concentration (N0)
+beta<-0.1     # decay constant (lambda)
+sd<-1.5       #sd of normal distribution
+
+## Simulation
+n<-1000       # number of points
+
+predictor<-runif(min=0, max=100, n)   ##create predictor
+response <- rnorm(n,mean=alpha*exp(-beta*predictor),sd)   ##create response
+data <- data.frame(predictor,response)   ##create data frame
+
+##Plot
+expectation<-alpha*exp(-beta*predictor)
+
+plot(response~predictor, main = "Residual Snake Toxin Amounts Based on Time Metabolised", xlab = "Time (hours)", ylab = "Percent of Injected Toxin Remaining")
+lines(0:100 , 100 * exp(-.1 * 0:100),col="red",lwd=3)
+
+##Output
+write.csv(data,file="Relationship between residual drug and time.csv",row.names = FALSE)
+
+
+```
