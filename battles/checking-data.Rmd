@@ -331,7 +331,7 @@ beta <- -0.03
 
 mod <- mle2(response~ dpois(lambda=invLink( detFunc(predictor, a, b))),
             data=myData,
-            start=list("a"=4.5,"b"=-0.03))
+            start=list("a"=1,"b"=-0.5))
 
 
 mod
