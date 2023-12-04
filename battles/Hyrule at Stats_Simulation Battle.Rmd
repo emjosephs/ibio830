@@ -34,6 +34,6 @@ mydata<-data.frame("predictor" = c_p_ratio, "response"= biomass)
 
 plot(c_p_ratio,biomass)
 
-write.csv(mydata, file = "HyruleScenario.csv")
+write.csv(mydata, file = "HyruleScenario-final.csv")
 
 ```

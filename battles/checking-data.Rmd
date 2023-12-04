@@ -136,13 +136,13 @@ invLink <- function(z){
   return(z)
 }
 
-a<-100000
+a<-10000
 b<-0.016
 s=10
 
 mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor, a, b)), sd = s),
             data=myData,
-            start=list("a"=a,"b"=b, s=10))
+            start=list("a"=10000,"b"=0.016, s=10))
 
 mod
 
