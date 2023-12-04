@@ -125,10 +125,10 @@ mod
 ```
 
 Team Hyrule
-This one is good I think except for the weird detFunc -- how are they going to know about the 50?
+
 
 ```{r}
-myData <- read.csv('Hyrule at Stats Scenario.csv')
+myData <- read.csv('HyruleScenario-final.csv')
 
 detFunc <- function(x,a,b){
   return(a*exp(-b*x))
@@ -139,13 +139,13 @@ invLink <- function(z){
   return(z)
 }
 
-a<-.06
-b<-200
+a<-100000
+b<-0.016
 s=10
 
 mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor, a, b)), sd = s),
             data=myData,
-            start=list("a"=0,"b"=100, s=1))
+            start=list("a"=a,"b"=b, s=10))
 
 mod
 
