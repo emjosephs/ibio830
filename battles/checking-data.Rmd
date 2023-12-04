@@ -86,7 +86,7 @@ Team Hyrule
 
 
 ```{r}
-myData <- read.csv('HyruleScenario-final.csv')
+myData <- read.csv('hyrule.csv')
 
 detFunc <- function(x,a,b){
   return(a*exp(-b*x))
@@ -97,13 +97,13 @@ invLink <- function(z){
   return(z)
 }
 
-a<-10000
-b<-0.016
-s=10
+a<-100
+b<-0.1
+s=5
 
 mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor, a, b)), sd = s),
             data=myData,
-            start=list("a"=1000,"b"=0.015, s=10))
+            start=list("a"=10,"b"=0.15, s=10))
 
 mod
 
