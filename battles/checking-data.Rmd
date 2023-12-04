@@ -315,4 +315,30 @@ mod
 
 ```
 
+Grigsby group -- this is fine
+
+```{r}
+myData <- read.csv('frogs.csv')
+
+detFunc <- function(x,a,b){ #defining a linear deterministic function
+  return(a*x^b)
+}
+
+invLink <- function(z){ #specifying inverse link function for an exponential distribution
+  return(exp(z))
+}
+
+alpha <- 4.5
+beta <- -0.03
+
+
+mod <- mle2(response~ dpois(lambda=invLink( detFunc(predictor, a, b))),
+            data=myData,
+            start=list("a"=4.5,"b"=-0.03))
+
+
+mod
+
+```
+
 
