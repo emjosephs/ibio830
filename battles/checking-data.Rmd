@@ -5,7 +5,7 @@ date: "2022-12-01"
 ---
 
 Group silence of the lambdas 
-##come back to this one -- emailed them for changes.
+##
 ```{r, echo=T}
 library(bbmle)
 setwd("~/Documents/ibio830/battles/")
@@ -25,15 +25,12 @@ detFunc <- function(x,a,b){
 	return(a*(x^b))
 }
 
-detFunc2 <- function(x,a,b){
-  return(a+b*x)
-}
 
-myData$testResponse=rexp(1000, invLink(detFunc(myData$predictor,a,b)))
 
-mod2 <- mle2(testResponse ~ dexp(rate=invLink(detFunc(predictor,a,b))),
+
+mod <- mle2(response ~ dexp(rate=invLink(detFunc(predictor,a,b))),
              data=myData,
-             start=list("a"=-1, "b"=-0.41)
+             start=list("a"=-1, "b"=-.5)
              )
 
 ### this issue is the det function
