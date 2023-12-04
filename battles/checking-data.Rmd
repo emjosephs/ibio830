@@ -30,73 +30,28 @@ detFunc <- function(x,a,b){
 
 mod <- mle2(response ~ dexp(rate=invLink(detFunc(predictor,a,b))),
              data=myData,
-             start=list("a"=-1, "b"=-.5)
+             start=list("a"=-.5, "b"=-.5)
              )
-
-### this issue is the det function
-
-
-
-
-##
-mod <- mle2(response ~ dexp(rate=invLink( detFunc(predictor,a,b))),
-            data=myData,
-            start=list("a"=-1,"b"=-.41))
-
-#modData <- invLink(mod@coef[1]*myData$predictor^mod@coef[2])
-modData <- a*myData$predictor^b
-
-
-plot(myData$predictor, detFunc(myData$predictor, a, b), col="red")
-points(myData$predictor, myData$response)
-
-
-```
-
-Group R Bug
-## emailed to fix it
-
-```{r}
-myData <- read.csv('rbug-data.csv')
-
-N0 <- 6
-decay <- 0.18
-set.seed(123)
-x <- rnorm(1000)
-
-detFunc <- function(x,a,b){
-	return(exp(-a*(x*-b)))
-}
-
-invLink <- function(z){
-	return(exp(z))
-}
-
-response <- rpois(1000, lambda = invLink(N0 * exp(-decay*x)))
-myData$response2<-response
-
-mod <- mle2(response ~ dpois(lambda=invLink( detFunc(predictor,N0,decay))),
-            data=myData,
-            start=list("a"=0,"b"=0))
 
 mod
 
 
 
-mod2 <- mle2(response2 ~ dpois(lambda=invLink( detFunc(x,a,b))),
-            data=myData,
-            start=list("a"=6,"b"=0.1))
 
-mod2
-
+modData <- invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
 
 plot(myData$predictor, myData$response)
-points(myData$predictor,modData, col='red')
+points(myData$predictor, 1/modData, col="red")
 
+#plot(myData$predictor, detFunc(myData$predictor, a, b))
+#plot(myData$predictor, 1/invLink(detFunc(myData$predictor, a, b)))
+#plot(myData$predictor, rexp(1000, rate=invLink(detFunc(myData$predictor, a, b))))
 
 ```
 
-Rbug take 2
+
+Group R Bug
+
 
 ```{r}
 myData = read.csv('R bug Mystery Data 12022023.csv')
@@ -119,6 +74,12 @@ mod <- mle2(response ~ dpois(lambda=invLink( detFunc(predictor,a,b))),
             start=list("a"=0,"b"=0))
 
 mod
+
+modData = invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
+
+plot(myData$predictor, myData$response)
+points(myData$predictor, modData, col="red")
+
 ```
 
 Team Hyrule
@@ -142,9 +103,15 @@ s=10
 
 mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor, a, b)), sd = s),
             data=myData,
-            start=list("a"=10000,"b"=0.016, s=10))
+            start=list("a"=1000,"b"=0.015, s=10))
 
 mod
+
+
+modData = invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
+
+plot(myData$predictor, myData$response)
+points(myData$predictor, modData, col="red")
 
 ```
 
@@ -201,66 +168,20 @@ invLink <- function(x){
 
 mod <- mle2(Response~ dpois(lambda=invLink( detFunc(Predictor, a, b))),
             data=myData,
-            start=list("a"=2,"b"=0.25))
+            start=list("a"=1,"b"=.25))
 mod
 
 
+modData = invLink(detFunc(myData$Predictor, mod@coef[1], mod@coef[2]))
 
+plot(myData$Predictor, myData$Response)
+points(myData$Predictor, modData, col="red")
 
+#note that this is very sensitive to starting values
 ```
 
 Dodocode
 
-There is an issue with how they generated their response variable, since they didn't specify n and the first entry of rexp is n.
-
-```{r}
-myData = read.csv('dodo.csv')
-
-detFunc <- function(x,a,b){ #defining a linear deterministic function
-  return(a + b*x)
-}
-
-a = 1e12
-b = 1e13
-
-invLink <- function(p){ #specifying inverse link function for an exponential distribution
-  return(-p ** -1)
-}
-
-mod <- mle2(response~ dexp(rate=invLink( detFunc(predictor, a, b))),
-            data=myData,
-            start=list("a"=1e12,"b"=1e13))
-mod
-
-
-
-
-```
-
-Dodocode take 2
-
-```{r}
-myData=read.csv('dododata.csv')
-
-detFunc <- function(x,a,b){ #defining a linear deterministic function
-  return(a + b*x)
-}
-
-a = 10
-b = 10
-
-invLink <- function(p){ #specifying inverse link function for an exponential distribution
-  return(-p ** -1)
-}
-
-mod <- mle2(response~ dexp(rate=-invLink( detFunc(predictor, a, b))),
-            data=myData,
-            start=list("a"=10,"b"=10))
-mod
-
-```
-
-dodo take 3
 
 ```{r}
 myData <- read.csv('dodo_population.csv')
@@ -279,6 +200,12 @@ mod <- mle2(response~ dexp(rate=invLink( detFunc(predictor, a, b))),
             data=myData,
             start=list("a"=1,"b"=1))
 mod
+
+
+modData = 1/invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
+
+plot(myData$predictor, myData$response)
+points(myData$predictor, modData, col="red")
 
 ```
 
@@ -309,6 +236,10 @@ mod <- mle2(response~ dnorm(mean=invLink( detFunc(predictor, a, b)), sd),
 mod
 
 
+modData = invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
+
+plot(myData$predictor, myData$response)
+points(myData$predictor, modData, col="red")
 
 ```
 
@@ -335,6 +266,13 @@ mod <- mle2(response~ dpois(lambda=invLink( detFunc(predictor, a, b))),
 
 
 mod
+
+
+modData = invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
+
+plot(myData$predictor, myData$response)
+points(myData$predictor, modData, col="red")
+
 
 ```
 

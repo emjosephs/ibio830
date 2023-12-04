@@ -32,7 +32,6 @@ opposing team used to simulate their data will win **_eternal glory_**.
  	+ come up with an awesome, stats-inspired team name: 
  		+ e.g., "Poisson of a Preacher Man"
 
- - [Group sign up here](https://docs.google.com/spreadsheets/d/1X0kRQCpVkZ-xvt7R61dL8SMOX2ktAZ5RnMic_2KPg7Y/edit?usp=sharing)
 
 ### Simulation
 
@@ -44,26 +43,34 @@ opposing team used to simulate their data will win **_eternal glory_**.
 
  - and a **deterministic function** from the following list:
  	  1. linear
- 	  2. exponential decay
+ 	  ```{r}
+ 	  detFunc <- function(x,a,b){return(a + b*x)}
+ 	  ```
+ 	  2. exponential decay 
+ 	  ```{r}
+ 	  detFunc <- function(x,a,b){return(a*exp(-b*x))}
+ 	  ```
  	  3. logistic
+ 	  ```{r}
+ 	  detFunc<- function(x,a,b){return(exp(a+b*x)/(1+exp(a+b*x)))}
+    ```
  	  4. power-law
- 
+    ```{r}
+    detFunc <- function(x,a,b){return(a*x^b)}
+    ```
  - students **must** specify the **appropriate link function** for their distribution
 
- - simulate 1000 data points (that's 1000 responses and 1000 associated predictors)
- 	+ make a data frame, 
- 	with one column for the predictor and one for the response 
- 	(see example below).
+ - simulate 1000 data points (that's 1000 responses and 1000 associated predictors).
  	
- 	+ **hand data off to the other team**
- 		+ data should consist of:
-		 	1. make a **.csv file** containing 2 columns, labeled "predictor" and "response"
- 			2. a **realistic and well-motivated writeup** of a biological scenario 
+ - **Make data files for the other team**:
+      1. make a **.csv file** containing 2 columns, labeled "predictor" and "response".
+      2. a **realistic and well-motivated writeup** in a word doc of a biological scenario 
  	explaining what the question is and what data were collected to answer it.
- 
- 	+ **Make an Rmarkdown document** that contains 
- 	the code used to simulate the data and the written scenario and a plot of the output
- 		+ this will be sent to the instructors for approval (see schedule below).
+
+
+ - **Make an Rmarkdown document** that contains: 
+      1. the code used to simulate the data 
+  	  2. a demonstration that you are able to recover your chosen parameters using mle2()
  	
  ```{r echo=FALSE}
  n.samples <- 1e3
@@ -110,7 +117,7 @@ opposing team used to simulate their data will win **_eternal glory_**.
 
  - Dec 1-4 - work within groups to simulate data
  
- - Dec 5 (Monday) - by 9 am, email simulation scenario to me and Meaghan to get the green light
+ - Dec 5 (Monday) - by 9 am, email simulation scenario to me and [TA] to get the green light
  
  	+ teams with problems in their simulation code/scenario will have until 12/5 at 5pm to get their simulations cleared by instructors
 
