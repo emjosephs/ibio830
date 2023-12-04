@@ -1,0 +1,39 @@
+---
+title: "Simulation and Interference Battle"
+author: "Joris Van Zeghbroeck, Alanna Post, Tony Bowman"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Team Name: Hyrule at Stats
+
+
+```{r}
+
+detFunc <- function(x,a,b){
+  return(exp(-a*(x-b)))
+}
+
+# specify the inverse link function
+invLink <- function(z){
+  return(z)
+}
+
+# Simulate Data
+
+c_p_ratio<- runif(1000,min=100, max=500) # Predictor
+
+a<-.06
+b<-200
+biomass<-rnorm(1000,mean=detFunc(c_p_ratio,a,b), sd=10) #Response variabale
+
+mydata<-data.frame("predictor" = c_p_ratio, "response"= biomass)
+
+plot(c_p_ratio,biomass)
+
+```
+
