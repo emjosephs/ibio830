@@ -68,5 +68,5 @@ frogs %>% ggplot() +
 ```
 
 ```{r echo=FALSE}
-write.csv(frogs, "/Users/qiime2/Desktop//frogs.csv")
+write.csv(frogs, "frogs.csv")
 ```
