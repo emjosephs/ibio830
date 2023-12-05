@@ -1,0 +1,64 @@
+---
+title: "Poisson-dart frogs"
+author: "Katherine Hulting, Brandon Kristy, Alex Lewanski, Santiago Rodriguez, Morgan Clark, Ayley Shortridge"
+date: '2022-12-02'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(bbmle)
+```
+
+## Team name: Poisson-dart frogs
+
+Strawberry poison frogs (Oophaga pumilio) are a neotropical brightly colored frog species. These frogs will carry their tadpole young from the rainforest floor up to bromeliad plants situated in trees. These bromeliads provide a protective micro environment for their developing young. Tadpoles are placed on the backs of adult frogs and remain stuck there as the adult climbs the tree to the bromeliad. Once there, they are deposited into the bromeliad water. This dataset looks at the relationship between adult frog body size and number of tadpoles carried on the back.
+
+```{r}
+detFunc <- function(x,a,b){ # defining a logistic deterministic function
+	return(exp(a+b*x)/(1+exp(a+b*x)))
+}
+
+invLink <- function(z){ # specifying inverse link function
+	return(exp(z))
+}
+
+body_size <- runif(1e3, 2, 30) # 1000 data points, body size of adult frog
+a <- -5.3
+b <- 0.61
+tadpole <- rpois(1e3, lambda=invLink(detFunc(body_size, a, b))) # number of tadpoles is response variable
+mydata <- data.frame("predictor" = body_size, "response" = tadpole) # putting together into a dataframe
+plot(body_size, tadpole) 
+
+#setwd("~/Documents/stats/simulation battles")
+#write.csv(mydata, "sim.data.csv", row.names = F)
+
+
+
+### testing to see if we can infer the parameters
+mod <- mle2(response ~ dpois(lambda=invLink(
+  detFunc(predictor, a, b))),
+  data=mydata,
+  start=list("a"=1, "b"=1))
+
+mod@coef # parameters are similar to the ones we set
+
+modData = (exp(mod@coef[1]+mydata$predictor*mod@coef[2])/(1+exp(mod@coef[1]+mydata$predictor*mod@coef[2])))
+
+
+residuals <- mydata$response - modData # getting residuals
+
+plot(mydata$predictor, mydata$response, bty="n", col="darkgray") # potting data
+points(mydata$predictor, modData,col="red",lwd=2) # plotting model predictions
+  
+hist(residuals, col = "gray", border="white") # histogram of residuals
+
+
+```
+
+
+
+
+
+
+

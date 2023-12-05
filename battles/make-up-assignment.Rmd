@@ -1,0 +1,51 @@
+---
+title: "make-up-assignment"
+output: html_document
+date: "2023-12-04"
+---
+
+Due at 9am on Dec 7.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Frogs. Where are they and in what amount?
+
+The National Science Foundation, being as invested in questions of basic
+science as they are, unilaterally funds research about frogs and where
+they're located. Our work (as described in our generously awarded NSF
+proposal) requires that we count the number of frogs we observe as the
+distance between ourselves and the pond shore increases. Ultimately two
+things were recorded: **no. of frogs** and **distance from pond** (in
+meters).
+
+Incredibly, and defying all known laws of nature, we observed that the
+number of total frogs observed **decreased** as we traveled further and
+further away (0-100m) from the pond.
+
+Data collection was limited by worsening black bear attacks. We lost one
+(1) team member.
+
+
+```{r}
+myData <- read.csv('frogs.csv')
+
+plot(myData$predictor, myData$response, xlab = "distance from pond", ylab = "number of frogs")
+
+```
+
+## Assignment
+
+Use a generalized linear model to analyze the data described above 
+to infer how the predictor (distance from pond) affects the number of frogs.
+
+Please answer the following questions:
+
+1. What is the deterministic function for your model?
+
+2. What is the distribution and the inverse link equation that you used in your model?
+
+3. What parameters are included in your model?
+
+4. What is your best estimate of those parameters?
