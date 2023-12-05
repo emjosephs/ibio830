@@ -184,21 +184,21 @@ Dodocode
 
 
 ```{r}
-myData <- read.csv('dodo_population.csv')
+myData <- read.csv('dodo_population1.csv')
 
 detFunc <- function(x,a,b){ #defining a linear deterministic function
   return(a + b*x)
 }
 
 invLink <- function(p){ #specifying inverse link function for an exponential distribution
-  return(p ** -1)
+  return(-p ** -1)
 }
 
 
 
 mod <- mle2(response~ dexp(rate=invLink( detFunc(predictor, a, b))),
             data=myData,
-            start=list("a"=1,"b"=1))
+            start=list("a"=1,"b"=-1))
 mod
 
 
