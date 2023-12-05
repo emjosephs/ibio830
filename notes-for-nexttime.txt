@@ -1,1 +1,3 @@
+explicitely teach them how to plot the model means AND THAT THEY'RE MEANS so they know what to plot for the exp distribution
+
 in the battles, make the teams simulating the data actually show that a linear model works on their data, themselves.
