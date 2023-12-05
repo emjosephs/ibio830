@@ -32,8 +32,6 @@ opposing team used to simulate their data will win **_eternal glory_**.
  	+ come up with an awesome, stats-inspired team name: 
  		+ e.g., "Poisson of a Preacher Man"
 
- - [Group sign up here](https://docs.google.com/spreadsheets/d/1X0kRQCpVkZ-xvt7R61dL8SMOX2ktAZ5RnMic_2KPg7Y/edit?usp=sharing)
-
 ### Simulation
 
  - Each team picks a **probability distribution** from the following list:
@@ -106,16 +104,14 @@ opposing team used to simulate their data will win **_eternal glory_**.
  
 ### Timeline
 
- - Dec 1 - make groups, start to plan
-
- - Dec 1-4 - work within groups to simulate data
+ - Nov 30 - make groups, start to plan, work within groups to simulate data
  
- - Dec 5 (Monday) - by 9 am, email simulation scenario to me and Meaghan to get the green light
+ - Dec 4 (Monday) - by 9 am, email simulation scenario to Emily and Jimmy to get the green light
  
- 	+ teams with problems in their simulation code/scenario will have until 12/5 at 5pm to get their simulations cleared by instructors
+ 	+ teams with problems in their simulation code/scenario will have until 12/4 at 5pm to get their simulations cleared by instructors
 
- - Dec 6 - data handoff between teams at 9am (beginning of class)
+ - Dec 5 - data handoff between teams at the beginning of class. Teams use classtime to infer the data.
 
- - Dec 8 - presentations
+ - Dec 7 - presentations
  
- 	+ **Presentations must be submitted to the D2L dropbox by by 9am on Dec 8 ** 
+ 	+ **Presentations must be submitted to the D2L dropbox by by 9am on Dec 7 ** 

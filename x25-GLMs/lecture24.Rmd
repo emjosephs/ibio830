@@ -237,6 +237,9 @@ ln.L <- function(y,x,alpha,beta){
 # alpha and beta are our intercept and slope
 ```
 
+
+## Inference with the exponential
+
 <div class="centered">
 ```{r,echo=FALSE,fig.width=5,fig.height=3.75}
 par(mar=c(4,4,1,1))
