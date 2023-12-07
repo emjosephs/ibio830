@@ -47,6 +47,8 @@ points(myData$predictor, 1/modData, col="red")
 #plot(myData$predictor, 1/invLink(detFunc(myData$predictor, a, b)))
 #plot(myData$predictor, rexp(1000, rate=invLink(detFunc(myData$predictor, a, b))))
 
+##got the wrong dterministic function
+
 ```
 
 
@@ -80,6 +82,7 @@ modData = invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
 plot(myData$predictor, myData$response)
 points(myData$predictor, modData, col="red")
 
+## got the wrong one
 ```
 
 Team Hyrule
@@ -99,7 +102,7 @@ invLink <- function(z){
 
 a<-100
 b<-0.1
-s=5
+sd=5
 
 mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor, a, b)), sd = s),
             data=myData,
@@ -112,6 +115,16 @@ modData = invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
 
 plot(myData$predictor, myData$response)
 points(myData$predictor, modData, col="red")
+
+
+# team guessed
+a2 = 100.17
+b2=0.096 
+sd2=4.77
+
+score = mean(c(abs(a-a2),abs(b-b2),abs(sd-sd2)))
+score  
+  
 
 ```
 
@@ -146,6 +159,11 @@ modData <- invLink( detFunc(myData$temperature, a, b))*20
 plot(myData$temperature, myData$Mice)
 points(myData$temperature, modData, col="darkred")
 
+a2= 0.004502965
+b2= 0.977754085
+
+score=mean(c(abs(a-a2), c(b-b2)))
+score
 ```
 
 Statfish
@@ -177,7 +195,14 @@ modData = invLink(detFunc(myData$Predictor, mod@coef[1], mod@coef[2]))
 plot(myData$Predictor, myData$Response)
 points(myData$Predictor, modData, col="red")
 
+
+### got the wrong deterministic function
+
 #note that this is very sensitive to starting values
+#a2=
+#b2=
+  
+#score=mean(abs(a-a2),abs(b-b2))  
 ```
 
 Dodocode
@@ -216,7 +241,7 @@ Team Jerry/Emily/Charlie
 
 myData <- read.csv('Relationship between residual drug and time.csv')
 
-detFunc <- function(x,a,b){ #defining a linear deterministic function
+detFunc <- function(x,a,b){ 
   return(a*exp(-b*x))
 }
 
@@ -241,6 +266,14 @@ modData = invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
 plot(myData$predictor, myData$response)
 points(myData$predictor, modData, col="red")
 
+
+
+alpha2 = 100 
+  beta2= 0.01
+  sd2=1.508
+  
+  score=mean(c(abs(alpha-alpha2), abs(beta-beta2), abs(sd2-sd)))
+  score
 ```
 
 Grigsby group -- this is fine
@@ -273,6 +306,9 @@ modData = invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
 plot(myData$predictor, myData$response)
 points(myData$predictor, modData, col="red")
 
+#got the model wrong (jenna hyrnes group)
+
+# Sarah + Narda team. Got poisson? BUt then Normal and power law.
 
 ```
 
