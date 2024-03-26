@@ -80,19 +80,10 @@ I am Emily Josephs
  * probability distributions
  * likelihood
  * likelihood-based inference
- * Bayesian inference
  * deterministic functions
  * model building
 
 **Still using R, but focus won't be on the language itself!**
-
-
-## 
-
-```{r, out.width="750px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/fox_marmot.jpeg")
-```
-
 
 
 ## Shaping Expectations {.build}
@@ -120,30 +111,15 @@ Everything else in the world is happening!!!
 3. remember that your primary goal is _present_ understanding, 
 but a solid secondary goal is _future_ understanding.
 
-4. try to stay on top of the work.
+4. do the homework and the self-reflections.
 
-5. don't be afraid of office hours!!
+5. visit me and Sophie in office hours
 
 ## Office hours!
-
-Change from syllabus:
 
 Office hours are Mondays 2-4pm in PLB 266 or on zoom.
 
 Zoom Room: https://msu.zoom.us/my/emjos (Password: plantsrule)
-
-## Why am I doing this to you? {.build}
-
-Many of you got into this business because of a love of nature, 
-not a love of stats and computers.
-
-Our goal is to try to translate your love of _nature_ 
-into a love of _patterns_, and give you the tools to do so!
-
-Biology has become a driver of quantitative methods in STEM 
-because interesting patterns are sublte and complicated.
-
-Also, coding and stats is a very useful skill.
 
 ## Simulating data
 
@@ -183,6 +159,25 @@ sample(thisClass, size=1)
 ```{r}
 sample(thisClass, size=1)
 ```
+
+## Questions we can answer with simulations
+
+If we randomly pick a student, how likely are we to select student #19?
+
+If we randomly pick 10 students, how likely are we to select student #19?
+
+If we randomly pick 2 students, how likely are we to select students #19 and #20?
+
+## Simulating students
+
+If we randomly pick a student, how likely are we to select student #19?
+```{r}
+
+mySamples <- replicate(10000, sample(thisClass, size=1))
+sum(mySamples==19)/10000
+
+```
+
 
 ## Today's lecture - Intro to Probability! {.build}
 
