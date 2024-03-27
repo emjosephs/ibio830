@@ -124,6 +124,18 @@ Zoom Room: https://msu.zoom.us/my/emjos (Password: plantsrule)
 
 ## Today's lecture - Intro to Probability! {.build}
 
+Learning goals:
+
+Learn what probability is and the law of total probability.
+
+Write basic simulations in R to build intuition about:
+-simple mutually-exclusive events
+-complex mutually-exclusive events
+-shared non-exclusive events
+-conditional probabilities
+
+## Today's lecture - Intro to Probability! {.build}
+
 Why do we care about probability?
 - Many important biological processes are influenced by chance
 - We don't want to tell science stories about coincidences.
@@ -308,16 +320,14 @@ mySample = sample(x=c("A","B","C"),
                   replace=TRUE,
                   prob = c(pA, pB, pC))
 
-```
-
-## Summarizing the outcome of the simulation {.build}
-
-```{r}
-
 propA = sum(mySample=="A")/myN
 propB = sum(mySample=="B")/myN
 propC = sum(mySample=="C")/myN
+```
 
+## Visualizing the simulation {.build}
+
+```{r}
 mycols =  c("#EDA158","#62CAA7","#98C5EB")
 barplot(c(propA, propB, propC), col=mycols, xlab = "probability", 
         ylab = "proportion", names.arg = c('A','B','C'))
@@ -326,6 +336,8 @@ barplot(c(propA, propB, propC), col=mycols, xlab = "probability",
 ## How many balls fell through A or B?
 
 Work with your groups to calculate the probability of A or B happening.
+
+Note that this is called a **complex event**, since it is the combination of multiple, mutually-exclusive outcomes.
 
 ## How many balls fell through A or B? {.build}
 
@@ -375,11 +387,169 @@ mySamples <- replicate(nReps, sampleFunction(500))
 hist(mySamples, main="", xlab = "proportion A or B")
 ```
 
-## Non-exclusive events
+## Non-exclusive events {.build}
 
 What if events are not exclusive?
 
-```{r, out.width="600px",echo=FALSE,fig.align="center"}
+```{r, out.width="400px",echo=FALSE,fig.align="center"}
 	knitr::include_graphics("figs/indep.gif")
 ```
 
+How do we calculate the probability of falling through A and B?
+
+## Shared non-exclusive events {.build}
+
+We'll start by assuming that falling through A does not affect the probability of falling through B (we'll revisit this later).
+
+If the $P(A) = 0.5$ and $P(B) = 0.5$, what is the probability of falling through both A and B?
+
+## Simulate!
+
+How can we edit this sample function to return the probability of falling through both A and B if $P(A) = 0.5$ and $P(B) = 0.5$?
+
+```{r}
+sampleFunction <- function(myN){
+                  mySample = sample(x=c("A","B","C"), 
+                  size = myN,
+                  replace=TRUE,
+                  prob = c(pA, pB, pC))
+                  
+                  propA = sum(mySample=="A")/myN
+                  propB = sum(mySample=="B")/myN
+                  propC = sum(mySample=="C")/myN
+                  
+                  return(propA + propB)
+                  }
+```
+
+## Simulate!
+
+```{r}
+pA = pB = 0.5
+
+sampleFunction2 <- function(myN){
+                  mySampleA = sample(x=c(1,0), 
+                  size = myN, replace=TRUE,
+                  prob = c(pA, 1-pA))
+                  
+                  mySampleB = sample(x=c(1,0), 
+                  size = myN, replace=TRUE,
+                  prob = c(pB, 1-pB))
+                  
+                  myCombined = mySampleA + mySampleB
+                  
+                  probBoth = sum(myCombined==2)/myN
+                  
+                  return(probBoth)
+                  }
+```
+
+## Look at our simulations
+```{r}
+mySamples <- replicate(100,sampleFunction2(100))
+
+hist(mySamples, main="", xlab = "proportion A and B")
+```
+
+## What if A and B are not independent?
+
+```{r, out.width="400px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/indep.gif")
+```
+
+## Conditional probabilities {.build}
+
+Conditional probabilities describe the probability of outcome B given outcome A.
+
+Conditional probabilities are really useful for thinking about the relationships between different events.
+
+## Notation note {.build}
+
+$P(A|B)$ is the probability of A conditional on B.
+
+If $P(A|B)=0$, A and B are mutually exclusive.
+
+**Warning**
+
+In R, | means *or*
+
+This is very unfortunate.
+
+Stay safe!
+
+## Simulating conditional probabilities
+
+Modify our sampling function to simulate the following scenario: $P(A) = 1/3$, $P(B|A) = 1/2$, $p(B|not A) = 3/4$
+
+How often do we find A and B?
+
+Note that this is called a **shared event**, made up of multiple non-exclusive outcomes.
+
+## Pseudocode for simulating conditional probabilities
+
+```{r}
+pA = 1/2
+pB_given_A    = 4/5
+pB_given_notA = 1/5
+
+#write a function to do one trial (one ball)
+
+#write a function to get a sample by running that trial 500 times
+
+#write a function to generate 100 samples
+```
+
+
+## Simulating conditional probabilities
+
+```{r}
+#write a function to do one trial (one ball)
+oneTrial <- function(){
+  mySampleA = sample(x=c(1,0), 
+                  size = 1, replace=TRUE,
+                  prob = c(pA, 1-pA))
+                  
+                  if (mySampleA == 1){pB = pB_given_A}
+                  else{pB = pB_given_notA}
+                  
+                  mySampleB = sample(x=c(1,0), 
+                  size = 1, replace=TRUE,
+                  prob = c(pB, 1-pB))
+                  
+                  myCombined = mySampleA + mySampleB
+                  isBoth = sum(myCombined==2)
+                  return(isBoth)
+}
+```
+
+## Simulating conditional probabilities
+
+```{r}
+#write a function to get a sample by running that trial 500 times
+
+sampleFunction3 <- function(myN){sum(replicate(myN, oneTrial()))/myN}
+
+#write a function to generate 100 samples
+mySamples <- replicate(100,sampleFunction3(100))
+
+
+```
+
+## Simulating conditional probabilities
+
+```{r}
+hist(mySamples, main="", xlab = "Prob of A and B")
+
+```
+
+##Intro to Probability! {.build}
+
+Learning goals:
+
+Learn what probability is and the law of total probability.
+
+Write basic simulations in R to build intuition about:
+-simple mutually-exclusive events
+-complex mutually-exclusive events
+-shared non-exclusive events
+-conditional probabilities
