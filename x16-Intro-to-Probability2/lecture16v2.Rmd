@@ -184,4 +184,16 @@ $P(H | D ) = \frac{P(D | H) \times P(H)}{P(D)}$
 
 ## Another strategy
 
-Probability trees
+It can be hard to keep track of all of this. Probability trees are a tool to help. To make a probability tree, we   
+
+1. Write down all potential outcomes for *a*, and use lines to show their probabilities.  
+2. We then write down all potential outcomes for *b* separately for each potential *a*, and connect each *a* to these outcomes with a line denoting the conditional probabilities.   
+3. Keep going for events *c*, *d*, etc...    
+4. Multiply each value on path to get the probability of that path.     
+5. Add up all paths that lead to the outcome you are interested in. <span style="color:lightgrey;">(NOTE: Again, each path is exclusive, so we don't subtract anything.)</span>   
+
+## Probability trees
+
+```{r, out.width="700px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/latte-tree.jpg")
+```
