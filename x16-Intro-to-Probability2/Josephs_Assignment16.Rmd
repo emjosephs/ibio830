@@ -33,57 +33,6 @@ It is due before our next class.
 
 ### Question 1
 
-Define the following terms: 
-
-1a) random variable
- 
- **A variable that is the outcome of a random/stochastic process**
- \
- \
- \
- 
-1b) probability distribution function
- 
- **This function describes the probability of outcomes across the sample space**
- \
- \
- \
-
-
-### Question 2
-\
-<div class="centered">
-$\Large {{n}\choose{k}}p^k (1-p)^{n-k}$
-</div>
-
-2a) Using your own words, break down the equation above and 
-describe what each part means (or is doing).
-
-**This equation describes the probability distribution function of coin flipping (or similar processes).**
-**n is the number of trials (or flips)**\
-**k is the number of successes**\
-**and p is the probability of success**\
-
-\
-**$p^{k} (1-p)^{n-k}$ is the probability of getting k successes and n-k failures given a certain underlying probability k. We get this value through the rule that the probability of a shared event is the product of the probabilities of all the simple events that make up the shared event**
-**${n}\choose{k}$ is the number of permutations that will give you k successes. This is the binomial coefficient**
-\
-\
-
-2b) Using the function of this equation that you coded up in class, calculate the probability of 
-seeing 71 successes out of 531 trials, where the probability of success is 0.12345.
-
-```{r, echo=T}
-
-coinFlipProb <- function(n,k,p){
-  myprob = choose(n,k)*p^k*(1-p)^(n-k)
-  return(myprob)
-}
-
-coinFlipProb(n=531,k=71,p=.12345)
-
-```
-
 ### Question 3
 
 Data from Dr. Josephs' undergraduate class exams suggests that at any point, 
