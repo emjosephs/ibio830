@@ -50,25 +50,18 @@ Write an example of the following statistical concepts:
  \
  \
  
- 
+### Question 2 
 
-### Question 2
+2a) Write a function simulating sampling a number (N) of dates in Julian date (dates are numbers from 1 to 365) with replacement.
 
-2a) Suppose a process has two possible outcomes: A and B.
-If the probability of A ($p(A)$) is 0.2, what is p(B)?
+2b) Assume that the probability of being born is the same every day of the year. You make a new friend named George. What is the probably that George's birthday is January 1st (Julian date=1)? Use the function you wrote above to sample this person being born 1e5 times to estimate the probability.
 
-\
-\
+2c) Exclusive events: What is the probability that George's birthday is in January (Julian dates 1-31) Again, do 1e5 simulations to estimate the probability
 
-2b) More generally, if a process has many possible outcomes, 
-one of which is A, what is the probability of _not_ A?
-
-\
-\
-\
+2d) Nonexclusive events: What is the probability that George's birthday is in January AND that George was born on a Sunday (assume that there is an equally likely probability of having any day of the week on any date).
 
 
-### Question 3
+### Question 3 (challenge question!!!)
 
 **The Birthday Problem** is a classic problem in probability:
 
@@ -79,7 +72,7 @@ that _at least_ two of them share a birthday?
 
 3a) Write a function for simulating the birthday problem. 
 The argument of the function should be the number of people in the room, 
-and it should return the probability (from simulations), that two or more 
+and it should return the probability (from 1000 sampling simulations), that two or more 
 share a birthday.
 
 \
@@ -95,11 +88,3 @@ there to be > 50% probability that _at least_ two of them share a birthday
 \
 \
 
-3c) Suppose humans colonize Mars.  How many people have to be in a room 
-on Mars for there to be a >50% probability that at least 2 of them share 
-a **Martian** birthday? (Hint: a Martian year has 687 days)
-
-\
-\
-\
-\

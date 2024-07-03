@@ -8,7 +8,7 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_15_Assignment.Rmd") -->
 
-#### Due by the beginning of next class (10/28)
+#### Due by midnight on Oct 23 (the night before class on Oct 24)
 
 Save this Rmarkdown script as a file named “YourlastName_Assignment15.Rmd”. 
 For each question, fill out the answer and, where requested, 
@@ -33,61 +33,69 @@ It is due before our next class.
 
 ### Question 1
 
-Define the following terms: 
 
-** There are a number of possible definitions, here's how I'd do it
 
- - probability
- 
- \
-  **How often we expect an event to happen**
- \
- 
- - simple event 
- 
- \
- **a single experiment (ie drawing a random number) with a single outcome (ie the number drawn)**
- \
- 
- - complex event
- 
- \
-  **a composite of simple events**
- \
- 
- - shared event
- 
- \
-  **the simultaneous occurrence of simple events**
- \
- 
+Write an example of the following statistical concepts:
 
- - statistical independence
-
- \
- **events are independent when their outcomes do not affect each other**
- \
-
+ - mutually-exclusive events
+ 
+Birthdays -- my birthday cannot be both April 17 and April 20.
+ 
+ -- non-exclusive events
+ 
+Birthdays -- my birthday can be April 17 and I could have been born on a Thursday.
+ 
+ -- conditional probability
+ 
+The probability that my birthday is 24 given that my birthday falls on a Thursday this year. 
+ 
 
 ### Question 2
 
-2a) Suppose a process has two possible outcomes: A and B.
-If the probability of A ($p(A)$) is 0.2, what is p(B)?
+2a) Write a function simulating sampling a number (N) of dates in Julian date (dates are numbers from 1 to 365) with replacement.
 
-\
-p(B) = 0.8
-\
+```{r, echo=T}
+dateFunction <- function(myN){
+  myDates <- sample(1:365, myN, replace=T)
+  return(myDates)
+}
+```
 
-2b) More generally, if a process has many possible outcomes, 
-one of which is A, what is the probability of _not_ A?
+2b) Assume that the probability of being born is the same every day of the year. You make a new friend named George. What is the probably that George's birthday is January 1st (Julian date=1)? Use the function you wrote above to sample this person being born 1e5 times to estimate the probability.
 
-\
-p(not A) = 1 - p(A)
-\
-\
+```{r, echo=T}
+myBirthdays = replicate(1e5,dateFunction(1))
+sum(myBirthdays == 1)/length(myBirthdays)
+
+```
+
+2c) Exclusive events: What is the probability that George's birthday is in January (Julian dates 1-31) Again, do 1e5 simulations to estimate the probability
+```{r, echo=T}
+sum(myBirthdays < 32)/length(myBirthdays)
+```
 
 
-### Question 3
+2d) Nonexclusive events: What is the probability that George's birthday is in January AND that George was born on a Sunday (assume that there is an equally likely probability of having any day of the week on any date).
+```{r}
+dayFunction <- function(myN){
+  myDays <- sample(1:7, myN, replace=T)
+  return(myDays)
+}
+
+#sample the days of the week that go with every birthday
+myDays = replicate(1e5, dayFunction(1))
+
+isJanuary <- myBirthdays < 32
+isSunday <- myDays == 1
+
+isJanuaryandSunday = isJanuary + isSunday
+
+sum(isJanuaryandSunday ==2)/1e5
+
+
+```
+
+### Question 3 (challenge question!!!)
 
 **The Birthday Problem** is a classic problem in probability:
 
@@ -108,13 +116,13 @@ This is how I solved the problem:
 ## Write a function where you
 birthdaySharing <- function(myN){
   #sample n birthdays from the year (with replacement!)
-  birthdays = sample(1:365, myN, replace=T)
+  birthdays = dateFunction(myN)
   # if anyone shares a birthday, log it as a "birthday twins" event
   if (sum(duplicated(birthdays))>0) { myOut = TRUE} else {myOut = FALSE}
   return(myOut)
 }
 
-## run the function 1e5 times
+## run the function 1e4 times
 birthdaySim <- function(myP){ ##myP is the number of individuals
 myOut = sapply(1:1e4,function(x){birthdaySharing(myP)})##
   return(sum(myOut)/1e4)}
@@ -127,7 +135,7 @@ Here is another, more elegant but hard-to-read solution:
 ```{r,echo=TRUE}
 sim.bday <- function(N){
 	prop.twinsies <- sum(
-					replicate(1e5,
+					replicate(1e4,
 						length(
 							unique(
 								sample(1:365,N,replace=TRUE)
@@ -155,22 +163,3 @@ on Mars for there to be a >50% probability that at least 2 of them share
 a **Martian** birthday?
 
 \
-
-
-```{r, echo=T}
-## Martian year has 687 days
-
-birthdaySharingMars <- function(myN){
-  birthdays = sample(1:687, myN, replace=T) 
-  if (sum(duplicated(birthdays))>0) { myOut = TRUE} else {myOut = FALSE}
-  return(myOut)
-}
-
-## do it many times
-birthdaySimMars <- function(myP){
-myOut = sapply(1:1e4,function(x){birthdaySharingMars(myP)})
-  return(sum(myOut)/1e4)}
-
-which(sapply(1:60,function(n){birthdaySimMars(n)}) > 0.5)[1]
-
-```
