@@ -29,13 +29,14 @@ It is due before our next class.
 
 3. use your R skillz: function building, data visualization, etc.
 
-
-
 ### Question 1
+
+Re-answer question 2 from the previous homework using an analytical approach.
+
+### Question 2
 
 Data from Dr. Josephs' undergraduate class exams suggests that at any point, 
 1% of students at MSU have an active COVID infection.
-What is the probability that no one in our classroom would has an active case of COVID?
 
 3a) What is the analytical probability that no one in our classroom 
 has an active COVID infection? Assume that there are 35 people in the classroom.

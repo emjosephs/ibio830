@@ -33,6 +33,102 @@ It is due before our next class.
 
 ### Question 1
 
+Re-answer question 2b-e from the previous homework using an analytical approach.
+
+
+2b) What is the probably that George's birthday is January 1st (Julian date=1)? 
+
+There are 365 possible birthdays
+
+```{r}
+1/365
+```
+
+2c) Exclusive events: What is the probability that George's birthday is in January (Julian dates 1-31) 
+
+```{r}
+31/365
+```
+
+2d) Nonexclusive events: What is the probability that George's birthday is in January AND that George was born on a Sunday (assume that there is an equally likely probability of having any day of the week on any date).
+
+```{r}
+(31/365)*(1/7)
+```
+
+2e) Nonexclusive events: What is the probability that George's birthday is in January OR that George was born on a Sunday?
+
+```{r}
+(31/365)+(1/7)-(31/365)*(1/7)
+```
+
+## Question 2 -- Probability challenges
+
+You are given an urn containing 100 balls; n of them are red, and 100-n are green, where n is chosen uniformly at random in [0, 100]. You take a random ball out of the urn—it’s red—and discard it. The next ball you pick (out of the 99 remaining) is (from https://x.com/littmath/status/1751648838501224790)
+
+```{r}
+#set n
+#n = 50
+
+urnSim <- function(){
+  
+#set n
+  n = sample(1:100, size=1)
+  
+#pick our urn
+myUrn = c(rep(1,times=n), rep(0,times=100-n))
+
+#pick two balls
+twoBalls = sample(myUrn, size=2, replace=FALSE)
+
+
+if (twoBalls[1] == 0) {myOut = NA} ## got green first
+else if (twoBalls[2] == 0){myOut = 0}  ## got red first and green second
+else if (twoBalls[2]==1){myOut=1} ##got red both times
+
+return(myOut)
+}
+
+#run it 1000 times
+mySims <- replicate(1000, urnSim())
+
+##how often did we get green first?
+greenfirst = sum(is.na(mySims))
+
+# how often did we get red, and then green?
+sum(mySims==0, na.rm=T)/(1000-greenfirst)
+
+#how often did we get red, and then another red?
+sum(mySims==1, na.rm=T)/(1000-greenfirst)
+
+```
+
+Flip a fair coin 100 times—it gives a sequence of heads (H) and tails (T). For each HH in the sequence of flips, Alice gets a point; for each HT, Bob does, so e.g. for the sequence THHHT Alice gets 2 points and Bob gets 1 point. Who is most likely to win? (https://x.com/littmath/status/1769044719034647001)
+
+
+```{r}
+library(stringr)
+
+flipSim <- function(){
+  myFlips = sample(c('H','T'), size=100, replace=T)
+  myString =  paste0(myFlips, collapse="")
+  Alice = str_count(myString, 'HH')
+  Bob = str_count(myString,'HT')
+  
+  if(Alice > Bob){myOut='Alice'}
+  if (Bob>Alice){myOut='Bob'}
+  if(Bob==Alice){myOut="Tie"}
+  
+  return(myOut)
+  }
+
+mySims <- replicate(1000,flipSim())
+
+sum(mySims=='Bob')/1000
+
+```
+
+
 ### Question 3
 
 Data from Dr. Josephs' undergraduate class exams suggests that at any point, 

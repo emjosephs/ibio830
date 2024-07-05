@@ -95,6 +95,15 @@ sum(isJanuaryandSunday ==2)/1e5
 
 ```
 
+2e) Nonexclusive events: What is the probability that George's birthday is in January OR that George was born on a Sunday?
+
+
+```{r}
+
+## now we're looking for or, not and.
+sum(isJanuaryandSunday > 0)/1e5
+```
+
 ### Question 3 (challenge question!!!)
 
 **The Birthday Problem** is a classic problem in probability:
@@ -158,8 +167,6 @@ which(sapply(1:30,function(n){birthdaySim(n)}) > 0.5)[1]
 ```
 
 
-3c) Suppose humans colonize Mars.  How many people have to be in a room 
-on Mars for there to be a >50% probability that at least 2 of them share 
-a **Martian** birthday?
+3c) 
 
-\
+
