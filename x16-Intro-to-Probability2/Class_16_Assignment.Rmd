@@ -19,15 +19,7 @@ saved as “YourlastName_Assignment16.html” and upload the
 resulting file to the D2L site (in today’s class folder) to turn it in. 
 It is due before our next class.
 
-\
 
-**This homework assignment will test your abilities to:**
-
-1. think critically and creatively about probability
-
-2. use simulations to build intuition
-
-3. use your R skillz: function building, data visualization, etc.
 
 ### Question 1
 
@@ -38,33 +30,17 @@ Re-answer question 2 from the previous homework using an analytical approach.
 Data from Dr. Josephs' undergraduate class exams suggests that at any point, 
 1% of students at MSU have an active COVID infection.
 
-3a) What is the analytical probability that no one in our classroom 
+2a) What is the analytical probability that no one in our classroom 
 has an active COVID infection? Assume that there are 35 people in the classroom.
-
 \
 \
 \
 
-3b) What is the probability at least one person in the room **_does_** have an active 
-COVID infection
-
-\
-\
-
-3c) What is probability 2 people in the room are infected?
-
-\
-\
-
-3d) Write a function for simulating this problem for gatherings of arbitrary size.
+2b) Write a function for simulating this problem for gatherings of arbitrary size.
 The arguments of the function should be the number of people in the room 
-and the probability that a randomly selected person has an active COVID infection,
+and the probability that a randomly selected person in the county has COVID ,
 and it should return the probability (from simulations), 
-that no one in the room has an active flu infection.
-
-Note that for simulations, you want to use sample() to simulation whether people
-do or do not have COVID, not the coin flip probability
-function from earlier in homework.
+that no one in the room has COVID.
 
 \
 \
