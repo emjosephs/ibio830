@@ -1,0 +1,48 @@
+---
+title: "Intro to Probability 2: Assignment"
+output:
+  html_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_16_Assignment.Rmd") -->
+
+#### Due by midnight the day before the next class (10/30)
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment16.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment16.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+
+
+### Question 1
+
+Re-answer question 2 from the previous homework using an analytical approach.
+
+### Question 2
+
+Data from Dr. Josephs' undergraduate class exams suggests that at any point, 
+1% of students at MSU have an active COVID infection.
+
+2a) What is the analytical probability that no one in our classroom 
+has an active COVID infection? Assume that there are 35 people in the classroom.
+\
+\
+\
+
+2b) Write a function for simulating this problem for gatherings of arbitrary size.
+The arguments of the function should be the number of people in the room 
+and the probability that a randomly selected person in the county has COVID ,
+and it should return the probability (from simulations), 
+that no one in the room has COVID.
+
+\
+\
+\
+\

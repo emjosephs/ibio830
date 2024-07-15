@@ -1,0 +1,77 @@
+---
+title: "Intro to Probability 2: Assignment"
+output:
+  html_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_16_Assignment.Rmd") -->
+
+#### Due by midnight the day before the next class (10/30)
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment17.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment17.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+1) We'll revisit question 2 from the previous homework but use our binomial distribution skills to answer it. 
+This time, instead of calculating the probability directly, use the coin flip function from
+today's class to calculate the probability.
+\
+\
+
+a) Data from Dr. Josephs' undergraduate class exams suggests that at any point, 
+1% of students at MSU have an active COVID infection.
+What is the probability that no one in our classroom (n=35) has an active case of COVID? 
+
+\
+
+```{r}
+coinFlipProb <- function(n,k,p){
+  myprob = choose(n,k)*p^k*(1-p)^(n-k)
+  return(myprob)
+}
+
+pNoCovid = coinFlipProb(n=35, k=0, p=0.01)
+
+pNoCovid
+```
+
+b) What is the probability that one person in the room has an active COVID infection?
+
+```{r}
+
+pOneCovid = coinFlipProb(n=35, k=1, p=0.01)
+
+pOneCovid
+```
+
+c) Make a plot of the probability distribution with number of infected people on the x axis and probability on the y axis
+
+```{r}
+
+
+plot(0:35, coinFlipProb(n=35, k=0:35, p=0.01),
+     xlab = "number of infections", ylab = "probability")
+
+
+```
+
+
+2) R has built in functions for the probability distributions. Take a second to exam the dbinom function.
+
+a) Make the same plot from 1c using dbinom instead of the coin flip function.
+
+```{r}
+
+plot(0:35, dbinom(0:35, size=35, prob=0.01),
+     xlab = "number of infections", ylab = "probability")
+
+```
+
+

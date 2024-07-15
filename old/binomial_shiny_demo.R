@@ -1,0 +1,36 @@
+
+library(shiny)
+  # input and output definitions
+  # this is where you define the parameters of the distribution
+  # (the binomial distribution has 2 parameters, `n' and `p',
+  #		plus I have to define the number of replicates)
+inputPanel(
+ # Input: probability of success
+ sliderInput("p", "probability of success (p):",
+             min = 0, max = 1,
+             value = 0.5),
+ ## Input: sample size
+ sliderInput("n", "number of observations (n):",
+             min = 1, max = 5000,
+             value = 100, step = 10),
+ ## Input: number of replicates
+ sliderInput("n.reps", "number of replicates (trials):",
+             min = 1, max = 5000,
+             value = 100, step = 10)
+)
+
+# this function determines how the output 
+# of the sliders is plotted
+renderPlot({
+  	# simulate data from the appropriately parameterized distribution
+    x <- rbinom(n = input$n.reps,size = input$n,prob = input$p)
+	# dynamically define a plot title that gives summaries of the data
+	plot.title <- sprintf("Histogram of binomial draws\nmean=%s ; np=%s",
+							round(mean(x),1),
+							input$n*input$p)
+  	# visualize simulated data as a histogram
+    hist(x, col="mediumpurple3", border = "white",
+         xlab = "Number of successes",
+         xlim=c(0,input$n),
+         main = plot.title,
+         breaks=min(length(x),15))
