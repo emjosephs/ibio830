@@ -511,6 +511,53 @@ Work in your teams to edit your function from before to account for variable val
 ```
 </div>
 
+## Some real science examples: Genetics
+
+```{r, out.width="500px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/Hardy-Weinberg-Equilibrium-1-min-scaled.jpg")
+```
+
+
+## Hardy Weinberg Equilibirum {.build}
+
+If the frequency of an allele *A* is $p$ and the frequence of the allele *a* is $1-p$, assuming HWE, what is the frequency of the *AA* genotype?
+
+Why is it $p^2$?
+
+In probability land: $f(AA) = f(A) \times f(A) = p^2$
+
+## Hardy Weinberg Equilibirum {.build}
+
+Can we use the binomial distribution to understand why $f(AA) = p^2$?
+
+Number of trials (N)?
+
+2
+
+Number of successes (K)?
+
+2
+
+$p(AA) = {{n}\choose{k}} p^k \times (1-p)^{n-k} = {{2}\choose{2}} p^2 \times (1-p)^{2-2} = p^2$
+
+## Some real life science examples: plant diversity {.build}
+
+In 1964, Erlich and Raven proposed that plant chemical defenses against attack by herbivores would spur plant diversification. In a test of this idea (Farrell et al. 1991), the number of species in 16 pairs of sister clades whose species differed in their level of chemical protection were counted. In each pair of sister clades, the plants of one clade were defended by a gooey latex or resin that was exuded when the leaf was damaged, whereas the plants of the other clade lacked this defense. In 13 of the 16 pairs, the clade with latex/resin was found to be the more diverse (had more species), whereas in the other three pairs, the sister clade lacking latex/resin was found to be the not more diverse.
+
+## Plant diversity and latex {.build}
+
+What is the probability of seeing 13 pairs where the clade with latex is more diverse than the other clade, if there is no association betwen latex and diversity (so p = 0.5)?
+
+$p = {{n}\choose{k}} p^k \times (1-p)^{n-k}$
+
+$= {{16}\choose{13}} (0.5)^2 \times (1-0.5)^{16-13}$
+
+```{r}
+coin.flip.prob(n=16, k=13, p=0.5)
+```
+
+How would we get from this probability to a p value?
+
 ## Recap
 
 1. The outcome of a random process is called a **_random variable_**
