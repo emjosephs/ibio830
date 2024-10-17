@@ -1,7 +1,7 @@
 ---
 title: "Lecture 16 - Intro to Probability, pt. II"
 author: "Emily Josephs"
-date: "October 26, 2023"
+date: "October 24, 2024"
 output:
   ioslides_presentation:
     transition: 0
@@ -29,8 +29,11 @@ Are we always going to use simulations to learn about probability?
 No!
 
 Math is also helpful
+
 - No uncertainty
+
 - Fast
+
 - Builds intuition
 
 
