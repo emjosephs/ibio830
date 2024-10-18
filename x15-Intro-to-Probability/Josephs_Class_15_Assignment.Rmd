@@ -1,0 +1,136 @@
+---
+title: "Intro to Probability 1: Assignment"
+output:
+  html_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_15_Assignment.Rmd") -->
+
+#### Due by midnight on Oct 23 (the night before class on Oct 24)
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment15.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment15.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+
+**This homework assignment will test your abilities to:**
+
+1. think critically and creatively about probability
+
+2. use simulations to build intuition
+
+3. use your R skills: function building, data visualization, etc.
+
+\
+
+### Question 1
+
+Write an example of the following statistical concepts:
+
+ - mutually-exclusive events
+ 
+ \
+ \
+ 
+The probability of the first snow of the year happening on November 15 and November 16.
+ 
+ - non-exclusive events
+ 
+The probability of the first snow of the year happening on November 15 and the probability of it snowing on Christmas.
+ 
+ - conditional probability
+ 
+ \
+The probability of it snowing in East Lansing conditional on it being June.
+
+### Question 2 
+
+2a) Write a function simulating sampling a number (N) of dates in Julian date (dates are numbers from 1 to 365) with replacement.
+
+```{r}
+set.seed(647)
+
+sampleFunc <- function(n){
+sample(1:365, size=n, replace=T )
+}
+
+sampleFunc(1)
+
+```
+
+2b) Assume that the probability of being born is the same every day of the year. You make a new friend named George. What is the probably that George's birthday is January 1st (Julian date=1)? Use the function you wrote above to sample this person being born 1e5 times to estimate the probability.
+
+
+```{r}
+mySamples <- sampleFunc(1e5)
+
+sum(mySamples==1)/1e5
+
+```
+
+2c) Exclusive events: What is the probability that George's birthday is in January (Julian dates 1-31)? Again, do 1e5 simulations to estimate the probability.
+
+```{r}
+sum(mySamples < 31)/1e5
+```
+
+
+2d) Nonexclusive events: What is the probability that George's birthday is in January AND that George was born on a Sunday? (assume that there is an equally likely probability of having any day of the week on any date).
+
+```{r}
+sampleFunc2 <- function(n){
+  sample(1:7, size=n, replace=T)
+}
+
+mySampleDays <- sampleDay(1e5)
+
+mySuccess = (mySamples==1)*(mySampleDays==1)
+sum(mySuccess)/365
+
+
+```
+
+2e) Nonexclusive events: What is the probability that George's birthday is in January OR that George was born on a Sunday?
+
+```{r}
+mySuccess = (mySamples==1)+(mySampleDays==1)
+sum(mySuccess>0)/1e5
+
+```
+
+### Question 3 (challenge question!!!)
+This is an optional question to practice your simulation skills.
+
+**The Birthday Problem** is a classic problem in probability:
+
+How many people must be in a room for there to be > 50% probability 
+that _at least_ two of them share a birthday?
+
+\
+
+3a) Write a function for simulating the birthday problem. 
+The argument of the function should be the number of people in the room, 
+and it should return the probability (from 1000 sampling simulations), that two or more 
+share a birthday.
+
+\
+\
+\
+\
+
+3b) Using this function, determine how many people must be in a room for 
+there to be > 50% probability that _at least_ two of them share a birthday
+
+\
+\
+\
+\
+

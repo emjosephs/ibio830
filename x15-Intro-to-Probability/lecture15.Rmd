@@ -1,0 +1,575 @@
+---
+title: "Lecture 15 - Intro to Probability"
+author: "Emily Josephs"
+date: "October 17, 2024"
+output:
+  ioslides_presentation:
+    transition: 0
+    background_transition: none
+    bigger: yes
+  beamer_presentation: default
+---
+
+<style>
+.forceBreak { -webkit-column-break-after: always; break-after: column; }
+</style>
+
+<!-- To render the lecture in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("lecture15.Rmd") -->
+
+```{r,echo=FALSE}
+	#set any global options
+	options(digits=3)
+	set.seed(123)
+```
+
+## Hello!
+
+I am Emily Josephs
+
+- interested in: evolutionary genetics, plants, triathlons, cat
+
+## Hello!
+
+I am Emily Josephs
+
+- interested in: evolutionary genetics, plants, triathlons, cat
+
+```{r, out.width="500px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/kittykitty.jpg")
+```
+
+## 1st semester goals 
+
+1. Data into spreadsheet
+
+2. Wrangle data into R
+
+3. Visualize data
+
+4. Build a model
+	+ how are data distributed?
+	+ relationship between predictor and response?
+
+5. Use algorithm to parameterize model
+
+6. Interpret results
+
+
+## 1st semester goals 
+
+1. ~~Data into spreadsheet~~
+
+2. ~~Wrangle data into R~~
+
+3. ~~Visualize data~~
+
+4. Build a model
+	+ how are data distributed?
+	+ relationship between predictor and response?
+
+5. Use algorithm to parameterize model
+
+6. Interpret results
+
+
+## IBio 830, part II {.build}
+
+### Covering: 
+ * probability
+ * probability distributions
+ * likelihood
+ * likelihood-based inference
+ * deterministic functions
+ * model building
+
+**Still using R, but focus won't be on the language itself!**
+
+
+## Shaping Expectations {.build}
+
+This part of the course may feel like it moves a little faster.
+
+There will be math!
+
+You will be learning a new skill, using a young skill, which is hard!
+
+The material will build on itself.
+
+I am learning along with you!!!
+
+ALSO:
+
+Everything else in the world is happening!!!
+
+## How to take this part of the course {.build}
+
+1. take a deep breath!
+
+2. believe in yourself!!!
+
+3. remember that your primary goal is _present_ understanding, 
+but a solid secondary goal is _future_ understanding.
+
+4. do the homework and the self-reflections.
+
+5. visit me and Sophie in office hours
+
+## Office hours!
+
+Emily's office hours: 
+
+noon-1pm Tuesday + Thursday in PLB 266
+
+Sophie's office hours:
+
+11am-noon Monday + Wednesday in the EEB Hub and on Zoom
+
+
+## Today's lecture - Intro to Probability! {.build}
+
+Learning goals:
+
+Learn what probability is and the law of total probability.
+
+Write basic simulations in R to build intuition about:
+
+-simple mutually-exclusive events
+
+-complex mutually-exclusive events
+
+-shared non-exclusive events
+
+-conditional probabilities
+
+## Today's lecture - Intro to Probability! {.build}
+
+Why do we care about probability?
+
+- Many important biological processes are influenced by chance
+
+- We don't want to tell science stories about coincidences.
+
+- Understanding probability helps us understand statistics.
+
+## How do you define probability? {.build}
+
+\
+
+A measure of the likelihood that an event will occur
+
+A long-term frequency
+
+How often we expect an event to happen ('degree of belief')
+
+## How I use probability  {.build}
+ Will I get to Park Place?
+
+```{r, out.width="600px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/monopoly.png")
+```
+
+\
+Which definition matches the probability of landing on Park Place?
+
+## How I use probability  {.build}
+When will I give birth?
+
+```{r, out.width="600px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/duedate1.png")
+```
+
+\
+
+Which definition matches the probability of giving birth on a specific day?
+
+## How I use probability  {.build}
+Who will win the election?
+
+```{r, out.width="300px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/electiondial.png")
+```
+
+\
+
+Which definition matches the probability of an election outcome?
+
+
+## Today's class  {.build}
+
+Building an intuition for how the rules of probability work using simulations.
+
+## Simulating data
+
+Simulations?
+
+```{r, out.width="500px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/sims.jpg")
+```
+
+## Simulating data
+
+One of the most powerful tools that we'll have in our statistics learning toolkit are simulations.
+
+Simulations let you generate data that you know should look a certain way, so you can test your intuitions.
+
+Simulations also let you do the same thing over and over and over.
+
+## Simulating data {.build}
+
+```{r}
+thisClass = 1:35
+
+thisClass
+```
+
+```{r}
+sample(thisClass, size=1)
+
+```
+
+## Simulating data {.build}
+
+```{r}
+sample(thisClass, size=1)
+```
+
+```{r}
+sample(thisClass, size=1)
+```
+
+## Questions we can answer with simulations
+
+If we randomly pick a student, how likely are we to select student #19?
+
+If we randomly pick 10 students, how likely are we to select student #19?
+
+If we randomly pick 2 students, how likely are we to select students #19 and #20?
+
+## Simulating students
+
+If we randomly pick a student, how likely are we to select student #19?
+```{r}
+
+mySamples <- replicate(10000, sample(thisClass, size=1))
+sum(mySamples==19)/10000
+
+```
+
+## Sample space {.build}
+
+To think about probability, we start with the set of all potential outcomes (the "sample space")
+
+For example, when you flip a coin the potential outcomes are heads and tails.
+
+What was the sample space for our class example?
+
+## Ball pit
+
+```{r, out.width="600px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/fallingballs.gif")
+```
+
+The sample space for this example is that (<span style="color:#EDA158;">A</span>), The ball can fall through the orange bin, (<span style="color:#62CAA7;">B</span>) the ball can fall through the green bin, and (<span style="color:#98C5EB;">C</span>) the ball can fall through the blue bin
+
+## Out in sample space {.build}
+
+If we do something, one of the things in the sample space will happen.
+
+Therefore, the probabilities of all the outcomes in the sample space will sum to one.
+
+This is the **Law of Total Probability**
+
+## Estimating probabilities {.build}
+
+Looking at one short time from the previous example:
+
+```{r, out.width="600px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/stillballs.jpeg")
+```
+
+What proportion of balls belong to each outcome?
+
+<span style="color:#EDA158;">A</span> = 10/15
+
+<span style="color:#62CAA7;">B</span> = 2/15
+
+<span style="color:#98C5EB;">C</span> = 3/15
+
+These proportions are an estimate of the true probability based on one sample.
+
+## Probability distribution (sneak peak) {.build}
+
+```{r}
+mycols =  c("#EDA158","#62CAA7","#98C5EB")
+barplot(c(10/15,2/15,3/15), col=mycols, xlab = "probability", 
+        ylab = "sample space")
+
+```
+
+
+## Exclusive events {.build}
+
+Outcomes that cannot occur at the same time are **mutually exclusive**.
+
+For example, a coin could be heads or tails but not both.
+
+But, a coin could be both heads up and a quarter. These would be **non-exclusive events**
+
+## Simulating exclusive events {.build}
+
+Let's write a simulation of the ball example with 500 balls. 
+
+```{r}
+myN <- 500
+pA = 3/6
+pB = 1/6
+pC = 2/6
+
+mySample = sample(x=c("A","B","C"), 
+                  size = myN,
+                  replace=TRUE,
+                  prob = c(pA, pB, pC))
+
+propA = sum(mySample=="A")/myN
+propB = sum(mySample=="B")/myN
+propC = sum(mySample=="C")/myN
+```
+
+## Visualizing the simulation {.build}
+
+```{r}
+mycols =  c("#EDA158","#62CAA7","#98C5EB")
+barplot(c(propA, propB, propC), col=mycols, xlab = "probability", 
+        ylab = "proportion", names.arg = c('A','B','C'))
+```
+
+## How many balls fell through A or B?
+
+Work with your groups to calculate the probability of A or B happening.
+
+Note that this is called a **complex event**, since it is the combination of multiple, mutually-exclusive outcomes.
+
+## How many balls fell through A or B? {.build}
+
+One way to solve the problem:
+
+```{r}
+propAorB = sum(mySample=="A") + sum(mySample=="B")
+propAorB/myN
+
+```
+
+OR
+
+```{r}
+propAorB = 1 - propC
+propAorB
+```
+
+## Simulating a sampling distribution
+
+What if we want to simulate many samples to get a **sampling distribution** of how likely we are to get A or B?
+
+## Simulating many samples
+
+```{r}
+nReps <- 100
+
+sampleFunction <- function(myN){
+                  mySample = sample(x=c("A","B","C"), 
+                  size = myN,
+                  replace=TRUE,
+                  prob = c(pA, pB, pC))
+                  
+                  propA = sum(mySample=="A")/myN
+                  propB = sum(mySample=="B")/myN
+                  propC = sum(mySample=="C")/myN
+                  
+                  return(propA + propB)
+                  }
+
+mySamples <- replicate(nReps, sampleFunction(500))
+```
+
+## Visualizing the sample distribution
+
+```{r}
+hist(mySamples, main="", xlab = "proportion A or B")
+```
+
+## Non-exclusive events {.build}
+
+What if events are not exclusive?
+
+```{r, out.width="400px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/indep.gif")
+```
+
+How do we calculate the probability of falling through A and B?
+
+## Shared non-exclusive events {.build}
+
+We'll start by assuming that falling through A does not affect the probability of falling through B (we'll revisit this later).
+
+If the $P(A) = 0.5$ and $P(B) = 0.5$, what is the probability of falling through both A and B?
+
+## Simulate!
+
+How can we edit this sample function to return the probability of falling through both A and B if $P(A) = 0.5$ and $P(B) = 0.5$?
+
+```{r}
+sampleFunction <- function(myN){
+                  mySample = sample(x=c("A","B","C"), 
+                  size = myN,
+                  replace=TRUE,
+                  prob = c(pA, pB, pC))
+                  
+                  propA = sum(mySample=="A")/myN
+                  propB = sum(mySample=="B")/myN
+                  propC = sum(mySample=="C")/myN
+                  
+                  return(propA + propB)
+                  }
+```
+
+## Simulate!
+
+```{r}
+pA = pB = 0.5
+
+sampleFunction2 <- function(myN){
+                  mySampleA = sample(x=c(1,0), 
+                  size = myN, replace=TRUE,
+                  prob = c(pA, 1-pA))
+                  
+                  mySampleB = sample(x=c(1,0), 
+                  size = myN, replace=TRUE,
+                  prob = c(pB, 1-pB))
+                  
+                  myCombined = mySampleA + mySampleB
+                  
+                  probBoth = sum(myCombined==2)/myN
+                  
+                  return(probBoth)
+                  }
+```
+
+## Look at our simulations
+```{r}
+mySamples <- replicate(100,sampleFunction2(100))
+
+hist(mySamples, main="", xlab = "proportion A and B")
+```
+
+## What if A and B are not independent?
+
+```{r, out.width="400px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/indep.gif")
+```
+
+## Conditional probabilities {.build}
+
+Conditional probabilities describe the probability of outcome B given outcome A.
+
+Conditional probabilities are really useful for thinking about the relationships between different events.
+
+## Notation note {.build}
+
+$P(A|B)$ is the probability of A conditional on B.
+
+If $P(A|B)=0$, A and B are mutually exclusive.
+
+**Warning**
+
+In R, | means *or*
+
+This is very unfortunate.
+
+Stay safe!
+
+## Simulating conditional probabilities
+
+Work with your teams to modify our sampling function to simulate the following scenario: $P(A) = 1/3$, $P(B|A) = 1/2$, $p(B|not A) = 3/4$
+
+How often do we find A and B?
+
+Note that this is called a **shared event**, made up of multiple non-exclusive outcomes.
+
+## Pseudocode for simulating conditional probabilities
+
+
+```{r}
+pA = 1/2
+pB_given_A    = 4/5
+pB_given_notA = 1/5
+
+#write a function to do one trial (one ball)
+
+#write a function to get a sample by running that trial 500 times
+
+#write a function to generate 100 samples
+```
+
+
+## Simulating conditional probabilities
+
+```{r}
+#write a function to do one trial (one ball)
+oneTrial <- function(){
+  mySampleA = sample(x=c(1,0), 
+                  size = 1, replace=TRUE,
+                  prob = c(pA, 1-pA))
+                  
+                  if (mySampleA == 1){pB = pB_given_A}
+                  else{pB = pB_given_notA}
+                  
+                  mySampleB = sample(x=c(1,0), 
+                  size = 1, replace=TRUE,
+                  prob = c(pB, 1-pB))
+                  
+                  myCombined = mySampleA + mySampleB
+                  isBoth = sum(myCombined==2)
+                  return(isBoth)
+}
+```
+
+## Simulating conditional probabilities
+
+```{r}
+#write a function to get a sample by running that trial 500 times
+
+sampleFunction3 <- function(myN){sum(replicate(myN, oneTrial()))/myN}
+
+#write a function to generate 100 samples
+mySamples <- replicate(100,sampleFunction3(100))
+
+
+```
+
+## Simulating conditional probabilities
+
+```{r}
+hist(mySamples, main="", xlab = "Prob of A and B")
+
+```
+
+## Intro to Probability! {.build}
+
+Learning goals:
+
+Learn what probability is and the law of total probability.
+
+Write basic simulations in R to build intuition about:
+
+-simple mutually-exclusive events
+
+-complex mutually-exclusive events
+
+-shared non-exclusive events
+
+-conditional probabilities
+
+## Homework!
+
+

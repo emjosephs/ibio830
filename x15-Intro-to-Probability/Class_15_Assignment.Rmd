@@ -40,12 +40,12 @@ Write an example of the following statistical concepts:
  \
  \
  
- -- non-exclusive events
+ - non-exclusive events
  
  \
  \
  
- -- conditional probability
+ - conditional probability
  
  \
  \
@@ -56,18 +56,19 @@ Write an example of the following statistical concepts:
 
 2b) Assume that the probability of being born is the same every day of the year. You make a new friend named George. What is the probably that George's birthday is January 1st (Julian date=1)? Use the function you wrote above to sample this person being born 1e5 times to estimate the probability.
 
-2c) Exclusive events: What is the probability that George's birthday is in January (Julian dates 1-31) Again, do 1e5 simulations to estimate the probability
+2c) Exclusive events: What is the probability that George's birthday is in January (Julian dates 1-31)? Again, do 1e5 simulations to estimate the probability.
 
-2d) Nonexclusive events: What is the probability that George's birthday is in January AND that George was born on a Sunday (assume that there is an equally likely probability of having any day of the week on any date).
+2d) Nonexclusive events: What is the probability that George's birthday is in January AND that George was born on a Sunday? (assume that there is an equally likely probability of having any day of the week on any date).
 
 2e) Nonexclusive events: What is the probability that George's birthday is in January OR that George was born on a Sunday?
 
 
 ### Question 3 (challenge question!!!)
+This is an optional question to practice your simulation skills.
 
 **The Birthday Problem** is a classic problem in probability:
 
-how many people must be in a room for there to be > 50% probability 
+How many people must be in a room for there to be > 50% probability 
 that _at least_ two of them share a birthday?
 
 \
