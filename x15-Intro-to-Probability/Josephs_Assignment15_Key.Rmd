@@ -155,7 +155,7 @@ sim.bday <- function(N){
 }
 ```
 
-
+```
 
 3b) Using this function, determine how many people must be in a room for 
 there to be > 50% probability that _at least_ two of them share a birthday
@@ -167,5 +167,6 @@ which(sapply(1:30,function(n){birthdaySim(n)}) > 0.5)[1]
 ```
 
 
+3c) 
 
 
