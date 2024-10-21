@@ -121,6 +121,14 @@ The argument of the function should be the number of people in the room,
 and it should return the probability (from 1000 sampling simulations), that two or more 
 share a birthday.
 
+
+```{r}
+birthdayFunction <- function(n){
+  myBirthdays <- sample(1:365, size=n, replace=T)
+  if sum(duplicated(myBirthdays))>0{return(TRUE)} #there's a birthday twin!
+  else {return(FALSE)}
+}
+```
 \
 \
 \

@@ -21,6 +21,25 @@ output:
 	set.seed(123)
 ```
 
+## Simulation recap
+
+## Replace
+
+```{r}
+date<- function(N) { 
+  return(sample(1:365,N,replace=TRUE))
+}
+
+```
+
+What does replace do?
+
+## Setting seed
+
+
+## Conditional example
+
+We'll do this at the end!!!
 
 ## Math for probability {.build}
 
