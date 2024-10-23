@@ -1,3 +1,11 @@
+
+
+From 2024
+Rewrite first lecture to not use "probability" -- just simulate to figure out how the world works. This might make people less likely to use the rules of probability until we do them in the next lecture
+
+
+
+
 From 2022
 Didn't get to conditional probability this time. Think about how to streamline?
 

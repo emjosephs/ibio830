@@ -21,20 +21,53 @@ output:
 	set.seed(123)
 ```
 
-## Simulation recap
+## Simulation recap from last class
 
-## Replace
+## The terminal vs Rstudio
+
+Most of you are using Rstudio. How is that different from what I'm doing on the terminal?
+
+## Replace?
 
 ```{r}
-date<- function(N) { 
-  return(sample(1:365,N,replace=TRUE))
+day<- function(n) { 
+  return(sample(1:7,n,replace=TRUE))
 }
-
 ```
 
 What does replace do?
 
+## Comparing the output of replace=TRUE and replace=FALSE
+
+```{r}
+sample(1:7,7,replace=TRUE)
+
+
+sample(1:7,7,replace=FALSE)
+```
+
+## Comparing the output of replace=TRUE and replace=FALSE
+
+What if we sample 8 things?
+
+
 ## Setting seed
+
+```{r}
+sample(1:7,1)
+sample(1:7,1)
+sample(1:7,1)
+
+```
+
+## Setting seed
+```{r}
+set.seed(5)
+sample(1:7,1)
+set.seed(5)
+sample(1:7,1)
+```
+
 
 
 ## Conditional example
@@ -133,7 +166,27 @@ At Strange Matter this time, 15 students get Americanos and 15 students get Latt
 
 If there is no relationship between drink and snack purchase, what is the probability that a student gets an Americano and a donut?
 
-## Conditional probabilities
+## Multiplying probabilities -- special cases {.build}
+
+At Strange Matter this time, 15 students get Americanos and 15 students get Lattes. We also get snacks, 20 students get donuts and 10 students get scones. 
+
+If there is no relationship between drink and snack purchase, what is the probability that a student gets an Americano and a donut?
+
+P(Americano) = 15/30 = 1/2, P(donut) = 20/30 = 2/3
+
+P(Americano and donut) = P(Americano) x P(donut)= 1/3
+
+## Practice problem (in teams)
+
+At Strange Matter this time, 15 students get Americanos and 15 students get Lattes. We also get snacks, 20 students get donuts and 10 students get scones. 
+
+Assuming there is no relationship between drink and snack purchase,
+
+What is the probability that a student gets an Americano **and** a scone?
+
+What is the probability that a student gets an Americano **or** a scone?
+
+## Conditional probabilities {.build}
 
 Everyone in the class (n=30) goes to Strange Matter and each person buys one drink. They get:
 
@@ -146,6 +199,19 @@ Everyone in the class (n=30) goes to Strange Matter and each person buys one dri
 If Emily cannot drink regular milk, what is the probability that she gets an Americano?
 
 P(Emily has an Americano| no milk) = number of Americanos/number of non-milk drinks = 1/3
+
+## Conditional probabilities practice
+
+Everyone in the class (n=30) goes to Strange Matter and each person buys one drink. They get:
+
+10 Oat Lattes
+
+15 Regular Lattes
+
+5 Americanos
+
+If Emily is allergic to oats, what is the probability that she gets a regular latte?
+
 
 ## Putting it all together {.build}
 
@@ -219,3 +285,23 @@ It can be hard to keep track of all of this. Probability trees are a tool to hel
 ```{r, out.width="700px",echo=FALSE,fig.align="center"}
 	knitr::include_graphics("figs/latte-tree.jpg")
 ```
+
+
+## Team problem:
+
+Sarah is doing a mark-recapture experiment with guppies. In March, she catches guppies in a specific pool, including a really cute guppy she names Bob. 
+
+In April, she goes back to the pool to try to recapture these guppies. She knows, from experience, that if a guppy is alive, she has a 90% chance of catching it. She also expects that about 10% of her guppies have died. 
+
+Sarah can't find Bob. What is the probability that Bob is dead?
+
+## Probability challenge!
+
+Flip a fair coin 100 times—it gives a sequence of heads (H) and tails (T). 
+
+For each HH in the sequence of flips, Alice gets a point; for each HT, Bob does, so e.g. for the sequence THHHT Alice gets 2 points and Bob gets 1 point. 
+
+Who is most likely to win?
+
+
+
