@@ -86,7 +86,7 @@ sum(mySamples < 31)/1e5
 2d) Nonexclusive events: What is the probability that George's birthday is in January AND that George was born on a Sunday? (assume that there is an equally likely probability of having any day of the week on any date).
 
 ```{r}
-sampleFunc2 <- function(n){
+sampleDay <- function(n){
   sample(1:7, size=n, replace=T)
 }
 

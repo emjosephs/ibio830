@@ -151,12 +151,12 @@ $P(a \cap b) = P(a) \times P(b|a)$
 
 or
 
-$P(a \cap b) = P(b) \times P(b|a)$
+$P(a \cap b) = P(b) \times P(a|b)$
 
 
 ## Multiplying probabilities -- special cases {.build}
 
-If both outcomes are independent, then $P(b|a) = P(b)$ and $P(a|b) = P(b)$
+If both outcomes are independent, then $P(b|a) = P(b)$ and $P(a|b) = P(a)$
 
 so
 

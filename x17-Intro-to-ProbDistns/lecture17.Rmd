@@ -65,8 +65,7 @@ and count the number of heads that you get.
 
 ## Coin-flipping: 3-flip state space {.build}
 
-- First, let's define the **state space** (the list of all possible outcomes)
-	+ {HHH, HHT, HTH, THH, TTH, THT, HTT, TTT}
+{HHH, HHT, HTH, THH, TTH, THT, HTT, TTT}
 
 1. What is the probability of the sequence THH?
 	+ {HHH, HHT, HTH,<span style="color:red">THH</span>, TTH, THT, HTT, TTT} = 1/8
