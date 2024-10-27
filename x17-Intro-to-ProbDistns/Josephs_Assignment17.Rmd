@@ -19,15 +19,15 @@ saved as “YourlastName_Assignment17.html” and upload the
 resulting file to the D2L site (in today’s class folder) to turn it in. 
 It is due before our next class.
 
-1) We'll revisit question 2 from the previous homework but use our binomial distribution skills to answer it. 
+1) We'll revisit a question from the previous homework but use our binomial distribution skills to answer it. 
 This time, instead of calculating the probability directly, use the coin flip function from
 today's class to calculate the probability.
 \
 \
 
-a) Data from Dr. Josephs' undergraduate class exams suggests that at any point, 
+a) Data from Emily's undergraduate class exams suggests that at any point, 
 1% of students at MSU have an active COVID infection.
-What is the probability that no one in our classroom (n=35) has an active case of COVID? 
+What is the probability that no one in our classroom (n=25) has an active case of COVID? 
 
 \
 
@@ -37,7 +37,7 @@ coinFlipProb <- function(n,k,p){
   return(myprob)
 }
 
-pNoCovid = coinFlipProb(n=35, k=0, p=0.01)
+pNoCovid = coinFlipProb(n=25, k=0, p=0.01)
 
 pNoCovid
 ```
@@ -46,7 +46,7 @@ b) What is the probability that one person in the room has an active COVID infec
 
 ```{r}
 
-pOneCovid = coinFlipProb(n=35, k=1, p=0.01)
+pOneCovid = coinFlipProb(n=25, k=1, p=0.01)
 
 pOneCovid
 ```
@@ -56,7 +56,7 @@ c) Make a plot of the probability distribution with number of infected people on
 ```{r}
 
 
-plot(0:35, coinFlipProb(n=35, k=0:35, p=0.01),
+plot(0:25, coinFlipProb(n=25, k=0:25, p=0.01),
      xlab = "number of infections", ylab = "probability")
 
 
@@ -69,7 +69,7 @@ a) Make the same plot from 1c using dbinom instead of the coin flip function.
 
 ```{r}
 
-plot(0:35, dbinom(0:35, size=35, prob=0.01),
+plot(0:25, dbinom(0:25, size=25, prob=0.01),
      xlab = "number of infections", ylab = "probability")
 
 ```
