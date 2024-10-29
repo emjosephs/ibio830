@@ -1,0 +1,32 @@
+---
+title: "Probability maps"
+output: html_document
+date: "2024-10-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Make a guide/decision tree/map/dichotomous key/Cosmo quiz to choose the distribution that best matches a dataset.
+
+Here are the distributions your map should help you choose between the following distributions: beta, exponential, gamma, lognormal, normal, uniform, poisson, geometric, negative binomial
+
+To learn about the distributions, check out wikipedia as well as the built in functions in R.
+
+For example, we can use the rbinom function to understand the binomial distribution:
+
+```{r}
+mysample = rbinom(100,1000,0.5)
+head(mysample)
+
+hist(mysample)
+
+mysample2 = rbinom(100,1000,0.1)
+hist(mysample2)
+```
+
+
+Please submit your guide/decision tree/map/dichotomous key/cosmo quiz/something else to D2L. Then use your key to determine the distribution that best matches the following scenarios:
+
+
