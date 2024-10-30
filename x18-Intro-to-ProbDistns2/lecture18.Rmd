@@ -1,0 +1,531 @@
+---
+title: "Lecture 18 - The World of Probability Distributions"
+author: "Emily Josephs"
+date: "October 31 2024"
+output:
+  ioslides_presentation:
+    transition: 0.001
+    bigger: true
+    incremental: true
+---
+<!-- To render the lecture in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("lecture17.Rmd") -->
+
+```{r,echo=FALSE}
+	#set any global options
+	options(digits=3)
+	set.seed(123)
+```
+
+
+```{r, eval=F, echo=F}
+flips <- function(nFlips){
+	flips <- sample(c('H','T'), nFlips, replace=TRUE)
+	return(flips)
+}
+
+flips(3)
+
+#mySims = replicate(100, flips(3), simplify=TRUE)
+```
+
+## Today: Probability distributions, continued!
+
+What if the probability of different outcomes varies?
+
+How do we describe this situation?
+
+How can we describe a variety of different types of processes using probability distributions?
+
+## Recap from last time
+
+1. The outcome of a random process is called a **_random variable_**
+
+2. To calculate the probability of any given value of the random variable:
+	+ we can either define the state space and count or
+	+ we can figure out the probability distribution function
+
+3. A **_probability distribution function_** is a rule or formula 
+that describes the probability of all possible outcomes of a random event
+
+4. The **_binomial distribution_** describes the probabilities of success in a set of trials.
+
+
+## The Binomial Distribution {.build}
+
+Given:
+
+ - a number of trials (**_n_**)
+ 
+ - and a probability of success (**_p_**)
+
+can we come up with a rule for calculating 
+the probability of any number of successes (**_k_**)?
+
+\
+
+E.g., what's the probability of 43 successes out of 100 trials?
+
+## The binomial distribution {.build}
+
+What's the probability of 43 successes out of 100 trials?
+
+$P(A \cap B) = P(A) \times P(B)$
+
+$P(43 ~\text{successes}) = P(\text{success})^{43} \times P(\text{failure})^{100-43}$
+
+
+## The binomial distribution {.build}
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is ______
+
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is ______
+
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+the probability of each fail is ______
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+the probability of each fail is $1-p$
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+the probability of each fail is $1-p$
+
+if there are $n$ trials and $k$ successes, there are ____ fails
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+the probability of each fail is $1-p$
+
+if there are $n$ trials and $k$ successes, there are $n-k$ fails
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+the probability of each fail is $1-p$
+
+if there are $n$ trials and $k$ successes, there are $n-k$ fails
+
+so the probability of all the fails is _____
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+the probability of each fail is $1-p$
+
+if there are $n$ trials and $k$ successes, there are $n-k$ fails
+
+so the probability of all the fails is $(1-p)^{n-k}$
+
+## The binomial distribution 
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+
+so the probability of $k$ successes is $p^{k}$
+
+the probability of each fail is $1-p$
+
+if there are $n$ trials and $k$ successes, there are $n-k$ fails
+
+so the probability of all the fails is $(1-p)^{n-k}$
+
+and the probability of a particular sequence of **_n_** trials containing **_k_** successes is ______
+
+
+## The binomial distribution
+
+What is the probability of any _particular_ sequence of **_n_** trials 
+that contains **_k_** successes?
+
+the probability of each success is $p$
+ 
+so the probability of $k$ successes is $p^k$
+ 
+the probability of each fail is $1-p$
+ 
+if there are $n$ trials and $k$ successes, there are $n-k$ fails
+ 
+so the probability of all fails is $(1-p)^{(n-k)}$
+ 
+and the probability of a particular sequence of **_n_** trials containing **_k_** successes is $p^k \times (1-p)^{(n-k)}$
+
+
+## The binomial distribution  {.build}
+
+The probability of a particular sequence of **_n_** trials containing **_k_** successes is $p^k \times (1-p)^{(n-k)}$
+
+Now we need to know _how many ways there are_ of getting a sequence of 
+**_n=100_** trials containing **_k=43_** successes.
+
+<div class="centered">
+$\Large {{n}\choose{k}}$
+</div>
+
+```{r,eval=TRUE}
+	choose(n=100,k=43)
+```
+
+
+## The Binomial distribution  {.build}
+
+Well, we've just derived the **_probability distribution function_**.
+
+<div class="centered">
+$\Large {{n}\choose{k}} \times \left( p^k \times (1-p)^{n-k}	\right)$
+</div>
+
+## The Binomial distribution  {.build}
+
+Why are we multiplying the two terms together?
+
+Imagine that we have 2 flips and we want to know how likely we are to get 1 heads?
+
+Our state space = $[H,H], [H,T], [T,H], [T,T]$
+
+All of these options are equiprobable!
+
+$P(2~\text{heads}) = P([H,T]) + P([T,H])$
+
+$P(2~\text{heads}) = 2 \times P([H,T])$
+
+```{r}
+choose(n=2, k=1)
+```
+
+
+## The Binomial distribution  {.build}
+
+
+```{r, echo=T}
+	coin.flip.prob <- function(n,k,p){
+		prob <- choose(n,k) * p^k * (1-p)^(n-k)
+		return(prob)
+	}
+```
+	
+```{r, echo=T}
+	coin.flip.prob(n=100,k=43,p=0.5)
+```
+
+## Coin-flipping {.build}
+```{r,fig.width=6.5,fig.height=5,fig.align="center",echo=T}
+	plot(coin.flip.prob(n=100,k=0:100,p=0.5),
+			xlab="successes",ylab="probability")
+```
+
+## Coin-flipping {.build}
+```{r,fig.width=6.5,fig.height=5,fig.align="center",echo=T}
+	plot(coin.flip.prob(n=100,k=0:100,p=0.3),
+			xlab="successes",ylab="probability")
+```
+
+
+## 
+```{r,fig.width=6.5,fig.height=5,fig.align="center",echo=FALSE}
+	plot(0,type='n',xlim=c(0,25),ylim=c(0,0.2),
+			xlab="successes",ylab="probability",main="")
+		lines(0:25,coin.flip.prob(n=25,k=0:25,p=0.3),lwd=3,col="blue")
+		lines(0:25,coin.flip.prob(n=25,k=0:25,p=0.5),lwd=3,col="purple")
+		lines(0:25,coin.flip.prob(n=25,k=0:25,p=0.7),lwd=3,col="red")
+		legend(x="topright",lty=1,lwd=3,col=c("blue","purple","red"),legend=c(0.3,0.5,0.7),title="p(heads) = ")
+```
+
+
+## A reminder about simulations {.build}
+
+We have talked about two tools for understanding probability: simulations and analytical solutions.
+
+Analytical solutions involve directly calculating probabilities.
+
+Simulations involve using tools like sample() to mimic the process creating probabilities.
+
+Simulations can be different every time you run them.
+
+## A reminder about simulations
+
+```{r, out.width="500px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("../x15-Intro-to-Probability/figs/sims.jpg")
+```
+
+
+## Probability distributions: the binomial {.build}
+
+If a random variable **_X_** is binomially distributed, we write:
+
+\
+
+<div class="centered">
+$\Large X \sim B(n,p)$
+</div> 
+
+
+Read as: "_X_ is a draw from a binomial distribution 
+with parameters _n_ and _p_"
+
+
+And, if **_X_** is a draw from a binomial distribution, 
+we can use the **_binomial probability distribution function_** 
+to calculate the probability for any value of **_X_ = k**, given **_n_** and **_p_**.
+
+## Probability distributions: the binomial {.build}
+
+There are also tools available for working with the binomial distribution:
+
+```{r,eval=FALSE}
+# look at rbinom and dbinom
+?rbinom
+```
+
+Using `rbinom`, generate 1 sample of 100 draws from a 
+binomial distribution with `p=0.6`.
+
+```{r}
+rbinom(n=1,size=100,p=0.6)
+rbinom(n=1,size=100,p=0.6)
+```
+
+## Team exercise
+Use `rbinom` to sample 1000 draws from the binomial distribution. Pick your own value of *p*.
+
+Plot the histogram of the values that you get.
+
+Calculate the mean of the values.
+
+Calculate the variance of the values (hint: use `var()`).
+
+## Probability distributions: the binomial {.build}
+
+The mean and variance of the binomial distribution are 
+defined!
+
+If $X \sim B(n,p)$, we know:
+
+<div class="centered">
+$\Large \mathbb{E}[X] = np$
+</div> 
+
+and
+
+<div class="centered">
+$\Large \mathbb{V}ar(X) = np(1-p)$
+</div>
+
+Check to make sure that your estimates from the teams match these values.
+
+## Wait what's a variance? {.build}
+
+The variance tells you about the amount of spread in the data.
+
+$\large \mathbb{V}ar(X) = \mathbb{E}(x_{i}-\bar{x})^{2}$
+
+The variance will be higher if things tend to be farther away from the mean.
+
+(hint: Wikipedia is your friend for math concepts like variance)
+
+## Probability distributions {.build}
+
+The binomial is only one probability distribution; 
+there are many others!
+
+Why are they useful?
+
+Because they describe processes that shape 
+the world around us!
+
+## Distributions and Random Variables {.build}
+
+Random variables come in two flavors: **_discrete_** and **_continuous_**
+
+- **Discrete** random variables are things that can be counted
+	+ heads in a coinflip experiment, fish in a lake, flowers on a plant
+\
+\
+
+- **Continuous** random variables are things that can be measured
+	+ height or weight
+
+\
+\
+
+## Distributions and Random Variables {.build}
+
+Discrete probability distributions have 
+**_probability mass functions_**
+
+- <div class="centered">
+$\Large {{n}\choose{k}}p^k (1-p)^{n-k}$
+</div>
+
+- a **_pmf_** gives the probability that a discrete random variable is _exactly_ equal to some value
+	+ e.g., what's the probability of getting _exactly_ 43 heads out of 100 coin flips
+\
+
+What about continuous RVs?
+
+## {.columns-2 .build}
+### Discrete (heads):
+
+\
+\
+
+```{r,fig.width=4,fig.height=4,echo=FALSE,align="center"}
+plot(coin.flip.prob(n=100,k=0:100,p=0.5),
+			xlab="successes",ylab="probability",
+			pch=20,col=adjustcolor(1,0.7),main="discrete")
+```
+
+\
+\
+
+### Continuous (height):
+
+\
+\
+
+```{r,fig.width=4,fig.height=4,echo=FALSE,align="center"}
+norm.prob <- function(x,mean,sigma){
+ 	prob <- exp(-((x-mean)^2/(2*sigma^2)))/sqrt(2*pi*sigma^2)
+ 	return(prob)
+}
+lower <- 10
+upper <- 130
+plot(lower:upper,norm.prob(lower:upper,mean=70,sigma=20),type='n',
+		xlab="height",ylab="probability",main="continuous")
+	lines(seq(lower,upper,length.out=500),
+			norm.prob(seq(lower,upper,length.out=500),mean=70,sigma=20))
+```
+
+## Probability density functions {.build}
+
+A continuous variable can take 
+an infinite possible number of values, 
+**the probability of any specific value is 0**.
+ 
+So, a pdf measures the _relative_ probability 
+of a given value.
+
+<div class="centered">
+```{r,fig.width=5,fig.height=4,echo=FALSE,align="center"}
+norm.prob <- function(x,mean,sigma){
+ 	prob <- exp(-((x-mean)^2/(2*sigma^2)))/sqrt(2*pi*sigma^2)
+ 	return(prob)
+}
+lower <- 10
+upper <- 130
+plot(lower:upper,norm.prob(lower:upper,mean=70,sigma=20),type='n',
+		xlab="height",ylab="probability",main="continuous")
+	lines(seq(lower,upper,length.out=500),
+			norm.prob(seq(lower,upper,length.out=500),mean=70,sigma=20))
+```
+</div>
+
+## Intro to random variables: recap
+
+1. The outcome of a random process is called a **_random variable_**
+
+2. To calculate the probability of any given value of the random variable:
+	+ we can either define the state space and count or
+	+ we can figure out the probability distribution function
+
+3. A **_probability distribution function_** is a rule or formula 
+that describes the probability of all possible outcomes of a random event
+
+## Intro to probability distributions: recap 
+
+1. There are many named **_probability distributions_**. These are useful 
+for describing different natural processes.
+
+2. There are many tools for working with different probability distributions, 
+including tools for simulating data, and calculations for the expected mean and variance
+
+3. Probability distributions can be either discrete or continuous.
+	+ the probability of discrete events can be characterized by a **_probability mass function_**
+	+ the probability of any value in a continuous distribution is 0, but the _relative_ probability 
+	can be described by a **_probability density function_**
+
+
+## Distribution map
+
+Make a guide/decision tree/map/Cosmo quiz to choose the distribution that best matches a dataset.
+
+Here are the distributions your map should help you choose between.
+
+**continuous**: beta, exponential, gamma, lognormal, normal, uniform
+
+**discrete**: poisson, geometric, negative binomial
+
+
+
