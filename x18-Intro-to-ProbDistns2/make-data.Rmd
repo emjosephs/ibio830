@@ -1,0 +1,55 @@
+---
+title: "Make-data"
+output: html_document
+date: "2024-10-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd('~/Documents/ibio830/x18-Intro-to-ProbDistns2/')
+```
+
+Dataset 1
+```{r}
+
+beeDat <- rpois(100, 10)
+
+hist(beeDat)
+
+pollinatorData <- data.frame(undergrad = 1:100, pollinatorCount = beeDat)
+
+write.table(pollinatorData, quote=FALSE, file="pollinator-data.txt", row.names=F)
+
+```
+
+Dataset 2:
+```{r}
+timeDat <- rexp(100,10)
+
+hist(timeDat)
+
+timeData <- data.frame(undergrad = 1:100, visitTime = timeDat)
+
+write.table(timeData, quote=FALSE, file="time-data.txt", row.names=F)
+
+
+```
+
+Dataset 3:
+```{r}
+
+missedBugs <- rgeom(n=100, prob=0.5)
+
+write.table(data.frame(undergrad = 1:100, missedBugs=missedBugs),file="missing-pollinators-data.txt", row.names=F, quote=F)
+```
+
+Dataset 4:
+```{r}
+#visits <- rbinom(n=100, size=20, p = 0.5)
+
+appleWeights <- rnorm(n=500,mean=500, sd=10)
+hist(appleWeights)
+
+write.table(data.frame(appleNo = 1:500, appleWeight=appleWeights),file="apple-data.txt", row.names=F, quote=F)
+
+```
