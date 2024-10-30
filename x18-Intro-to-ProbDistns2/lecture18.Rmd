@@ -66,177 +66,7 @@ the probability of any number of successes (**_k_**)?
 
 E.g., what's the probability of 43 successes out of 100 trials?
 
-## The binomial distribution {.build}
-
-What's the probability of 43 successes out of 100 trials?
-
-$P(A \cap B) = P(A) \times P(B)$
-
-$P(43 ~\text{successes}) = P(\text{success})^{43} \times P(\text{failure})^{100-43}$
-
-
-## The binomial distribution {.build}
-
-What is the probability of any _particular_ sequence of **_n_** trials 
-that contains **_k_** successes?
-
-the probability of each success is ______
-
-
-## The binomial distribution 
-
-What is the probability of any _particular_ sequence of **_n_** trials 
-that contains **_k_** successes?
-
-the probability of each success is $p$
-
-## The binomial distribution 
-
-What is the probability of any _particular_ sequence of **_n_** trials 
-that contains **_k_** successes?
-
-the probability of each success is $p$
-
-so the probability of $k$ successes is ______
-
-
-## The binomial distribution 
-
-What is the probability of any _particular_ sequence of **_n_** trials 
-that contains **_k_** successes?
-
-the probability of each success is $p$
-
-so the probability of $k$ successes is $p^{k}$
-
-## The binomial distribution 
-
-What is the probability of any _particular_ sequence of **_n_** trials 
-that contains **_k_** successes?
-
-the probability of each success is $p$
-
-so the probability of $k$ successes is $p^{k}$
-
-the probability of each fail is ______
-
-## The binomial distribution 
-
-What is the probability of any _particular_ sequence of **_n_** trials 
-that contains **_k_** successes?
-
-the probability of each success is $p$
-
-so the probability of $k$ successes is $p^{k}$
-
-the probability of each fail is $1-p$
-
-## The binomial distribution 
-
-What is the probability of any _particular_ sequence of **_n_** trials 
-that contains **_k_** successes?
-
-the probability of each success is $p$
-
-so the probability of $k$ successes is $p^{k}$
-
-the probability of each fail is $1-p$
-
-if there are $n$ trials and $k$ successes, there are ____ fails
-
-## The binomial distribution 
-
-What is the probability of any _particular_ sequence of **_n_** trials 
-that contains **_k_** successes?
-
-the probability of each success is $p$
-
-so the probability of $k$ successes is $p^{k}$
-
-the probability of each fail is $1-p$
-
-if there are $n$ trials and $k$ successes, there are $n-k$ fails
-
-## The binomial distribution 
-
-What is the probability of any _particular_ sequence of **_n_** trials 
-that contains **_k_** successes?
-
-the probability of each success is $p$
-
-so the probability of $k$ successes is $p^{k}$
-
-the probability of each fail is $1-p$
-
-if there are $n$ trials and $k$ successes, there are $n-k$ fails
-
-so the probability of all the fails is _____
-
-## The binomial distribution 
-
-What is the probability of any _particular_ sequence of **_n_** trials 
-that contains **_k_** successes?
-
-the probability of each success is $p$
-
-so the probability of $k$ successes is $p^{k}$
-
-the probability of each fail is $1-p$
-
-if there are $n$ trials and $k$ successes, there are $n-k$ fails
-
-so the probability of all the fails is $(1-p)^{n-k}$
-
-## The binomial distribution 
-
-What is the probability of any _particular_ sequence of **_n_** trials 
-that contains **_k_** successes?
-
-the probability of each success is $p$
-
-so the probability of $k$ successes is $p^{k}$
-
-the probability of each fail is $1-p$
-
-if there are $n$ trials and $k$ successes, there are $n-k$ fails
-
-so the probability of all the fails is $(1-p)^{n-k}$
-
-and the probability of a particular sequence of **_n_** trials containing **_k_** successes is ______
-
-
-## The binomial distribution
-
-What is the probability of any _particular_ sequence of **_n_** trials 
-that contains **_k_** successes?
-
-the probability of each success is $p$
- 
-so the probability of $k$ successes is $p^k$
- 
-the probability of each fail is $1-p$
- 
-if there are $n$ trials and $k$ successes, there are $n-k$ fails
- 
-so the probability of all fails is $(1-p)^{(n-k)}$
- 
-and the probability of a particular sequence of **_n_** trials containing **_k_** successes is $p^k \times (1-p)^{(n-k)}$
-
-
-## The binomial distribution  {.build}
-
-The probability of a particular sequence of **_n_** trials containing **_k_** successes is $p^k \times (1-p)^{(n-k)}$
-
-Now we need to know _how many ways there are_ of getting a sequence of 
-**_n=100_** trials containing **_k=43_** successes.
-
-<div class="centered">
-$\Large {{n}\choose{k}}$
-</div>
-
-```{r,eval=TRUE}
-	choose(n=100,k=43)
-```
+Worksheet time!
 
 
 ## The Binomial distribution  {.build}
@@ -304,23 +134,6 @@ choose(n=2, k=1)
 ```
 
 
-## A reminder about simulations {.build}
-
-We have talked about two tools for understanding probability: simulations and analytical solutions.
-
-Analytical solutions involve directly calculating probabilities.
-
-Simulations involve using tools like sample() to mimic the process creating probabilities.
-
-Simulations can be different every time you run them.
-
-## A reminder about simulations
-
-```{r, out.width="500px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("../x15-Intro-to-Probability/figs/sims.jpg")
-```
-
-
 ## Probability distributions: the binomial {.build}
 
 If a random variable **_X_** is binomially distributed, we write:
@@ -358,7 +171,7 @@ rbinom(n=1,size=100,p=0.6)
 ```
 
 ## Team exercise
-Use `rbinom` to sample 1000 draws from the binomial distribution. Pick your own value of *p*.
+Use `rbinom` to generate 1000 samples of 100 draws from the binomial distribution. Pick your own value of *p*.
 
 Plot the histogram of the values that you get.
 
@@ -492,6 +305,54 @@ plot(lower:upper,norm.prob(lower:upper,mean=70,sigma=20),type='n',
 ```
 </div>
 
+## Properties of probability distributions {.build}
+
++ Mean
+
++ Variance
+
++ Discrete vs continuous
+
++ Boundaries
+
+## Probability distribution boundaries {.build}
+
+What are potential values of the binomial distribution?
+
+```{r,fig.width=6.5,fig.height=5,fig.align="center",echo=FALSE}
+	plot(0,type='n',xlim=c(0,25),ylim=c(0,0.2),
+			xlab="successes",ylab="probability",main="")
+		lines(0:25,coin.flip.prob(n=25,k=0:25,p=0.3),lwd=3,col="blue")
+		lines(0:25,coin.flip.prob(n=25,k=0:25,p=0.5),lwd=3,col="purple")
+		lines(0:25,coin.flip.prob(n=25,k=0:25,p=0.7),lwd=3,col="red")
+		legend(x="topright",lty=1,lwd=3,col=c("blue","purple","red"),legend=c(0.3,0.5,0.7),title="p(heads) = ")
+```
+
+## Properties of probability distributions
+
++ Mean
+
++ Variance
+
++ Discrete vs continuous
+
++ Boundaries
+
++ Parameters
+
+## Distribution parameters {.build}
+
+What are the parameters of the binomial distribution?
+
+$X \sim B(n,p)$
+
+## Distribution parameters {.build}
+
+What are the parameters of the normal distribution?
+
+$X \sim N(\mu,\sigma)$
+
+
 ## Intro to random variables: recap
 
 1. The outcome of a random process is called a **_random variable_**
@@ -517,15 +378,17 @@ including tools for simulating data, and calculations for the expected mean and 
 	can be described by a **_probability density function_**
 
 
-## Distribution map
+## Distribution map {.build}
 
-Make a guide/decision tree/map/Cosmo quiz to choose the distribution that best matches a dataset.
+Work in a team of 2-4 to make a guide/decision tree/map/Cosmo quiz to choose the distribution that best matches a dataset.
 
 Here are the distributions your map should help you choose between.
 
 **continuous**: beta, exponential, gamma, lognormal, normal, uniform
 
 **discrete**: poisson, geometric, negative binomial
+
+Use the properties of distributions that we have already talked about: discrete/continuous, mean, variance, boundaries.
 
 
 
