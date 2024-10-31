@@ -5,104 +5,6 @@ output:
 language: R
 ---
 
-<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
-<!-- rmarkdown::render("Class_16_Assignment.Rmd") -->
-
-#### Due by the beginning of next class (10/30)
-
-Save this Rmarkdown script as a file named “YourlastName_Assignment16.Rmd”. 
-For each question, fill out the answer and, where requested, 
-provide the relevant R code using "```" and the echo = TRUE argument.
-
-When finished, Knit your script together into an html report, 
-saved as “YourlastName_Assignment16.html” and upload the 
-resulting file to the D2L site (in today’s class folder) to turn it in. 
-It is due before our next class.
-
-\
-
-**This homework assignment will test your abilities to:**
-
-1. think critically and creatively about probability
-
-2. use simulations to build intuition
-
-3. use your R skillz: function building, data visualization, etc.
-
-\
-
-### Question 1
-
-Re-answer question 2b-e from the previous homework using an analytical approach.
-
-
-2b) What is the probably that George's birthday is January 1st (Julian date=1)? 
-
-There are 365 possible birthdays
-
-```{r}
-1/365
-```
-
-2c) Exclusive events: What is the probability that George's birthday is in January (Julian dates 1-31) 
-
-```{r}
-31/365
-```
-
-2d) Nonexclusive events: What is the probability that George's birthday is in January AND that George was born on a Sunday (assume that there is an equally likely probability of having any day of the week on any date).
-
-```{r}
-(31/365)*(1/7)
-```
-
-2e) Nonexclusive events: What is the probability that George's birthday is in January OR that George was born on a Sunday?
-
-```{r}
-(31/365)+(1/7)-(31/365)*(1/7)
-```
-
-## Question 2 -- Probability challenges
-
-You are given an urn containing 100 balls; n of them are red, and 100-n are green, where n is chosen uniformly at random in [0, 100]. You take a random ball out of the urn—it’s red—and discard it. The next ball you pick (out of the 99 remaining) is (from https://x.com/littmath/status/1751648838501224790)
-
-```{r}
-#set n
-#n = 50
-
-urnSim <- function(){
-  
-#set n
-  n = sample(1:100, size=1)
-  
-#pick our urn
-myUrn = c(rep(1,times=n), rep(0,times=100-n))
-
-#pick two balls
-twoBalls = sample(myUrn, size=2, replace=FALSE)
-
-
-if (twoBalls[1] == 0) {myOut = NA} ## got green first
-else if (twoBalls[2] == 0){myOut = 0}  ## got red first and green second
-else if (twoBalls[2]==1){myOut=1} ##got red both times
-
-return(myOut)
-}
-
-#run it 1000 times
-mySims <- replicate(1000, urnSim())
-
-##how often did we get green first?
-greenfirst = sum(is.na(mySims))
-
-# how often did we get red, and then green?
-sum(mySims==0, na.rm=T)/(1000-greenfirst)
-
-#how often did we get red, and then another red?
-sum(mySims==1, na.rm=T)/(1000-greenfirst)
-
-```
-
 Flip a fair coin 100 times—it gives a sequence of heads (H) and tails (T). For each HH in the sequence of flips, Alice gets a point; for each HT, Bob does, so e.g. for the sequence THHHT Alice gets 2 points and Bob gets 1 point. Who is most likely to win? (https://x.com/littmath/status/1769044719034647001)
 
 
@@ -110,10 +12,16 @@ Flip a fair coin 100 times—it gives a sequence of heads (H) and tails (T). For
 library(stringr)
 
 flipSim <- function(){
+  Alice = 0
+  Bob = 0
   myFlips = sample(c('H','T'), size=100, replace=T)
   myString =  paste0(myFlips, collapse="")
-  Alice = str_count(myString, 'HH')
-  Bob = str_count(myString,'HT')
+  for (i in 1:99){
+    myTuple = substring(myString,i, i+1)
+    if (myTuple == "HH"){Alice=Alice+1}
+    if(myTuple == "HT"){Bob = Bob+1}
+  }
+  
   
   if(Alice > Bob){myOut='Alice'}
   if (Bob>Alice){myOut='Bob'}
@@ -125,73 +33,9 @@ flipSim <- function(){
 mySims <- replicate(1000,flipSim())
 
 sum(mySims=='Bob')/1000
-
-```
-
-
-### Question 3
-
-Data from Dr. Josephs' undergraduate class exams suggests that at any point, 
-1% of students at MSU have an active COVID infection.
-What is the probability that no one in our classroom would has an active case of COVID?
-
-3a) What is the analytical probability that no one in our classroom 
-has an active COVID infection? Assume there are 35 people in the classroom.
-\
-
-The probability of a person having COVID is 1/100, so the probability of that person not having COVID is 99/100.
-
-The probability of two people not having COVID is the probability that the first person doesn't have COVID times the probability that the second person doesn't have COVID, so (99/100)^2
-
-Therefore the probability that all 35 people don't have the flu is (99/100)^35
-
-```{r, echo=T}
-(99/100)^35
-```
+sum(mySims=="Alice")/1000
+sum(mySims=="Tie")/1000
 
 
-3b) Write a function for simulating this problem for gatherings of arbitrary size.
-The arguments of the function should be the number of people in the room 
-and the probability that a randomly selected person in the county has COVID ,
-and it should return the probability (from simulations), 
-that no one in the room has COVID.
-
-```{r, echo=T}
-
-## write a function that does one simulation of a class of people who may or may not have the flu
-## inputs are prob of flu (myP) and number of people in the class (myN)
-sickClass <- function(myP, myN){
-  ## sample a class of myN people (1 if have flu, 0 if don't have fl
-  myclass = sample(x=c(1,0),size=myN, replace=T, prob = c(myP, 1-myP))
-  # return TRUE if someone is sick, if not return FALSE
-  mysick = sum(myclass) > 0 
-  return(mysick)}
-  
-##run the sickClass function 1000 times
-classSims <- function(myP, myN){
-  ## use the replicate function to run the simulations
-  allSims = replicate(1e4, sickClass(myP =myP, myN=myN))
-  ##  calculate how often someone is sick in all the simulations
-  probSick = sum(allSims)/1e4
- return(1-probSick) 
-}
-
-classSims(myP = 0.01, myN = 35)
-
-```
-
-A more elegant function for simulating the sickness.
-```{r, eval=F, echo=T}
-simFlu <- function(N,pInf,nReps){
-	sims <- replicate(nReps,
-						any(
-							sample(x = c(0,1),
-								   size = N,
-								   p = c(1-pInf,pInf),
-								   replace = TRUE)
-							== 1)
-					  )
-	return(1-length(which(sims))/nReps)
-}
 
 ```
