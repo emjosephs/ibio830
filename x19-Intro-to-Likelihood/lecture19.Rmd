@@ -1,7 +1,7 @@
 ---
 title: "Lecture 19 - Introduction to Likelihood"
 author: "Emily Josephs"
-date: "November 7 2023"
+date: "November 12 2024"
 output:
   ioslides_presentation:
     transition: 0.001
@@ -534,107 +534,6 @@ This is why genetic drift is stronger in small populations!!
 https://cjbattey.shinyapps.io/driftR/
 
 
+## Up next
 
-## EXTRA STUFF
-
-## How do we find the MLE? {.build}
-
-Haphazard and grid searches are inefficient and often impractical.
-
-There are a number of sophisticated algorithms for doing 
-ML inference, many of which leverage classic techniques for 
-finding the maximum of an arbitary function.
-\
-
-For example, if $f(x)$ is the likelihood function,
-maximum $f(x)$ happens when $f'(x) = 0$ and $f''(x) < 0$
-
-## How do we find the MLE?
-
-```{r}
-n.heads=46
-```
-
-```{r,echo=FALSE,fig.height=5.5,fig.width=6}
-	# calculate likelihood of the data if p = 0.1
-	p <- seq(0,1,length.out=1e3)
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.08),
-		xlab="probability of success",ylab="p(data)",
-		type='n')
-		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
-	 points(0.3,dbinom(x=n.heads,size=100,p=0.3),pch=19)
-	 arrows(x0 = 0.3-0.03,x1 = 0.3 + 0.015,
-	 		y0 = dbinom(x=n.heads,size=100,p=0.3) + 0.002,
-	 		y1 = dbinom(x=n.heads,size=100,p=0.3) + 0.004,length=0.1)
-```
-
-## How do we find the MLE?
-
-```{r,echo=FALSE,fig.height=5.5,fig.width=6}
-	# calculate likelihood of the data if p = 0.1
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.08),
-		xlab="probability of success",ylab="p(data)",
-		type='n')
-		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
-	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
-	 points(0.6,dbinom(x=n.heads,size=100,p=0.6),pch=19)
-	 arrows(x0 = 0.6,x1 = 0.6 + 0.03,
-	 		y0 = dbinom(x=n.heads,size=100,p=0.6) + 0.004,
-	 		y1 = dbinom(x=n.heads,size=100,p=0.6) + 0.001,length=0.1)
-```
-
-## How do we find the MLE?
-
-```{r,echo=FALSE,fig.height=5.5,fig.width=6}
-	# calculate likelihood of the data if p = 0.1
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.08),
-		xlab="probability of success",ylab="p(data)",
-		type='n')
-		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
-	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
-	 points(0.6,dbinom(x=n.heads,size=100,p=0.6))
-	 points(0.4,dbinom(x=n.heads,size=100,p=0.4),pch=19)
-	 arrows(x0 = 0.4-0.03,x1 = 0.4 - 0.025,
-	 		y0 = dbinom(x=n.heads,size=100,p=0.4) - 0.001,
-	 		y1 = dbinom(x=n.heads,size=100,p=0.4) + 0.003,length=0.1)
-```
-
-## How do we find the MLE?
-
-```{r,echo=FALSE,fig.height=5.5,fig.width=6}
-	# calculate likelihood of the data if p = 0.1
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.08),
-		xlab="probability of success",ylab="p(data)",
-		type='n')
-		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
-	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
-	 points(0.6,dbinom(x=n.heads,size=100,p=0.6))
-	 points(0.4,dbinom(x=n.heads,size=100,p=0.4))
-	 points(0.5,dbinom(x=n.heads,size=100,p=0.5),pch=19)
-	 arrows(x0 = 0.5+0.025,x1 = 0.5 + 0.03,
-	 		y0 = dbinom(x=n.heads,size=100,p=0.5) + 0.003,
-	 		y1 = dbinom(x=n.heads,size=100,p=0.5) - 0.001,length=0.1)
-```
-
-## How do we find the MLE?
-
-```{r,echo=FALSE,fig.height=5.5,fig.width=6}
-	# calculate likelihood of the data if p = 0.1
-	plot(p,dbinom(x=n.heads,size=100,p=p),
-		xlim=c(0,1),ylim=c(0,0.08),
-		xlab="probability of success",ylab="p(data)",
-		type='n')
-		lines(p,dbinom(x=n.heads,size=100,p=p),col="red")
-	 points(0.3,dbinom(x=n.heads,size=100,p=0.3))
-	 points(0.6,dbinom(x=n.heads,size=100,p=0.6))
-	 points(0.4,dbinom(x=n.heads,size=100,p=0.4))
-	 points(0.5,dbinom(x=n.heads,size=100,p=0.5))
-	 points(0.46,dbinom(x=n.heads,size=100,p=0.46),pch=19)
-	 arrows(x0 = 0.46-0.03,x1 = 0.46 + 0.03,
-	 		y0 = dbinom(x=n.heads,size=100,p=0.46) + 0.002,
-	 		y1 = dbinom(x=n.heads,size=100,p=0.46) + 0.002,length=0.1)
-```
+Building linear models with maximum likelihood
