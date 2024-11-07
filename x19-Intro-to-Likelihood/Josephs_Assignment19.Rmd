@@ -8,8 +8,6 @@ language: R
 <!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
 <!-- rmarkdown::render("Class_19_Assignment.Rmd") -->
 
-#### Due by 11:59 pm on 11/08
-
 Save this Rmarkdown script as a file named “YourlastName_Assignment19.Rmd”. 
 For each question, fill out the answer and, where requested, 
 provide the relevant R code using "```" and the echo = TRUE argument.
@@ -81,7 +79,8 @@ I've included pseudocode below to help you on your journey, but you don't need t
 ################
 
 setwd('~/Documents/ibio830/x19-Intro-to-Likelihood/') ## replace this with your own directory
-load('poisson_data.Robj')
+#load('poisson_data.Robj')
+poisson.data <-read.csv('poisson_data.csv')$data
 
 ################
 # visualize data
