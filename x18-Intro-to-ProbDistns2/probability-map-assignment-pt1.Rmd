@@ -4,14 +4,9 @@ output: html_document
 date: "2024-10-29"
 ---
 
-Your name:
-
-Group member names:
-
-
 Make a guide/decision tree/map/dichotomous key/Cosmo quiz to choose the distribution that best matches a dataset.
 
-Here are the distributions your map should help you choose between the following distributions: beta, exponential, gamma, lognormal, normal, uniform, poisson, geometric, negative binomial
+Your map should help you choose between the following distributions: beta, exponential, gamma, lognormal, normal, uniform, poisson, geometric, negative binomial
 
 To learn about the distributions, check out wikipedia as well as the built in functions in R.
 
@@ -28,37 +23,4 @@ hist(mysample2)
 ```
 
 
-Please submit your guide/decision tree/map/dichotomous key/cosmo quiz/something else to D2L -- each person in the group should submit to their own d2l page. Then use your key to determine the distribution that best matches the following scenarios and associated datasets. Submit your answers to these questions on this R markdown document.
-
-
-Dataset 1: You are supervising an undergraduate class collecting pollinator data in an apple orchard. Each undergrad watches a single flower for 1 hour and counts the number of pollinators that they see visit the orchard. This dataset is in a file called "pollinator-data.txt". Use the following code chunk to explore the dataset and determine what distribution best describes the data.
-```{r}
-pollinatorData <- read.table('pollinator-data.txt', header=T)
-
-```
-
-
-Dataset 2: Based on the previous dataset you are able to estimate the average number of pollinator visits per hour. This gives you the rate of visitation. The next week you send your undergraduate class out to the orchard, each with a stopwatch, and ask them to watch their flower, wait for the first visit, and then measure the time until the next visit (reported in fraction of an hour). Use the following code chunk to explore the data set and determine what distribution best describes the data.
-
-```{r}
-timeData <- read.table('time-data.txt', header=T)
-
-```
-
-Dataset 3: You repeat the experiment the next year with a new set of students. Unfortunately, the students all have a big party the night before the field trip and they arrive at the orchard very tired. You realize that they are so tired that they are missing visits. Fortunately, you also have cameras watching each flower so you truly know how many pollinators have visited each flower. You now have data on the number of pollinators each student missed until they saw their first pollinator. Use the following code chunk to explore the data set and determine what distribution best describes the data.
-
-```{r}
-missedBugs <- read.table('missing-pollinators-data.txt')
-
-```
-
-Dataset 4: One of your labmates goes back to the orchard that fall and weighs 500 apples (in grams). Use the following code chunk to explore the data set and determine what distribution best describes the data.
-
-```{r}
-appleData <- read.table('apple-data.txt',header=T)
-
-```
-
-
-
-
+In pt 2 on Thursday, you will use your key to determine the distribution that best matches the following scenarios and associated datasets. This assignment will be due midnight, Monday November 12.
