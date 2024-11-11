@@ -41,7 +41,7 @@ a) If $X \sim \text{Pois}(\lambda)$, calculate $P(X=2 | \lambda=4)$ (hint, use t
 \
 \
 b) You make 2 draws from the Poisson distribution and get 2 the first time, and 3 the second time. What is the probability of this outcome uf $\lambda = 4$?
-This is the same as asking you to calculate $P(X={2,3}| \lambda=4)$.
+This is the same as asking you to calculate $P(X={2,3}| \lambda=4)$ and you can still use the dpois function in R.
 \
 \
 \
@@ -53,21 +53,21 @@ c) What is the log-likelihood of the outcome from part b?
 \
 \
 
-### Question 3
+### Question 2
 
 Use maximum likelihood inference to estimate 
 the parameter value (lambda) I used to simulate data from a Poisson distribution, 
-which are saved as a .Robj file in the Class 19 folder.
+which are saved as a .csv file in the Class 19 folder.
 You can refer to the lecture for helpful reference 
 code that you can cannibalize.
-Your answers from Question 2 will also be helpful.
+Your answers from Question 1 will also be helpful.
 
 I've included pseudocode below to help you on your journey, but you don't need to use it if it makes more sense to you to go a different route.
 
 ```{r}
 ################
 #	load in simulated dataset 
-#	hint: see the function load()
+
 #		don't forget to specify full file paths and use quotes
 ################
 

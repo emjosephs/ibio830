@@ -57,9 +57,9 @@ Step 1: be able to do stuff in R
   
 ## E.g., Mite makes right
 
-Download "miteData.txt" from d2l.
+Download "miteData.csv" from d2l.
 
-```{r,echo=FALSE, eval=FALSE}
+```{r,echo=FALSE}
 n.samples <- 150
 n.mites <- sample(0:50,n.samples,replace=TRUE)
 fungus.mite.beta <- -0.08
@@ -77,35 +77,52 @@ lf.dmg <- function(x){
 mean.leaf.dmg <- leaf.dmg.fungus.beta*dry.wt.fungus + leaf.dmg.fungus.alpha
 leaf.dmg <- rnorm(n.samples,mean=mean.leaf.dmg,sd=leaf.dmg.fungus.sigma)
 miteData <- data.frame(n.mites,dry.wt.fungus, leaf.dmg)
-write.table(miteData, file="miteData.txt", quote=F, col.names = T, row.names=F)
+write.table(miteData, file="miteData.csv", quote=F, col.names = T, row.names=F)
 #save(n.mites, dry.wt.fungus, leaf.dmg, file="miteData.rda")
+
+mean.leaf.dmg <- leaf.dmg.fungus.beta*dry.wt.fungus + leaf.dmg.fungus.alpha
+leaf.dmg <- rnorm(n.samples,mean=mean.leaf.dmg,sd=leaf.dmg.fungus.sigma)
 ```
 
 ```{r, echo=T, eval=F}
-load('miteData.txt')
-ls()
+md <- read.table('miteData.csv', header=T)
+str(md)
 ```
+
+## E.g., Mite makes right
+
+Download "miteData.csv" from d2l.
+
+```{r, echo=T, eval=T}
+md <- read.table('miteData.csv', header=T)
+str(md)
+```
+
+
 
 ## How does dry fungus weight affect leaf damage?
 
 Use a plot to compare the data
 
+```{r, echo=T, eval=F}
+plot(md$dry.wt.fungus,md$leaf.dmg,
+	 main="Fungal prevalence increases leaf damage",
+	 xlab="dry fungus weight per leaf (mg)",
+	 ylab="leaf damage relative to control (mg)",
+	 pch=19,col=adjustcolor(1,0.5))
+```
+
+
 ## How does dry fungus weight affect leaf damage?
 
 ```{r, echo=F}
-mean.leaf.dmg <- leaf.dmg.fungus.beta*dry.wt.fungus + leaf.dmg.fungus.alpha
-leaf.dmg <- rnorm(n.samples,mean=mean.leaf.dmg,sd=leaf.dmg.fungus.sigma)
-plot(dry.wt.fungus,leaf.dmg,
+plot(md$dry.wt.fungus,md$leaf.dmg,
 	 main="Fungal prevalence increases leaf damage",
 	 xlab="dry fungus weight per leaf (mg)",
 	 ylab="leaf damage relative to control (mg)",pch=19,col=adjustcolor(1,0.5))
 ```
 
-
-
-## E.g., Mite makes right
-
-Our research question: 
+## Specific research question to model:
 
 By how much does each additional mg of fungus increase the leaf damage?
 
@@ -126,14 +143,15 @@ $\large \text{outcomes} \sim \text{Distribution}(H)$
 \
 \
 
-E.g., plant damage caused by fungal load
+So what distribution does our data follow?
 
 ## How is leaf damage distributed? {.build}
 
-```{r,echo=FALSE}
-hist(leaf.dmg,xlim=range(leaf.dmg)+c(-30,30),col=adjustcolor(1,0.5),
-		main="Distribution of leaf damage",xlab="Leaf damage relative to control")
+```{r,echo=TRUE}
+hist(leaf.dmg)
 ```
+
+## How is leaf damage distributed? {.build}
 
 <div class="centered">
 $\large \text{LeafDamage} \sim \mathcal{N}(\vec{H}=\{\mu,\sigma\})$
@@ -175,28 +193,20 @@ plot(dry.wt.fungus,leaf.dmg,
 
 
 \
-\
+
 
 $\large \text{LeafDamage} \sim \mathcal{N}(\mu,\sigma)$
 
-\
+
 \
 
 $\large \text{LeafDamage}_i \sim \mathcal{N}(\mu_i=f(\text{FungusWt}_i),\sigma)$
 
-## The deterministic equation in the model
+ The deterministic equation in the model
 
-\
-\
 
-$\large \text{LeafDamage} \sim \mathcal{N}(\mu,\sigma)$
 
-\
-\
-
-$\large \text{LeafDamage}_i \sim \mathcal{N}(\boldsymbol{\mu_i=f(\text{FungusWt}_i)},\sigma)$
-
-## A linear model of leaf damage
+## Error is normally distributed around the mean
 
 <div class="centered">
 $\text{LeafDamage}_i \sim \mathcal{N}(\mu_i=f(\text{FungusWt}_i),\sigma)$
@@ -209,7 +219,7 @@ plot(dry.wt.fungus,leaf.dmg,
 	 ylab="leaf damage relative to control (mg)",pch=19,col=adjustcolor(1,0.5))
 ```
 
-## A linear model of leaf damage
+## Error is normally distributed around the mean
 
 <div class="centered">
 $\text{LeafDamage}_i \sim \mathcal{N}(\mu_i=f(\text{FungusWt}_i),\sigma)$
@@ -224,7 +234,7 @@ abline(a=leaf.dmg.fungus.alpha,b=leaf.dmg.fungus.beta,col=2,lwd=3,lty=2)
 ```
 
 
-## A linear model of leaf damage
+## Error is normally distributed around the mean
 
 <div class="centered">
 $\text{LeafDamage}_i \sim \mathcal{N}(\mu_i=f(\text{FungusWt}_i),\sigma)$
@@ -250,7 +260,7 @@ TeachingDemos::subplot(fun = {
 						y = c(0.15*max(leaf.dmg),0.45*max(leaf.dmg)))
 ```
 
-## A linear model of leaf damage
+## Error is normally distributed around the mean
 
 <div class="centered">
 $\text{LeafDamage}_i \sim \mathcal{N}(\mu_i=f(\text{FungusWt}_i),\sigma)$
@@ -457,74 +467,21 @@ So what are the parameters of this model?
 
  - $\beta$, $\alpha$, and $\sigma$
  
- <div class="centered">
-<span style="color:red">$\Huge{p(H \; \mid \; D) = \frac{p(D \; \mid \; H) \; \times \; p(H)}{p(D)}}$</span>
-</div>
+## Linear regression w/ maximum likelihood
 
-## Linear regression with Bayes theorem {.build}
-
-<div class="centered"> 
-$\large
-p( \{\beta,\alpha,\sigma\} \mid \text{LfDmg}) = 
-\frac{p(\text{LfDmg} \mid \{\beta,\alpha,\sigma\}) \times p(\{\beta,\alpha,\sigma\})}{p(\text{LfDmg})}$
-</div>
-
-
-```{r,echo=FALSE,fig.width=5,fig.height=4}
-plot(dry.wt.fungus,leaf.dmg,
-	 main="",
-	 xlab="dry fungus weight per leaf (mg)",
-	 ylab="leaf damage relative to control (mg)",pch=19,col=adjustcolor(1,0.5),
-	 xlim=range(c(0,range(dry.wt.fungus))))
+```{r}
+head(md)
 ```
 
-## Linear regression with Bayes theorem {.build}
-
-<div class="centered"> 
-$\large
-p( \{\beta,\alpha,\sigma\} \mid \text{LfDmg}) = 
-\frac{p(\text{LfDmg} \mid \{\beta,\alpha,\sigma\}) \times p(\{\beta,\alpha,\sigma\})}{p(\text{LfDmg})}$
-</div>
-
-\
-
-### Priors
-
-$\large \beta \sim \phantom{\mathcal{N}(\mu = 0,\sigma = 1)}$
-
-$\large \alpha \sim \phantom{\mathcal{N}(\mu = 0,\sigma = 1)}$
-
-$\large \sigma \sim \phantom{\text{Exp}(\lambda = 1)}$
-
-## Linear regression with Bayes theorem {.build}
-
-<div class="centered"> 
-$\large
-p( \{\beta,\alpha,\sigma\} \mid \text{LfDmg}) = 
-\frac{p(\text{LfDmg} \mid \{\beta,\alpha,\sigma\}) \times p(\{\beta,\alpha,\sigma\})}{p(\text{LfDmg})}$
-</div>
-
-\
-
-### Priors
-
-$\large \beta \sim \mathcal{N}(\mu = 0,\sigma = 1e6)$
-
-$\large \alpha \sim \mathcal{N}(\mu = 0,\sigma = 1e6)$
-
-$\large \sigma \sim \text{Exp}(\lambda = 0.01)$
-
-## Coding a linear regression w/ Bayes {.build}
+## Parameter inference - linear regression {.build}
 
 ```{r,eval=FALSE}
-# Estimating the mean of a normal w/ log likelihood
+# Estimating the mean of a normal
 ln.L <- function(y,mu,sigma){
 	return(sum(
 		dnorm(y,mean=mu,sd=sigma,log=TRUE)
 	))
 }
-
-#ln.L(leaf.dmg, 23, 10)
 ```
 
 ```{r}
@@ -535,100 +492,70 @@ ln.L <- function(y,x,alpha,beta,sigma){
 		dnorm(y,mean=alpha + beta * x,sd=sigma,log=TRUE)
 	))
 }
-
-#ln.L(leaf.dmg, dry.wt.fungus, 15, 2, 10)
+#
+#
+#
+#
 ```
 
-## Linear regression with Bayes Theorem and MCMC
-(code is in the slide Rmd file)
-```{r,echo=FALSE}
-ln.post.prob <- function(y,x,alpha,beta,sigma){
-	post.prob <- ifelse(sigma > 0,
-						ln.L(y,x,alpha,beta,sigma) + 
-						dnorm(alpha,mean=0,sd=1e6,log=TRUE) + 
-						dnorm(beta,mean=0,sd=1e6,log=TRUE) + 
-						dexp(sigma,rate=0.01,log=TRUE),
-						-Inf)
-	return(post.prob)
+## Parameter inference - linear regression
+
+```{r,eval=FALSE}
+# Estimating the mean of a normal
+ln.L <- function(y,mu,sigma){
+	return(sum(
+		dnorm(y,mean=mu,sd=sigma,log=TRUE)
+	))
 }
 ```
 
+```{r}
+# Estimating the **parameters** of a function 
+#		that determines the mean of a normal
+ln.L <- function(y,x,alpha,beta,sigma){
+	return(sum(
+		dnorm(y,mean=alpha + beta * x,sd=sigma,log=TRUE)
+	))
+}
+# y is the response variable
+# x is the predictor variable
+# alpha and beta are our intercept and slope
+# sigma is the variance
+```
 
-```{r LinearRegressionMCMC,echo=FALSE,cache=TRUE}
-n.iter <- 1e6
-samp.freq <- 2e3
-alpha.sample <- rep(NA,1+n.iter/samp.freq)
-beta.sample <- rep(NA,1+n.iter/samp.freq)
-sigma.sample <- rep(NA,1+n.iter/samp.freq)
-post.prob.sample <- rep(NA,1+n.iter/samp.freq)
-alpha <- rnorm(1,0,1)
-beta <- rnorm(1,0,1)
-sigma <- rexp(1)
-post.prob <- ln.post.prob(y=leaf.dmg,x=dry.wt.fungus,alpha=alpha,beta=beta,sigma=sigma)
-alpha.sample[1] <- alpha
-beta.sample[1] <- beta
-sigma.sample[1] <- sigma
-post.prob.sample[1] <- post.prob
-for(i in 2:n.iter){
-	alpha.prime <- alpha + rnorm(1,0,0.1)
-	beta.prime <- beta + rnorm(1,0,0.1)
-	sigma.prime <- sigma + rnorm(1,0,0.1)
-	post.prob.prime <- ln.post.prob(y=leaf.dmg,x=dry.wt.fungus,alpha=alpha.prime,beta=beta.prime,sigma=sigma.prime)
-	R <- exp(post.prob.prime - post.prob)
-	if(R > runif(1)){
-		alpha <- alpha.prime
-		beta <- beta.prime
-		sigma <- sigma.prime
-		post.prob <- post.prob.prime
-	}
-	if(i %% samp.freq == 0){
-		alpha.sample[1+i/samp.freq] <- alpha
-		beta.sample[1+i/samp.freq] <- beta
-		sigma.sample[1+i/samp.freq] <- sigma
-		post.prob.sample[1+i/samp.freq] <- post.prob
-	}
+## Team question
+
+```{r}
+# Estimating the **parameters** of a function 
+#		that determines the mean of a normal
+ln.L <- function(y,x,alpha,beta,sigma){
+	return(sum(
+		dnorm(y,mean=alpha + beta * x,sd=sigma,log=TRUE)
+	))
 }
 ```
 
-```{r,fig.width=7.5,fig.height=4,echo=FALSE}
-	par(mfrow=c(1,3),mar=c(4,3,3,1))
-	plot(alpha.sample,xlab="",ylab="",main="alpha",pch=20,col=adjustcolor(1,0.4)) ; abline(h= leaf.dmg.fungus.alpha,lwd=2,col=2)
-	plot(beta.sample,xlab="MCMC iterations",ylab="",main="beta",pch=20,col=adjustcolor(1,0.4)) ; abline(h= leaf.dmg.fungus.beta,lwd=2,col=2)
-	plot(sigma.sample,xlab="",ylab="",main="sigma",pch=20,col=adjustcolor(1,0.4)) ; abline(h= leaf.dmg.fungus.sigma,lwd=2,col=2)
-```
+Pick a value of the intercept (alpha), slope (beta), and variance (sigma) to start with
 
-## Comparing model estimates with the data
+1) What is the log-likelihood of the the first datapoint (dry.wt.fungus=4.57, leaf.dmg = 15.9) in the dataset, given the values you picked?
 
-```{r,fig.width=7.5,fig.height=5,cache=TRUE,echo=FALSE}
-	plot(dry.wt.fungus,leaf.dmg,pch=19,col=adjustcolor(1,0.5),
-			xlab="dry fungus weight per leaf (mg)",
-			ylab="leaf damage relative to control (mg)")
-	invisible(
-	sapply(1:50,function(i){
-		abline(a=alpha.sample[2:501][i],b=beta.sample[2:501][i],col=adjustcolor(2,0.1),lwd=3)
-	}))
-	legend(x="bottomright",lwd=1,col=c("blue","red"),legend=c("true","estimated"))
-	abline(a= leaf.dmg.fungus.alpha,b= leaf.dmg.fungus.beta,col="blue",lwd=3)
-```
+2) What is the log-likelihood of the whole dataset given the values you picked?
+
+3) How could you find the best estimates of your parameters?
 
 ## Linear regression w/ maximum likelihood
 
+A simple linear regression in R:
 ```{r}
-mydata <- data.frame("dry.wt.fungus" = dry.wt.fungus,"leaf.dmg" = leaf.dmg)
-head(mydata)
+mod1 <- lm(leaf.dmg ~ dry.wt.fungus,data=md)
 ```
 
-## Linear regression w/ maximum likelihood
+## Looking at the model
 
 ```{r}
-mod1 <- lm(leaf.dmg ~ dry.wt.fungus,data=mydata)
 mod1
 ```
-
-```{r}
-summary(mod1)$sigma
-```
-##
+## Looking at the model
 
 ```{r}
 summary(mod1)
@@ -637,7 +564,7 @@ summary(mod1)
 ##
 
 ```{r,fig.width=7.5,fig.height=5}
-plot(mydata)
+plot(md$dry.wt.fungus, md$leaf.dmg)
 	abline(mod1)
 ```
 
@@ -651,7 +578,7 @@ plot(mydata)
  
  - we can then do inference on the parameters of that deterministic 
  function
- 	+ using, e.g., Bayesian or Maximum Likelihood inference
+ 	+ using Maximum Likelihood inference
  
 \ 
  - when we do, we're calculating the likelihood of each 
@@ -680,7 +607,7 @@ $\large \text{FungusWt}_i \sim \mathcal{N}(\mu_i=f(\text{nMites}_i),\sigma)$
 
  + mu = a + b * nMites
 
-## How would we model this data? {.build}
+## How would we model this data?
 
 \
 
