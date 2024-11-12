@@ -526,13 +526,9 @@ ln.L <- function(y,x,alpha,beta,sigma){
 ## Team question
 
 ```{r}
-# Estimating the **parameters** of a function 
-#		that determines the mean of a normal
 ln.L <- function(y,x,alpha,beta,sigma){
 	return(sum(
-		dnorm(y,mean=alpha + beta * x,sd=sigma,log=TRUE)
-	))
-}
+		dnorm(y,mean=alpha + beta * x,sd=sigma,log=TRUE)	))}
 ```
 
 Pick a value of the intercept (alpha), slope (beta), and variance (sigma) to start with
@@ -543,7 +539,22 @@ Pick a value of the intercept (alpha), slope (beta), and variance (sigma) to sta
 
 3) How could you find the best estimates of your parameters?
 
-## Linear regression w/ maximum likelihood
+## Team question {.build}
+
+```{r}
+#one data point
+ln.L(15.9, 4.57, 7, 0.5, 5)
+```
+```{r}
+#whole data set
+ln.L(md$leaf.dmg, md$dry.wt.fungus, 7, 0.5, 5)
+```
+
+We could use a grid search...
+
+Or we can fit the model in R.
+
+## Linear regression w/ lm()
 
 A simple linear regression in R:
 ```{r}

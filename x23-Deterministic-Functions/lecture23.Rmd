@@ -78,19 +78,18 @@ plot(dry.wt.fungus,leaf.dmg,
 	 main="Fungal prevalence increases leaf damage",
 	 xlab="dry fungus weight per leaf (mg)",
 	 ylab="leaf damage relative to control (mg)",pch=19,col=adjustcolor(1,0.5))
- ```
+```
  </div>
 
 ## E.g., Mite makes right
 
-<div class="centered">
 ```{r,echo=FALSE}
 plot(n.mites,dry.wt.fungus,
 	 main="Mites decrease fungal prevalence",
 	 xlab="Number of mites/cm2",
 	 ylab="dry fungus weight per leaf(mg)",pch=19,col=adjustcolor(1,0.5))
- ```
- </div>
+```
+
  
 ## E.g., Mite makes right
 
@@ -106,7 +105,7 @@ plot(n.mites,dry.wt.fungus,
 	 xlab="Number of mites/cm2",
 	 ylab="dry fungus weight per leaf(mg)",pch=19,col=adjustcolor(1,0.5))
 ```
-</div>
+
 
  - By how much does each additional mg of fungus increase the leaf damage?
  
