@@ -57,7 +57,7 @@ c) What is the log-likelihood of the outcome from part b?
 
 Use maximum likelihood inference to estimate 
 the parameter value (lambda) I used to simulate data from a Poisson distribution, 
-which are saved as a .Robj file in the Class 19 folder.
+which are saved as a .csv file in the Class 19 folder.
 You can refer to the lecture for helpful reference 
 code that you can cannibalize.
 Your answers from Question 2 will also be helpful.
@@ -67,7 +67,6 @@ I've included pseudocode below to help you on your journey, but you don't need t
 ```{r}
 ################
 #	load in simulated dataset 
-#	hint: see the function load()
 #		don't forget to specify full file paths and use quotes
 ################
 
