@@ -6,7 +6,7 @@ date: "2024-10-29"
 
 Make a guide/decision tree/map/dichotomous key/Cosmo quiz to choose the distribution that best matches a dataset.
 
-Your map should help you choose between the following distributions: beta, exponential, gamma, lognormal, normal, uniform, poisson, geometric, negative binomial
+Your map should help you choose between the following distributions: beta, exponential, gamma, lognormal, normal, uniform, poisson, geometric, negative binomial, binomial
 
 To learn about the distributions, check out wikipedia as well as the built in functions in R.
 

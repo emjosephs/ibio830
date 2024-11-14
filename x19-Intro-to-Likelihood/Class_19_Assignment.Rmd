@@ -67,10 +67,7 @@ I've included pseudocode below to help you on your journey, but you don't need t
 ```{r}
 ################
 #	load in simulated dataset 
-<<<<<<< HEAD
-=======
 
->>>>>>> 47b8f053e85ff17bfe8e22c9320dcc466cc72d7f
 #		don't forget to specify full file paths and use quotes
 ################
 
