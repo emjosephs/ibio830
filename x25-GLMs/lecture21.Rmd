@@ -30,20 +30,20 @@ output:
  
  - $\large \text{outcome}_i \sim \text{Normal}(\theta_i = f(\text{predictor}_i))$
  
- - we can then use Maximum Likelihood or Bayes theorem to infer
+ - we can then use Maximum Likelihood to infer
  the parameters of the deterministic function.
  
 
 ## Model building: the story so far {.build}
 
-	started with linear relationship
+started with linear relationship
 	
-	discussed nonlinear (2-parameter) deterministic functions
+discussed nonlinear (2-parameter) deterministic functions
 		negative exponential
 		logistic
 		power law
  
- so far everything has used normal distributions 
+so far everything has used normal distributions 
  
 ## They mite be giants
 
@@ -92,12 +92,10 @@ plot(dry.wt.fungus,leaf.dmg,
 	 xlab="fungus",
 	 ylab="leaf damage",pch=19,col=adjustcolor(1,0.5))
 abline(a=leaf.dmg.fungus.alpha,b=leaf.dmg.fungus.beta,col="blue",lwd=3)
-abline(h=leaf.dmg.fungus.alpha,lwd=3,col="forestgreen")
 ```
 </div>
 
-$\large 
-\begin{aligned}
+$\begin{aligned}
 y \sim \mathcal{N}(&\mu_i=f(x_i),\sigma) \\
 &\mu_i = \beta x_i + \alpha
 \end{aligned}$
