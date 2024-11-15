@@ -1,0 +1,105 @@
+  ---
+title: "GLM Class Activity"
+output:
+  html_document: default
+language: R
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+ 
+ First, install and load the bbmle library
+```{r}
+install.packages('bbmle')
+library(bbmle)
+```
+ 
+Pitkow et al (1960) exposed guppies to 2, 8, 12, or 18 minutes in 5 degree Celsius water. The data – with a value of 1 for Alive meaning alive and a value of zero meaning dead. Use the code below to load their data.
+ 
+```{r}
+mydata <- read.csv('fishData.csv')
+str(mydata)
+ 
+```
+ 
+
+1)
+Below is code for running a linear normal regression GLM using mle2(). Try running the code and discuss with your group whether you think this model is doing a good job of fitting the data.
+ 
+```{r}
+
+#define a deterministic funciton
+detFunc <- function(x,a,b){
+    return(a + b*x)
+}
+
+# specify the inverse link function
+invLink <- function(z){
+    return(z)
+}
+
+# run a regression with mle2()
+mod <- mle2(Alive ~ dnorm(mean=invLink( detFunc(Time,a,b)), sd=s),
+            data=mydata,
+            start=list("a"=0,"b"=0, 's'=1))
+
+## use the model to generate data
+modData = mod@coef[1]+mydata$Time*mod@coef[2]
+
+## look at the model-predicted data curve on top of the actual data
+plot(jitter(mydata$Time), jitter(mydata$Alive), bty="n", col="darkgray")
+abline(mod, col="red")
+
+residuals <- mydata$Alive - modData
+
+plot(jitter(mydata$Time), jitter(residuals), bty="n", col="darkgray")
+abline(h=0, lty=2)
+
+```
+
+
+2) 
+
+Now, try a Binomial regression. Head to wikipedia and look up the link function for a Binomial regression: https://en.wikipedia.org/wiki/Generalized_linear_model#Link_function
+
+Code for running a Binomial regression is below. I've added comments where things have changed from the previous version. Please discuss what has changed with your group.
+
+```{r}
+
+#define a deterministic function
+detFunc <- function(x,a,b){
+    return(a + b*x)
+}
+
+# specify the inverse link function
+invLink <- function(z){
+    return(exp(z)/(1+exp(z)))  ### CHANGE 
+}
+
+# run a regression with mle2()
+mod2 <- mle2(Alive ~ dpois(lambda=invLink( detFunc(Time,a,b))), ### CHANGE 
+            data=mydata,
+            start=list("a"=0.1,"b"=0.1))  ##  CHANGE 
+
+
+## use the model to generate predicted data
+logOdds <- mod2@coef[1]+mydata$Time*mod2@coef[2]
+mod2Data <- exp(logOdds)/(1+exp(logOdds)) ##CHANGE
+
+
+## look at the model-predicted data curve on top of the actual data
+plot(jitter(mydata$Time), jitter(mydata$Alive), bty="n", col="darkgray")
+points(mydata$Time, mod2Data, col="red")
+
+
+residuals2 <- mydata$Alive - mod2Data
+
+plot(jitter(mydata$Time), jitter(residuals2), bty="n", col="darkgray")
+abline(h=0, lty=2)
+
+```
+
+Discuss this Binomial regression model with your group. How is it different from the normal model? Which do you think fits better?
+\
+\

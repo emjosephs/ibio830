@@ -1,7 +1,7 @@
 ---
 title: "Lecture 24 - Model Building continued: GLMs and link functions"
 author: "Emily Josephs"
-date: "November 28 2023"
+date: "November 19 2024"
 output:
   ioslides_presentation:
     transition: 0.0

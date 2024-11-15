@@ -28,7 +28,7 @@ mortality <- rpois(length(dry.wt.fungus),lambda=exp(mort.alpha + mort.beta*dry.w
 ```
 
 1)
-Below is code for running a normal regression GLM using mle2(). Try running the code and discuss with your group whether you think this model is doing a good job of fitting the data.
+Below is code for running a linear normal regression GLM using mle2(). Try running the code and discuss with your group whether you think this model is doing a good job of fitting the data.
  
 ```{r}
 
@@ -54,6 +54,12 @@ modData = mod@coef[1]+mydata$x*mod@coef[2]
 ## look at the model-predicted data curve on top of the actual data
 plot(mydata$x, mydata$y, bty="n", col="darkgray")
 points(mydata$x, modData,col="red",lwd=2)
+
+residuals <- mortality - modData
+
+plot(dry.wt.fungus, residuals, bty="n", col="darkgray")
+abline(h=0, lty=2)
+
 ```
 
 
@@ -76,19 +82,24 @@ invLink <- function(z){
 }
 
 # run a regression with mle2()
-mydata <- data.frame("x"= dry.wt.fungus,"y"= mortality)
-mod <- mle2(y ~ dpois(lambda=invLink( detFunc(x,a,b))), ### CHANGE 
+mod2 <- mle2(y ~ dpois(lambda=invLink( detFunc(x,a,b))), ### CHANGE 
             data=mydata,
             start=list("a"=0,"b"=0))  ##  CHANGE 
 
 
 ## use the model to generate predicted data
-modData = exp(mod@coef[1]+mydata$x*mod@coef[2]) ##CHANGE
+mod2Data = exp(mod2@coef[1]+mydata$x*mod2@coef[2]) ##CHANGE
 
 
 ## look at the model-predicted data curve on top of the actual data
 plot(mydata$x, mydata$y, bty="n", col="darkgray")
-points(mydata$x, modData,col="red",lwd=2)
+points(mydata$x, mod2Data,col="red",lwd=2)
+
+
+residuals2 <- mortality - mod2Data
+
+plot(dry.wt.fungus, residuals2, bty="n", col="darkgray")
+abline(h=0, lty=2)
 
 ```
 
