@@ -25,6 +25,9 @@ mort.alpha <- -6
 mort.beta <- 0.21
 mortality <- rpois(length(dry.wt.fungus),lambda=exp(mort.alpha + mort.beta*dry.wt.fungus))
 
+mydf = data.frame(dry.wt.fungus=dry.wt.fungus, mortality=mortality)
+write.csv(mydf, file="fungusMortality.csv", quote=F, row.names=F)
+
 ```
 
 1)

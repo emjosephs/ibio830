@@ -19,68 +19,60 @@ saved as “YourlastName_Assignment21.html” and upload the
 resulting file to the D2L site (in today’s class folder) to turn it in. 
 It is due before our next class.
 
+Question 1:
 
-### Question 1
+Going back to our mite example, when fungus outbreaks are very severe, they can kill the entire plant. 
 
-Explain in your own words each of the terms in each of the equations below, 
-as well as what each equation is doing, and what they are all doing together.
+You are interested in quantifying the relationship between fungus amount and plant mortality in vineyards. 
+You collect data on the average amount of fungus per plot and, at the end of the season, count the number of dead plants.
+Assume all plots are the same size.
 
-$Y_i \sim \mathcal{Pois}(\lambda_i=f(x_i))$ \
-$\lambda = \text{exp}(f(x_i))$ \
-$f(x_i) = \alpha + \beta x_i$ \
+The data is available on d2l to download. 
 
-
-### Question 2
-
-I used a mystery model to simulate the data saved in the "mysteryData.csv" 
-file in the homework folder on D2L.
-
-
-Below is code to run a normal linear regression on this data. Run the code and look at the output plots. 
 ```{r}
-mysteryData <- read.csv('mysteryData.csv')
-library(bbmle)
+mydata <- read.csv('fungusMortality.csv')
+```
 
-# define a deterministic function
-myDet <- function(x,a,b){
+1a) Make a plot showing the amount of fungus on the X axis and the number of dead plants on the Y axis. 
+
+
+
+1b) Explain why a Poisson distribution would be an appropriate choice for modelling this data.
+
+
+
+
+1c) Head to wikipedia and look up the link function for a Poisson regression: https://en.wikipedia.org/wiki/Generalized_linear_model#Link_function
+
+Below is code for running a linear normal regression. Modify it to run a Poisson regression:
+
+```{r}
+
+#define a deterministic funciton
+detFunc <- function(x,a,b){
     return(a + b*x)
 }
 
-# define inverse link function (it's just the identity because this is a normal regression)
-myInverse <- function(z){
+# specify the inverse link function
+invLink <- function(z){
     return(z)
 }
 
-# run linear regression with mle2()
-mod1 <- mle2(response ~ dnorm(mean=myInverse(myDet(predictor,a,b)), sd=s),
-            data=mysteryData,
+# run a regression with mle2()
+mod <- mle2(mortality ~ dnorm(mean=invLink( detFunc(dry.wt.fungus,a,b)), sd=s),
+            data=mydata,
             start=list("a"=0,"b"=0, 's'=1))
 
-## this is our model
-mod1
-
-##compare the model to the real data
-
-## use the model to generate predicted data
-mod1Data = mod1@coef[1]+mysteryData$predictor*mod1@coef[2]
-
-
-#get residuals from difference between actual data and the predicted data
-residuals <- mysteryData$response - mod1Data
+## use the model to generate data
+modData = invLink(mod@coef[1]+mydata$dry.wt.fungus*mod@coef[2])
 
 ## look at the model-predicted data curve on top of the actual data
-plot(mysteryData$predictor, mysteryData$response, bty="n", col="darkgray")
-points(mysteryData$predictor, mod1Data,col="red",lwd=2)
-  
-## look at a plot of the residuals
-plot(mysteryData$predictor, residuals)
-abline(h=0, lty=2)
+plot(mydata$dry.wt.fungus, mydata$mortality, bty="n", col="darkgray")
+points(mydata$dry.wt.fungus, modData,col="red",lwd=2)
+
 ```
 
+Calculate the residuals and make a plot of the residuals against the independent variable.
 
-
-2) Copy and edit the code above and change the deterministic function (myDet) to be an exponential function ($a \times x^{b}$). 
-Hint: you will also have to change the line of code under "## use the model to generate data"
-Does this new model do a better or worse job of fitting the data than the first model? Explain your answer based on the plots you have generated.
-
+Do you think the model is doing a good job of fitting the data? Why or why not?
 

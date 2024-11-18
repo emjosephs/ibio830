@@ -137,18 +137,6 @@ y_i \sim \mathcal{N}(&\mu_i=f(x_i),\sigma) \\
 
   
 ## Model building: Normal no more {.build}
-```{r, out.width="650px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/mite_info.jpeg")
-```
-
-## 
-
-```{r, out.width="650px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/aerial_plankton.jpeg")
-```
-
-## 
-
 ```{r, out.width="350px",echo=FALSE,fig.align="center"}
 	knitr::include_graphics("figs/aerial_plankton.jpeg")
 ```
@@ -156,9 +144,11 @@ y_i \sim \mathcal{N}(&\mu_i=f(x_i),\sigma) \\
 
  - How long do we have to wait for an empty leaf to be colonized by mites?
  
-## Waiting for my mite
+## Discussion question
 
-Do big leaves catch mites faster? How can we model waiting time?
+Do big leaves catch mites faster? 
+
+How can we model waiting time?
 
 ```{r,echo=FALSE,fig.width=7}
 n.samples <- 1e4
@@ -169,7 +159,6 @@ mite.arrival.times <- rexp(n.samples, mt.time.lf.area.beta*leaf.area+ mt.time.lf
 plot(leaf.area,mite.arrival.times,xlab="leaf area",ylab="time to first mite",pch=20,col=adjustcolor(1,0.2))
 ```
 
-(discuss amongst yourselves)
 
 ## Modeling with the exponential {.build}
 
@@ -693,119 +682,23 @@ plot(plant.height, myResiduals)
 ```
  
 
-## Another example of GLMs: fungus-induced mortality
+## Another example of GLMs: fish death
 
-- When fungal outbreaks get particularly severe, 
-they can kill the whole plant
-
-```{r, out.width="500px",echo=FALSE,fig.align="center"}
-	knitr::include_graphics("figs/powdery_mildew.jpeg")
+```{r, out.width="650px",echo=FALSE,fig.align="center"}
+	knitr::include_graphics("figs/guppy.png")
 ```
 
-## Fungus-induced mortality
 
- - For many different vineyards, each containing thousands of plants, 
- measure the mean dry fungal weight per plant 2 weeks into the growing season
- 
- - At the end of the growing season, count number of dead plants per plot
- 	+ assume plots are the same size
+Pitkow (1960) exposed guppies to 2, 8, 12, or 18 minutes in 5 degree Celsius water. The data – with a value of 1 for Alive meaning alive and a value of zero meaning dead. 
 
-```{r, echo=FALSE}
-dry.wt.fungus <- runif(1e3,0,30)
-mort.alpha <- -6
-mort.beta <- 0.21
-mortality <- rpois(length(dry.wt.fungus),lambda=exp(mort.alpha + mort.beta*dry.wt.fungus))
-```
-
-## Fungus-induced mortality
-
-```{r,fig.width=7,fig.height=5.5,echo=FALSE}
-plot(dry.wt.fungus,mortality,pch=20,col=adjustcolor(1,0.5),
-	xlab="mean dry weight fungus",ylab="number of dead plants",
-	main="Fungus-induced mortality")
-```
-
-## Fungus-induced mortality {.build}
-
- - How are these data distributed?
- 	+ number of dead plants
- 	+ [hint: rare event with large sample size...]
-
-$\large y \sim \text{Poisson}(\lambda)$
-
-\
-
-$\large y_i \sim \text{Poisson}(\lambda_i = f(x_i))$
-
-\
-
-$\large \lambda > 0$
 
 ## Group activity
 
-Try out Poisson regression for yourself. 
+Try out Binomial regression for yourself. 
 \
 \
-Download "GLM-class-activity.Rmd" and go through
+Download "GLM-class-activity2024.Rmd" and go through
 the exercise with your group.
-
-
-## Poisson regression
-
-$\Large y_i \sim \text{Poisson}(\lambda_i = f(x_i))$
-
-\
-
-$\Large f(\lambda_i) = \beta x_i + \alpha$
-\
-
-$\Large
-\begin{aligned}
-log(\lambda_i) &= \beta x_i + \alpha \\
-\lambda_i &= e^{\beta x_i + \alpha}
-\end{aligned}$
-
-## Poisson regression
-
-```{r}
-# define a deterministic funciton
-detFunc <- function(x,a,b){
-	return(a + b*x)
-}
-
-# specify the inverse link function
-invLink <- function(z){
-	return(exp(z))
-}
-
-# run a poisson regression with mle2()
-mydata <- data.frame("x"= dry.wt.fungus,"y"= mortality)
-mod <- mle2(y ~ dpois(lambda=invLink(
-					   			detFunc(x,a,b)
-					   	 	 )
-				 	  ),
-			data=mydata,
-			start=list("a"=0,"b"=0))
-```
-
-## Poisson regression
-
-```{r,fig.width=7,fig.height=5.5,echo=FALSE}
-par(mfrow=c(1,2))
-
-## use the model to generate data
-modData = exp(mod@coef[1]+mydata$x*mod@coef[2])
-
-#get residuals from difference between actual data and the predicted data
-residuals <- mydata$y - modData
-
-## look at the model-predicted data curve on top of the actual data
-plot(mydata$x, mydata$y, bty="n", col="darkgray")
-points(mydata$x, modData,col="red",lwd=2)
-  
-## look at a histogram of the residuals
-hist(residuals, col = "gray", border="white")
-```
 
 ## Model building recap: {.build}
 
