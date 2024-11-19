@@ -1,0 +1,156 @@
+---
+title: "Model building: deterministic functions"
+output:
+  html_document: default
+  pdf_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_20_Assignment.Rmd") -->
+
+#### Due by 11:59pm on Nov 18
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment22.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment20.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+\
+\
+
+### Question 1
+
+
+Here is a function you can use to simulate data based on a linear model
+with Gaussian-distributed error.
+```{r}
+myLinearSim <- function(i){
+  myMean = myIntercept + i*myBeta ## get the mean based on a linear equation
+  responseI = rnorm(n=length(i), myMean, sd=mySigma) ## add in the normally distributed error to get a response
+  return(responseI)
+}
+```
+
+Simulate a dataset of 1000 datapoints using a linear model and
+Gaussian-distributed error with the following parameter values:
+
+	- intercept = 12
+	- sigma = 10
+	- predictor effect size = -1.3
+
+You may generate values of the predictor variable however you wish.
+
+
+This is how Emily did the homework:
+```{r}
+#simulating predictors with the uniform distribution
+myPredictors = runif(1000, min=0, max=50)
+
+# making variables for each parameter
+myIntercept=12
+mySigma=10
+myBeta= -1.3
+
+#making a function to take a predictor and get a response out.
+myLinearSim <- function(i){
+  myMean = myIntercept + i*myBeta ## get the mean based on a linear equation
+  responseI = rnorm(n=1, myMean, sd=mySigma) ## add in the normally distributed error to get a response
+  return(responseI)
+}
+myResponse = sapply(myPredictors, myLinearSim) ## get the responses that correspond with each predictor
+```
+
+Another (shorter + more elegant) way to answer this question:
+```{r}
+x <- seq(0,100,length.out=1000) #generate the predictors as a grid
+y <- rnorm(1e3,mean=-1.3*x+12,sd=10) #calculate the response variable all in one line!
+```
+
+
+### Question 2
+
+Use the function lm() to infer the parameter values used 
+to simulate these data.  Make a plot of the data and the prediction line from the linear model.
+
+
+```{r}
+
+myModel=lm(myResponse~myPredictors)
+summary(myModel)
+
+
+plot(myPredictors, myResponse, bty="n", col = "gray")
+abline(myModel, col = "magenta", lwd=2)
+abline(a=myIntercept, b=myBeta, col = "darkgreen", lwd=2)
+legend('topright', c('real data','mle estimates'), bty="n", col=c('darkgreen',"magenta"), lwd=2)
+```
+
+
+## Question 3
+
+Modify the function from question 1 to use a negative exponential function. 
+
+Simulate data as in question 1 (pick your own parameter values!). 
+
+Use lm() to run a linear model on the simulated data. Do you get the parameters that you simulated with?
+
+
+```{r}
+## new function
+myExpSim <- function(i){
+  myMean = myAlpha*exp(-myBeta*i) ## get the mean based on a linear equation
+  responseI = rnorm(n=1, myMean, sd=mySigma) ## add in the normally distributed error to get a response
+  return(responseI)
+}
+
+## parameters
+myAlpha=10
+myBeta= 5
+mySigma=0.5
+
+#set predictors
+myPredictors = runif(1000, min=0, max=5)
+
+#simulate the data
+myResponseExp <- sapply(myPredictors, myExpSim)
+
+#make the plot
+plot(myPredictors, myResponseExp, bty="n", col = "gray")
+
+##lm model
+mymod <- lm(myResponseExp~myPredictors)
+
+
+summary(mymod)
+```
+
+
+## Question 4 (Bonus!!)
+
+For all questions below, use the data from Question 3.
+
+Make a plot of the data and the prediction line from the linear model.
+
+```{r}
+plot(myPredictors, myResponseExp, bty="n", col = "gray")
+abline(mymod)
+
+```
+
+Make a plot of the residuals on the y axis with the independent variable on the x axis. 
+
+
+```{r}
+plot(myPredictors, resid(mymod), col=gray)
+abline(h=0, lty=2)
+```
+
+Briefly explain whether you think the model is fitting the data, based on the plots you have made.
+
+I don't think it's fitting the data well, the residuals are not evenly distributed around 0 across the predictor values.
+
