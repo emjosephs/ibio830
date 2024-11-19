@@ -43,7 +43,7 @@ opposing team used to simulate their data will win **_eternal glory_**.
  - and a **deterministic function** from the following list:
  	  1. linear
  	  2. exponential decay
- 	  3. logistic
+ 	  3. logistic (use the formulation from the slides!)
  	  4. power-law
  
  - students **must** specify the **appropriate link function** for their distribution
@@ -52,27 +52,19 @@ opposing team used to simulate their data will win **_eternal glory_**.
  	+ make a data frame, 
  	with one column for the predictor and one for the response 
  	(see example below).
- 	
- 	+ **hand data off to the other team**
- 		+ data should consist of:
-		 	1. make a **.csv file** containing 2 columns, labeled "predictor" and "response"
- 			2. a **realistic and well-motivated writeup** of a biological scenario 
- 	explaining what the question is and what data were collected to answer it.
  
  	+ **Make an Rmarkdown document** that contains 
  	the code used to simulate the data and the written scenario and a plot of the output
  		+ this will be sent to the instructors for approval (see schedule below).
  	
- ```{r echo=FALSE}
- n.samples <- 1e3
- predictor <- runif(n.samples)
- alpha <- 3
- beta <- -10
- mu <- 1.4
- response <- rnorm(n.samples,mean=mu,sd=exp(alpha+beta*predictor))
- data <- data.frame(predictor,response)
- data[1:5,]
- ```
+ 	 	+ **hand data off to the other team**
+ 		+ after Sophie or Emily has approved your data, send the following files to the team that will be inferring your data:
+		 	1. a **.csv file** containing 2 columns, labeled "predictor" and "response"
+ 			2. a **realistic and well-motivated writeup** of a biological scenario 
+ 	explaining what the question is and what data were collected to answer it. This can be in a text file or Rmarkdown file.
+    Do not send them the code you used to generate the data (unless you really want them to win!!!)	
+ 	
+
 
 ### Inference
 
@@ -83,7 +75,7 @@ opposing team used to simulate their data will win **_eternal glory_**.
  deterministic function, and possibly link function to use
  
  - Do inference on all parameters of the model
- 	+ at most 3 params:
+ 	+ at most 3 parameters:
  		+ 2 for the deterministic function
  		+ up to 1 other: e.g.,
  			+ $y_i \sim \mathcal{N}(\mu_i = \alpha + \beta x_i, \sigma)$
@@ -104,14 +96,14 @@ opposing team used to simulate their data will win **_eternal glory_**.
  
 ### Timeline
 
- - Nov 30 - make groups, start to plan, work within groups to simulate data
+ - Nov 21 - make groups, start to plan, work within groups to simulate data
  
- - Dec 4 (Monday) - by 9 am, email simulation scenario to Emily and Jimmy to get the green light
+ - Nov 25 (Monday) - by 9 am, email simulation scenario to Emily and Sophie to get the green light
  
- 	+ teams with problems in their simulation code/scenario will have until 12/4 at 5pm to get their simulations cleared by instructors
+ 	+ teams with problems in their simulation code/scenario will have until Nov 26 at 5pm to get their simulations cleared by instructors
 
- - Dec 5 - data handoff between teams at the beginning of class. Teams use classtime to infer the data.
+ - Dec 3 - data handoff between teams at the beginning of class. Teams use classtime to infer the data and make presentation.
 
- - Dec 7 - presentations
+ - Dec 5 - presentations!
  
- 	+ **Presentations must be submitted to the D2L dropbox by by 9am on Dec 7 ** 
+ 	+ **Presentations must be submitted to the D2L dropbox by by 9am on Dec 5 ** 
