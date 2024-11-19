@@ -46,23 +46,20 @@ opposing team used to simulate their data will win **_eternal glory_**.
  	  3. logistic (use the formulation from the slides!)
  	  4. power-law
  
- - students **must** specify the **appropriate link function** for their distribution
+ - simulate 1000 data points (that's 1000 responses and 1000 associated predictors) with the probability function, deterministic function, and link function.
 
- - simulate 1000 data points (that's 1000 responses and 1000 associated predictors)
- 	+ make a data frame, 
- 	with one column for the predictor and one for the response 
- 	(see example below).
- 
- 	+ **Make an Rmarkdown document** that contains 
- 	the code used to simulate the data and the written scenario and a plot of the output
- 		+ this will be sent to the instructors for approval (see schedule below).
+ - **Make an Rmarkdown document** for the instructors that contains 
+ 	1. the code used to simulate the data 
+ 	2. the written scenario 
+ 	3. a plot of the output
+ 	4. a demonstration that if you run mle2() with the correct distribution and deterministic function, you recover the simulated parameters.
+
  	
- 	 	+ **hand data off to the other team**
- 		+ after Sophie or Emily has approved your data, send the following files to the team that will be inferring your data:
-		 	1. a **.csv file** containing 2 columns, labeled "predictor" and "response"
- 			2. a **realistic and well-motivated writeup** of a biological scenario 
+ - **hand data off to the other team** after Sophie or Emily has approved your data, send the following files to the team that will be inferring your data:
+	  1. a **.csv file** containing 2 columns, labeled "predictor" and "response"
+ 	  2. a **realistic and well-motivated writeup** of a biological scenario 
  	explaining what the question is and what data were collected to answer it. This can be in a text file or Rmarkdown file.
-    Do not send them the code you used to generate the data (unless you really want them to win!!!)	
+    - Do not send them the code you used to generate the data (unless you really want them to win!!!)	
  	
 
 
