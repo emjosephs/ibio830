@@ -1,0 +1,126 @@
+---
+title: "Exp design"
+output: html_document
+date: "2024-11-20"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below is code to simulate some data. The biological scenario motivating the data is that inbreeding often negatively affects fitness. In this case, imagine a researcher uses genetic data to assess inbreeding in 1000 rattlesnakes. She also measures the weight of these snakes.
+
+```{r}
+myInbreedingCoeffs <- runif(1000, min=0, max=1)
+myIntercept = 6
+myBeta = -3
+mySd = 1
+
+myWeight = rnorm(n=1000, mean = myInbreedingCoeffs*myBeta + myIntercept, sd=mySd)
+
+mydata <- data.frame(myInbreedingCoeffs, myWeight)
+```
+
+1. Make a plot showing the relationship between inbreeding coefficient and weight.
+
+```{r}
+
+plot(mydata$myInbreedingCoeffs, mydata$myWeight)
+```
+
+2. Fit a linear model to the data using either lme2() or lm(). What is your estimated effect size? Does it match the effect size used in the simulations above?
+
+```{r}
+#define a deterministic funciton
+detFunc <- function(x,a,b){
+    return(a + b*x)
+}
+
+# specify the inverse link function
+invLink <- function(z){
+    return(z)
+}
+
+# run a regression with mle2()
+mod <- mle2(myWeight ~ dnorm(mean=invLink( detFunc(myInbreedingCoeffs,a,b)), sd=s),
+            data=mydata,
+            start=list("a"=5,"b"=0, "s"=1))
+
+mod
+
+```
+
+Yes, it's doing a pretty good job of estimating the effects I simulated
+
+
+3a. Now imagine you only have information from 25 snakes. Sample 25 snakes from the original dataset and rerun the model. Do the coefficients that you estimate match the model coefficients? If not, is the effect size bigger or smaller than what was used to simulate?
+```{r}
+#no need to change the detFunc and invLink
+smallSample = sample(1:1000, size=25, replace=F)
+mydataSample <- mydata[smallSample,]
+
+plot(mydataSample$myInbreedingCoeffs, mydataSample$myWeight)
+
+mod2 <- mle2(myWeight ~ dnorm(mean=invLink( detFunc(myInbreedingCoeffs,a,b)), sd=s),
+            data=mydataSample,
+            start=list("a"=5,"b"=0, "s"=1))
+
+mod2
+```
+
+
+3b. Bonus! 
+Use your R skills to simulate sampling 25 snakes 200 times and, for each sample, estimate the effect size from a linear model. Report the mean effect size of your estimates and compare to the true effect size.
+
+```{r}
+sampleEffects <- function(){
+  smallSample = sample(1:1000, size=25, replace=F)
+  mydataSample <- mydata[smallSample,]
+  mod2 <- mle2(myWeight ~ dnorm(mean=invLink( detFunc(myInbreedingCoeffs,a,b)), sd=s),
+            data=mydataSample,
+            start=list("a"=5,"b"=0, "s"=1))
+  return(mod2@coef[[1]])
+}
+
+myEffects <- replicate(200, sampleEffects())
+
+summary(myEffects)
+```
+
+4. Measuring inbreeding coefficients can be challenging and imagine that you use a cheaper genotyping method that is not very accurate. The following code will add error to your inbreeding coefficient.
+
+
+```{r}
+mydata$myNoisyCoeffs <- mydata$myInbreedingCoeffs + rnorm(n=1000, mean=0, sd=0.2)
+
+```
+
+Fit a new model using these noisy coefficients as the predictor. How does your estimated coefficient differ from the true coefficient?
+
+```{r}
+mod3 <- mle2(myWeight ~ dnorm(mean=invLink( detFunc(myNoisyCoeffs,a,b)), sd=s),
+            data=mydata,
+            start=list("a"=5,"b"=0, "s"=1))
+
+mod3
+
+```
+
+4b. Bonus!
+Use your R skills to simulate regenerating noise for the inbreeding coefficients for 200 samples and then restimate the effect size from a linear model. Report the mean effect size of your estimates and compare to the true effect size.
+
+```{r}
+noiseEffects <- function(){
+  mydata$myNoisyCoeffs <- mydata$myInbreedingCoeffs + rnorm(n=1000, mean=0, sd=0.2)
+mod3 <- mle2(myWeight ~ dnorm(mean=invLink( detFunc(myNoisyCoeffs,a,b)), sd=s),
+            data=mydata,
+            start=list("a"=5,"b"=0, "s"=1))
+
+  return(mod3@coef[[1]])
+}
+
+myEffects <- replicate(200, noiseEffects())
+
+summary(myEffects)
+
+```
