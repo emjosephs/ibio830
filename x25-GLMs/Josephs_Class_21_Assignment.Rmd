@@ -1,0 +1,89 @@
+---
+title: "Model Building: putting it all together"
+output:
+  html_document: default
+language: R
+---
+
+<!-- To render the assignment in Rmarkdown, enter the command below in the R console -->
+<!-- rmarkdown::render("Class_24_Assignment.Rmd") -->
+
+#### Due by 11:59 on Nov 21.
+
+Save this Rmarkdown script as a file named “YourlastName_Assignment21.Rmd”. 
+For each question, fill out the answer and, where requested, 
+provide the relevant R code using "```" and the echo = TRUE argument.
+
+When finished, Knit your script together into an html report, 
+saved as “YourlastName_Assignment21.html” and upload the 
+resulting file to the D2L site (in today’s class folder) to turn it in. 
+It is due before our next class.
+
+Question 1:
+
+Going back to our mite example, when fungus outbreaks are very severe, they can kill the entire plant. 
+
+You are interested in quantifying the relationship between fungus amount and plant mortality in vineyards. 
+You collect data on the average amount of fungus per plot and, at the end of the season, count the number of dead plants.
+Assume all plots are the same size.
+
+The data is available on d2l to download. 
+
+```{r}
+mydata <- read.csv('fungusMortality.csv')
+```
+
+1a) Make a plot showing the amount of fungus on the X axis and the number of dead plants on the Y axis. 
+
+```{r}
+plot(mydata$dry.wt.fungus, mydata$mortality)
+
+```
+
+
+1b) Explain why a Poisson distribution would be an appropriate choice for modelling this data.
+
+We have count data that ranges from 0 to 6.
+
+
+1c) Head to wikipedia and look up the link function for a Poisson regression: https://en.wikipedia.org/wiki/Generalized_linear_model#Link_function
+
+Below is code for running a linear normal regression. Modify it to run a Poisson regression:
+
+```{r}
+
+#define a deterministic funciton
+detFunc <- function(x,a,b){
+    return(a + b*x)
+}
+
+# specify the inverse link function
+invLink <- function(z){
+    return(exp(z))
+}
+
+# run a regression with mle2()
+mod <- mle2(mortality ~ dpois(lambda=invLink( detFunc(dry.wt.fungus,a,b))),
+            data=mydata,
+            start=list("a"=0,"b"=0))
+
+## use the model to generate data
+modData = invLink(mod@coef[1]+mydata$dry.wt.fungus*mod@coef[2])
+
+## look at the model-predicted data curve on top of the actual data
+plot(mydata$dry.wt.fungus, mydata$mortality, bty="n", col="darkgray")
+points(mydata$dry.wt.fungus, modData,col="red",lwd=2)
+
+```
+
+Calculate the residuals and make a plot of the residuals against the independent variable.
+
+```{r}
+myresiduals = mydata$mortality-modData
+plot(mydata$dry.wt.fungus, myresiduals)
+abline(h=0, lty=2)
+```
+
+Do you think the model is doing a good job of fitting the data? Why or why not?
+
+You could argue either way.
