@@ -1,0 +1,119 @@
+---
+title: "Exp design"
+output: html_document
+date: "2024-11-20"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below is code to simulate some data. The biological scenario motivating the data is that inbreeding often negatively affects fitness. In this case, imagine a researcher uses genetic data to assess inbreeding in 1000 rattlesnakes. She also measures the weight of these snakes.
+
+```{r}
+myInbreedingCoeffs <- runif(1000, min=0, max=0.75)
+myIntercept = 6
+myBeta = -3
+mySd = 1
+
+myWeight = rnorm(n=1000, mean = myInbreedingCoeffs*myBeta + myIntercept, sd=mySd)
+
+mydata <- data.frame(myInbreedingCoeffs, myWeight)
+```
+
+1a. Make a plot showing the relationship between inbreeding coefficient and weight.
+
+```{r}
+
+plot(mydata$myInbreedingCoeffs, mydata$myWeight)
+```
+
+1b. Fit a linear model to the data using either lme2() or lm(). What is your estimated effect size? Does it match the effect size used in the simulations above?
+
+```{r}
+mod <- lm(myWeight ~ myInbreedingCoeffs, data=mydata)
+summary(mod)
+```
+
+Yes, it's doing a pretty good job of estimating the effects I simulated.
+
+
+1c. Below is some code to resample and run the regression 100 times. You will need to add a few lines to the codes -- I've tagged these areas with a comment. Once you have added these lines to the code, run it and make a plot of the distribution of inferred effect sizes (beta) across all the replicates.
+
+```{r}
+
+repeatLM <- function(){
+  mydata$myWeight <- rnorm(n=1000, mean = myInbreedingCoeffs*myBeta + myIntercept, sd=mySd) ## resample the response variable
+  mod <- lm(myWeight ~ myInbreedingCoeffs, data=mydata) ## ADD LINE OF CODE TO DO LINEAR MODEL FROM PART 1b
+  return(mod$coefficients[[2]]) ## return the effect size estimate if you used lm()
+  ## return(mod3@coef[[2]]) ## use this line if you used lme2()
+}
+
+myBetas <- replicate(100,repeatLM())
+
+hist(myBetas, border="white", main="")
+abline(v=myBeta, col="purple", lwd=2)
+```
+
+
+2a. Measuring weight can be challenging, especially in the field. To represent this, the code below adds noise to the weight estimate. Run it and make a plot of the inbreeding coefficients against the noisy weights.
+
+```{r}
+
+mydata$myNoisyWeights <- mydata$myWeight + rnorm(n=1000, mean=0, sd=1)
+
+plot(mydata$myInbreedingCoeffs, mydata$myNoisyWeights)
+```
+
+2b. Edit the code from 1b to add noise to the sample weights for 100 experiments and run the linear model using the noisy weights instead of the true weights. Make a plot showing the distribution of effect size estimates from these 100 regressions. How do they compare from the true effect size in the simulated data?
+
+
+```{r}
+repeatLMweights <- function(){
+  mydata$myWeight <- rnorm(n=1000, mean = myInbreedingCoeffs*myBeta + myIntercept, sd=mySd) 
+  mydata$myNoisyWeights <- mydata$myWeight + rnorm(n=1000, mean=0, sd=1)
+  mod <- lm(myNoisyWeights ~ myInbreedingCoeffs, data=mydata)
+  return(mod$coefficients[[2]]) ## return the effect size estimate if you used lm()
+}
+
+myBetas <- replicate(100,repeatLMweights())
+
+hist(myBetas, border="white", main="")
+abline(v=myBeta, col="purple", lwd=2)
+
+```
+
+
+3a. Measuring inbreeding coefficients can be challenging and imagine that you use a cheaper genotyping method that is not very accurate. The following code will add error to your inbreeding coefficient. Run it and make a plot of the noisy coefficients and the weight of your snakes.
+
+
+```{r}
+mydata$myNoisyCoeffs <- mydata$myInbreedingCoeffs + rnorm(n=1000, mean=0, sd=0.1)
+
+```
+
+3b. Fit a new model using these noisy coefficients as the predictor. How does your estimated coefficient differ from the true coefficient?
+
+```{r}
+mod2 <- lm(myWeight ~ myNoisyCoeffs,data=mydata)
+
+summary(mod2)
+
+```
+
+3c. Edit the code from 1c to run 100 samples using the noisy inbreeding coefficients instead of the true inbreeding coefficients. Make a plot showing the distribution of effect size estimates from these 100 regressions. How do they compare from the true effect size in the simulated data?
+
+```{r}
+repeatLMnoisy <- function(){
+  mydata$myWeight <- rnorm(n=1000, mean = myInbreedingCoeffs*myBeta + myIntercept, sd=mySd) 
+  mydata$myNoisyCoeffs <- mydata$myInbreedingCoeffs + rnorm(n=1000, mean=0, sd=0.1) ## add noise
+  mod <- lm(myWeight ~ myNoisyCoeffs, data=mydata)
+  return(mod$coefficients[[2]]) ## return the effect size estimate if you used lm()
+}
+
+myBetas <- replicate(100,repeatLMnoisy())
+
+hist(myBetas, border="white", main="", xlim = c(-3.5, 0))
+abline(v=myBeta, col="purple", lwd=2)
+
+```

@@ -689,8 +689,19 @@ plot(plant.height, myResiduals)
 ```
 
 
-Pitkow (1960) exposed guppies to 2, 8, 12, or 18 minutes in 5 degree Celsius water. The data – with a value of 1 for Alive meaning alive and a value of zero meaning dead. 
+Pitkow (1960) exposed guppies to 2, 8, 12, or 18 minutes in 5 degree Celsius water and tracked how many died.
 
+## Fish death GLMs
+
+```{r, echo=T}
+fishData <- read.csv('fishData.csv')
+plot(fishData$Time, fishData$Alive)
+```
+
+## Jitter!
+```{r, echo=T}
+plot(jitter(fishData$Time), jitter(fishData$Alive))
+```
 
 ## Group activity
 
