@@ -1,5 +1,5 @@
 ---
-title: "Lecture 24 - Model Building continued: GLMs and link functions"
+title: "Lecture 21 - Model Building continued: GLMs and link functions"
 author: "Emily Josephs"
 date: "November 19 2024"
 output:

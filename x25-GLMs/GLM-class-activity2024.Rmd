@@ -73,14 +73,18 @@ detFunc <- function(x,a,b){
 }
 
 # specify the inverse link function
-invLink <- function(z){
-    return(exp(z)/(1+exp(z)))  ### CHANGE 
-}
+invLink <- function(x){
+	p <- 1/(1+exp(-x))
+	return(p)
+} ### CHANGE 
+
 
 # run a regression with mle2()
-mod2 <- mle2(Alive ~ dpois(lambda=invLink( detFunc(Time,a,b))), ### CHANGE 
-            data=mydata,
-            start=list("a"=0.1,"b"=0.1))  ##  CHANGE 
+mod2 <- mle2(Alive ~ dbinom(size=1,
+					   p=invLink(detFunc(Time,a,b)) ##CHANGE
+				 ),
+			data=mydata,
+			start=list("a"=0,"b"=0))
 
 
 ## use the model to generate predicted data
