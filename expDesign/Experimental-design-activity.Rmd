@@ -117,3 +117,9 @@ hist(myBetas, border="white", main="", xlim = c(-3.5, 0))
 abline(v=myBeta, col="purple", lwd=2)
 
 ```
+
+
+4. Bonus! Modify the code from the above examples to investigate the effects of the following experimental changes:
+- reduced sample size (for example, 25 snakes instead of 1000 snakes)
+- truncated distribution (for example, you only have data for snakes with inbreeding coefficients < 0.25)
+- different distributions (for example, you are looking at offspring number instead of weight)
