@@ -1,0 +1,84 @@
+---
+title: "Simulation Battle"
+author: "Corrina Tapia, Hannah Gill and Peter Martin" 
+date: "2024-11-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data scenario
+
+A severe storm destroys a manufacturing facility which makes Aqueous Film-Forming Foam (AFF). The AFF becomes released into the surrounding environment. Emergency crews rushed to the scene to try and contain this release, but in the years following PFAS still remains present in the environment. Researchers sample lake trout in a lake nearby the disaster site each day following the incident for approximately 3 years (x) and record how many lake trout (y) have a significant amount of PFAS contamination (> 1000 ng/g). 
+
+
+
+## Simulate Data
+
+```{r Simulate Data}
+#Assign variables for each parameter
+a<-2
+b<-0.1
+
+### Generate predictor values, x
+x <- seq(0,1000,length.out=1000) 
+
+### Define exponential decay as the deterministic function
+detFunc <- function(x,a,b){
+  mean<-a*exp(-b*x)
+  return(mean)
+}
+
+# Specify the inverse link function
+invLink <- function(z){
+  lambda<-exp((z))
+  return(lambda)
+}
+
+# Generate response values, y
+y<-rpois(1e3,lambda=invLink(detFunc(x,a,b)))
+
+#### Combine x and y values into a dataframe
+mydata <- data.frame(x,y)
+```
+
+## Plot Data
+
+```{r Plot Data}
+plot(mydata$y~mydata$x, bty="n", col="darkgray",main="Simulated Data", xlab="predictor",ylab="response")
+
+```
+
+## MLE Regression
+```{r,Run MLE Regression}
+############# Run regression with mle2, make sure that simulated parameters are recovered ############
+library(bbmle)
+mod <- mle2(y ~ dpois(lambda=invLink(detFunc(x,a,b))),
+                      data=mydata,
+                      start=list("a"=0,"b"=0))
+mod
+
+## use the model to generate predicted data
+modData = invLink(mod@coef[1]*exp(-mod@coef[2]*x))
+
+#Plot mle model predicted data curve on top of actual data
+plot(mydata$y~mydata$x, bty="n", col="darkgray",main="Simulated Data", xlab="predictor",ylab="response")
+points(x,modData, col="red",lwd=2)
+```
+
+
+## Make csv file of data to send to other team
+
+```{r, Make csv file of data}
+setwd("~/IBIO 830")
+names(mydata)<- c("predictor", "response")
+write.csv(mydata,"Simulation.Battle.Data.csv", row.names = FALSE)
+```
+
+
+
+
+
+

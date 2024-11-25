@@ -3,34 +3,28 @@ title: "checking-data.Rmd"
 output: html_document
 date: "2022-12-01"
 ---
-
-Group silence of the lambdas 
+Chi-squad -- they need to redo right now.
 ##
 ```{r, echo=T}
 library(bbmle)
-setwd("~/Documents/ibio830/battles/")
+setwd("~/Documents/ibio830/battles/2024")
 
-myData = read.csv('silence-of-the-lambdaslinear_data.csv')
+md = read.csv('dragon.tree.data.csv')
 
+plot(md$predictor, md$response)
 
-a <- -1
-b <- -.41 
-
-invLink <- function(z){
-	return(-z^-1)
+invLink <- function(x){
+  return(exp(x))
 }
-
   
 detFunc <- function(x,a,b){
 	return(a*(x^b))
 }
 
 
-
-
-mod <- mle2(response ~ dexp(rate=invLink(detFunc(predictor,a,b))),
-             data=myData,
-             start=list("a"=-.5, "b"=-.5)
+mod <- mle2(response ~ dpois(lambda=invLink(detFunc(predictor,a,b))),
+             data=md,
+             start=list("a"=1, "b"=2)
              )
 
 mod
@@ -47,269 +41,40 @@ points(myData$predictor, 1/modData, col="red")
 #plot(myData$predictor, 1/invLink(detFunc(myData$predictor, a, b)))
 #plot(myData$predictor, rexp(1000, rate=invLink(detFunc(myData$predictor, a, b))))
 
-##got the wrong dterministic function
+##got
 
 ```
 
-
-Group R Bug
-
+Ankit -- works with b=3 (the first scenario from the Rmarkdown doc)
 
 ```{r}
-myData = read.csv('R bug Mystery Data 12022023.csv')
+library(bbmle)
 
-a <- 6
-b <- 0.18
+md = read.csv('~/Documents/ibio830/battles/2024/Ankit_simulated_data.csv')
 
-# Setting function for the expontential decay
-detFunc <- function(x, a, b){
-  a*exp(-b*x)
-}
-
-# Inverse function for the exponential decay
-invLink <- function(p){
-    x <- exp(p)
-}
-
-mod <- mle2(response ~ dpois(lambda=invLink( detFunc(predictor,a,b))),
-            data=myData,
-            start=list("a"=0,"b"=0))
-
-mod
-
-modData = invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
-
-plot(myData$predictor, myData$response)
-points(myData$predictor, modData, col="red")
-
-## got the wrong one
-```
-
-Team Hyrule
-
-
-```{r}
-myData <- read.csv('hyrule.csv')
-
-detFunc <- function(x,a,b){
-  return(a*exp(-b*x))
-}
-
-# specify the inverse link function
-invLink <- function(z){
-  return(z)
-}
-
-a<-100
-b<-0.1
-sd=5
-
-mod <- mle2(response ~ dnorm(mean=invLink( detFunc(predictor, a, b)), sd = s),
-            data=myData,
-            start=list("a"=10,"b"=0.15, s=10))
-
-mod
-
-
-modData = invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
-
-plot(myData$predictor, myData$response)
-points(myData$predictor, modData, col="red")
-
-
-# team guessed
-a2 = 100.17
-b2=0.096 
-sd2=4.77
-
-score = mean(c(abs(a-a2),abs(b-b2),abs(sd-sd2)))
-score  
-  
-
-```
-
-Mice -- this one is good!
-
-```{r}
-
-myData=read.csv('mice_survive.csv')
+plot(md$predictor, md$response)
 
 invLink <- function(x){
-  p <- 1/(1+exp(-x))
-  return(p)
+  return(x)
 }
-
+  
 detFunc <- function(x,a,b){
-	return(a+b*x)
+	return(a+x*b)
 }
 
-a=0
-b=1
 
-## its an binom dist. But where's the deterministic function? Is it just linear and a is 0, b is 1?
-
-mod <- mle2(Mice~ dbinom(size=20,prob=invLink( detFunc(temperature, a, b))),
-            data=myData,
-            start=list("a"=0,"b"=1))
+mod <- mle2(response ~ dnorm(mean=detFunc(predictor, a, b), sd=s),
+             data=md,
+             start=list("a"=1, "b"=2,'s'=1.5)
+             )
 
 mod
 
 
-modData <- invLink( detFunc(myData$temperature, a, b))*20
-plot(myData$temperature, myData$Mice)
-points(myData$temperature, modData, col="darkred")
 
-a2= 0.004502965
-b2= 0.977754085
 
-score=mean(c(abs(a-a2), c(b-b2)))
-score
+modData <- invLink(detFunc(md$predictor, mod@coef[1], mod@coef[2]))
+
+plot(md$predictor, md$response)
+points(md$predictor, modData, col="red")
 ```
-
-Statfish
-
-```{r}
-myData = read.csv('statfish-data.csv')
-
-detFunc <- function(x, a, b){
-  return(a * x^b)
-  
-}
-
-a = 2
-b = 0.25
-
-invLink <- function(x){
- exp(x)
-}
-
-
-mod <- mle2(Response~ dpois(lambda=invLink( detFunc(Predictor, a, b))),
-            data=myData,
-            start=list("a"=1,"b"=.25))
-mod
-
-
-modData = invLink(detFunc(myData$Predictor, mod@coef[1], mod@coef[2]))
-
-plot(myData$Predictor, myData$Response)
-points(myData$Predictor, modData, col="red")
-
-
-### got the wrong deterministic function
-
-#note that this is very sensitive to starting values
-#a2=
-#b2=
-  
-#score=mean(abs(a-a2),abs(b-b2))  
-```
-
-Dodocode
-
-
-```{r}
-myData <- read.csv('dodo_population1.csv')
-
-detFunc <- function(x,a,b){ #defining a linear deterministic function
-  return(a + b*x)
-}
-
-invLink <- function(p){ #specifying inverse link function for an exponential distribution
-  return(-p ** -1)
-}
-
-
-
-mod <- mle2(response~ dexp(rate=invLink( detFunc(predictor, a, b))),
-            data=myData,
-            start=list("a"=1,"b"=-1))
-mod
-
-
-modData = 1/invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
-
-plot(myData$predictor, myData$response)
-points(myData$predictor, modData, col="red")
-
-```
-
-
-Team Jerry/Emily/Charlie
-
-```{r}
-
-myData <- read.csv('Relationship between residual drug and time.csv')
-
-detFunc <- function(x,a,b){ 
-  return(a*exp(-b*x))
-}
-
-invLink <- function(z){ #specifying inverse link function for an exponential distribution
-  return(z)
-}
-
-
-alpha<-100    # Initial venom concentration (N0)
-beta<-0.1     # decay constant (lambda)
-sd<-1.5       #sd of normal distribution
-
-
-mod <- mle2(response~ dnorm(mean=invLink( detFunc(predictor, a, b)), sd),
-            data=myData,
-            start=list("a"=1,"b"=1, 'sd'=1))
-mod
-
-
-modData = invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
-
-plot(myData$predictor, myData$response)
-points(myData$predictor, modData, col="red")
-
-
-
-alpha2 = 100 
-  beta2= 0.01
-  sd2=1.508
-  
-  score=mean(c(abs(alpha-alpha2), abs(beta-beta2), abs(sd2-sd)))
-  score
-```
-
-Grigsby group -- this is fine
-
-```{r}
-myData <- read.csv('frogs.csv')
-
-detFunc <- function(x,a,b){ #defining a linear deterministic function
-  return(a*x^b)
-}
-
-invLink <- function(z){ #specifying inverse link function for an exponential distribution
-  return(exp(z))
-}
-
-alpha <- 4.5
-beta <- -0.03
-
-
-mod <- mle2(response~ dpois(lambda=invLink( detFunc(predictor, a, b))),
-            data=myData,
-            start=list("a"=1,"b"=-0.5))
-
-
-mod
-
-
-modData = invLink(detFunc(myData$predictor, mod@coef[1], mod@coef[2]))
-
-plot(myData$predictor, myData$response)
-points(myData$predictor, modData, col="red")
-
-#got the model wrong (jenna hyrnes group)
-
-# Sarah + Narda team. Got poisson? BUt then Normal and power law.
-
-```
-
-

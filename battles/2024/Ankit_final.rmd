@@ -1,0 +1,123 @@
+---
+title: "Final Project"
+author: "Ankit Gupta"
+date: "2024-11-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Scenario
+
+We investigated how soil moisture levels influence plant growth, measured as plant height (cm). Soil moisture, ranging from 0% to 100%, was hypothesized to have a linear effect on height, with a baseline height of 2 cm at 0% moisture and an increase of 0.5 cm for every 1% rise in moisture. Observed heights were simulated using a linear model with added random noise (standard deviation = 1.5 cm) to reflect environmental variability, generating 1,000 data points for analysis.
+
+```{r Simulation}
+
+# Load required library
+library(bbmle)
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Simulation Parameters
+n <- 1000  # Number of data points
+a <- 2     # Intercept
+b <- 3     # Slope
+sigma <- 1.5  # Standard deviation
+
+# Simulate predictor values
+predictor <- runif(n, 0, 10)  # Random values between 0 and 10
+
+# Simulate response values
+mu <- a + b * predictor  # Deterministic function (linear)
+response <- rnorm(n, mean = mu, sd = sigma)  # Add random noise (Normal distribution)
+
+# Combine into a data frame
+simulated_data <- data.frame(predictor, response)
+
+# Save to CSV for sharing
+write.csv(simulated_data, "simulated_data_normal_linear.csv", row.names = FALSE)
+
+# Plot the simulated data
+plot(predictor, response, main = "Simulated Data (Normal with Linear Relationship)",
+     xlab = "Predictor", ylab = "Response", pch = 16, col = "blue")
+
+
+```
+
+
+```{r MLE, echo=TRUE}
+
+# Load required library
+library(bbmle)
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Simulation Parameters
+n <- 1000  # Number of data points
+a <- 2     # Intercept (baseline height when soil moisture = 0)
+b <- 0.5   # Slope (increase in height per unit of soil moisture)
+sigma <- 1.5  # Standard deviation (random noise)
+
+# Simulate soil moisture values (predictor)
+soil_moisture <- runif(n, 0, 100)  # Soil moisture percentage (0 to 100)
+
+# Simulate plant heights (response)
+expected_height <- a + b * soil_moisture  # Deterministic function
+plant_height <- rnorm(n, mean = expected_height, sd = sigma)  # Add normal noise
+
+# Combine into a data frame
+simulated_data <- data.frame(soil_moisture, plant_height)
+
+# Plot the simulated data
+plot(soil_moisture, plant_height, main = "Simulated Data (Linear Relationship)",
+     xlab = "Soil Moisture (%)", ylab = "Plant Height (cm)", pch = 16, col = "blue")
+
+# Define the negative log-likelihood function
+nll <- function(a, b, sigma) {
+  expected_height <- a + b * simulated_data$soil_moisture  # Deterministic function
+  -sum(dnorm(simulated_data$plant_height, mean = expected_height, sd = sigma, log = TRUE))  # Log-likelihood
+}
+
+# Fit the model using MLE
+mle_model <- mle2(
+  minuslogl = nll,
+  start = list(a = 1, b = 0.1, sigma = 1),  # Initial parameter guesses
+  method = "L-BFGS-B",  # Optimization method
+  lower = c(a = -Inf, b = -Inf, sigma = 0.01)  # Constraints (e.g., sigma > 0)
+)
+
+# Print the summary of the MLE fit
+summary(mle_model)
+
+# Extract estimated parameters
+estimated_params <- coef(mle_model)
+cat("Estimated Parameters:\n")
+print(estimated_params)
+
+# Add the fitted line to the plot
+lines(simulated_data$soil_moisture,
+      estimated_params["a"] + estimated_params["b"] * simulated_data$soil_moisture,
+      col = "red", lwd = 2)
+
+# Add a legend to the plot
+legend("topleft", legend = c("Simulated Data", "Fitted Line"),
+       col = c("blue", "red"), pch = c(16, NA), lwd = c(NA, 2))
+
+
+```
+
+
+```{r csv}
+
+# Save the simulated data to a CSV file
+write.csv(simulated_data, "simulated_seed_germination_data.csv", row.names = FALSE)
+
+# Print a message to confirm the file is saved
+cat("Simulated data has been saved to 'simulated_seed_germination_data.csv' in the working directory.\n")
+
+
+```

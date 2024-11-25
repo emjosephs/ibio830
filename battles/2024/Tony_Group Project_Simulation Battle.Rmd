@@ -1,0 +1,74 @@
+---
+title: "Simulation Battle"
+author: "Jack"
+date: "2024-11-21"
+output: html_document
+---
+
+**Group:** Tony Zhou, Ben Feld, Jack Pritchard
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Simulation Battle
+\
+**2. the written scenario**
+**Scenario** - You're hiking in a circular forest on the Mongolian Steppe. You record observations of song birds, starting from the center of the forest. As you walk towards the edge of the forest, you notice and edge effect with a sharp decrease in bird abundance as you approach the super loud racetrack circling the forest patch. This is your data. How does bird abundance change as you walk from the center of the forest to the road? 
+\
+**Variables:** Distance from Road (Predictor) & Bird Abundance (Response) 
+**Distribution:** Poisson
+**Deterministic Function:** linear
+**Link Function:** Inverse Logit
+\
+```{r, eval=TRUE, echo=TRUE}
+#1. the code used to simulate the data:
+library(tidyverse)
+library(bbmle)
+
+#MyDataset<- simulate(object=, nsim=1000, seed=69) #I think we can omit this now?-Jack
+
+#parameters:
+a<- 4 #initial 
+b <- -0.1 #decay rate
+
+
+#JACK NOTE - I think we might need a max abundance as one of these parameters? 
+
+x_col<-sample(0:100,replace = TRUE,size=1000)
+
+  
+#function: 
+#TONY NOTE - This gives the function of (p); still needs to transfer f(p) to (p)
+det.fun<- function(a,b,x){
+  return(a+b*x)
+} 
+
+f_prob<-det.fun(a,b,x_col)
+f_prob
+inv.logit.link <- function(y){
+  miu<-1/(1+exp(-y))
+  return(miu)
+}
+miu<-inv.logit.link(f_prob)
+miu
+#3. a plot of the output
+#prob_birds<-inv.logit.link(prob)
+y_col<-rpois(n=1000,lambda = miu) 
+plot(x_col,y_col,xlab="Distance from Road (m)", ylab="Bird Abundance",main="Bird Abundance vs. Distance from Road")
+
+df<-data.frame(predictor=x_col, response=y_col)
+
+#4. a demonstration that if you run mle2() with the correct distribution and deterministic function, you recover the simulated parameters:
+mod <- mle2(
+  response ~ dpois(lambda = inv.logit.link(det.fun(a,b,predictor))),
+  data = df,
+  start = list("a" = 4, "b" = 0),
+
+)
+mod
+
+ write.csv(df,"test.csv")
+
+```
+

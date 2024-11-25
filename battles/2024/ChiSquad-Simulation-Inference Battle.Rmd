@@ -1,0 +1,136 @@
+---
+title: "Simulation-Inference Battle"
+author: "Swarnima Mukherjee, Sam Stynen, Miguel Silva"
+date: "2024-11-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Team Name: Chi-Squad
+Members: Swarnima Mukherjee, Sam Stynen, & Miguel Silva
+
+## Story
+
+A long, long time ago, in November 1023, 1000 years ago, the small kingdom of Chi 
+was founded. The city was developed quickly with farmland, a schoolhouse, and a maple syrup 
+harvesting factory. However, the next summer, terror began. A swarm of dragons 
+came through and burned down a patch of their beloved maple trees, during the 
+great dragon migration. The people of Chi were outraged. Luckily, for you, the city 
+kept excellent recordings of these events. Every summer when a new group of dragons comes 
+through and burns down a patch of trees, the city goes out and surveys their losses.
+These are their results. 
+
+
+## Creating the data
+
+We used Poisson distributions for the predictor and response variables.  
+In this case, the predictor is the number of dragons surveyed each year, and the response is the number of maple trees burned down by the dragons each year. We set up the relationship between the number of dragons and trees as a function of a power law with a coefficient (a) of 1 and a scaling exponent (b) of 2.
+
+```{r}
+# Simulate 1000 predictor data points:
+set.seed(123)
+n.dragons <- rpois(1000, lambda = 100)
+
+# Define the power law deterministic function
+powerLaw <- function(predictors,a,b){
+  return(a * (predictors^b))
+}
+
+# Use the deterministic function to simulate the response variable:
+
+burned.trees <- rpois(1000, lambda = exp(powerLaw(n.dragons, a = 1, b = 2)))
+
+# Set up the data frame and write to a csv:
+dragon.tree.data <- data.frame(predictor=n.dragons, response=burned.trees)
+
+write.csv(dragon.tree.data, "dragon.tree.data.csv", row.names=FALSE)
+
+```
+
+## Data exploration:
+
+Here are a plot of our predictor vs response variables, as well as histograms of both:
+
+```{r}
+# Plots and histograms
+plot(jitter(response) ~ jitter(predictor), dragon.tree.data, 
+     col = "darkslategray4", 
+     main = "Dragons vs. Burned Trees",
+     xlab="Number of dragons", 
+     ylab="Burned trees")
+
+hist(dragon.tree.data$predictor, 
+     main = "Histogram of Dragons", 
+     col = "lightgreen",
+     xlab="")
+
+hist(dragon.tree.data$response, 
+     main="Histogram of Burned Trees", 
+     col = "grey20",
+     xlab="")
+
+```
+
+## Coding the GLM regression:
+
+We specified the inverse log-link function, and used mle2 to run the GLM.  
+* we tried structuring the function similar to previous examples, however it wasn't working, and we had to change it to work. 
+
+```{r message=FALSE, warning=FALSE}
+# Specify the inverse link function
+invLink <- function(x){
+  return(exp(x))
+}
+
+# Run the regression with mle2()
+library(bbmle)
+
+### Tried to run this but it was not working
+# mod <- mle2(response ~ dpois(lambda=invLink(powerLaw(predictor,a,b))),
+#            data=dragon.tree.data,
+#            start=list(a=1, b=1))
+### Had to modify it below:
+
+mod <- mle2(response ~ dpois(lambda = invLink(log(a) + b * log(predictor))),
+            data = dragon.tree.data,
+            start = list(a = 1, b = 1))
+
+summary(mod)
+
+```
+
+In the summary above, we can note that the coefficients are equal to the "a" and "b" terms in our power law:  
+- a = 1  
+- b = 2  
+
+## Model plot and residuals:
+
+To note that the model correctly fits the data, we also ploted the model predicted line, as well as the residuals:
+
+```{r}
+# Use the model to generate predictions
+modData <- invLink(log(mod@coef[1])+log(dragon.tree.data$predictor)*mod@coef[2])
+
+# Look at the model-predicted data curve on top of the actual data
+plot(jitter(dragon.tree.data$predictor), jitter(dragon.tree.data$response), bty="L", col="darkgray",
+     main = "Dragons vs. Burned Trees",
+     xlab="Number of Dragons", 
+     ylab="Burned Trees")
+
+# Model prediction curve:
+lines(sort(dragon.tree.data$predictor), 
+      modData[order(dragon.tree.data$predictor)], 
+      col = "red", lwd = 2)
+
+# Calculate and plot the residuals
+residuals <- dragon.tree.data$response - modData
+
+plot(jitter(dragon.tree.data$predictor), jitter(residuals),
+     main = "Residuals vs Dragons", 
+     bty="L", col="darkgray")
+abline(h=0, lty=2, lwd = 2, col="red")
+
+```

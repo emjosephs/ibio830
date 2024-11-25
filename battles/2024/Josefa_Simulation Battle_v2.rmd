@@ -1,0 +1,58 @@
+---
+title: "Simulation Battle"
+author: "Karli Boer, Josefa Corpuz, Leah Dunlap"
+date: "2024-11-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Our scenario: "The firegold bollworm needs space: it is unhappy if its habitat is smaller than a certain number of square inches. However, it also enjoys company: more bollworms can tolerate a tighter space. A biologist adds bollworms to an artificial habitat. For each data point, she adjusts the size of their enclosure until all bollworms seem happy. Given a certain number of bollworms, can you approximate how many square inches is required for them to stay happy?"   
+
+Here is the code we used to simulate data. 
+
+```{r sim pois data}
+library ('bbmle')
+set.seed(55)
+preds <- runif(1000,min=0, max=100)
+a <- 100
+b <- 0.6
+lambda <- b*(preds)+a
+#This is our deterministic function. Since we simulated the data we choose the a and b values instead of finding the most likely fit based on the existing data.
+resp <- rpois(1000,lambda=lambda)
+```
+
+Here is a plot of the output.
+
+```{r pois df and hist}
+poisdata <- data.frame(predictors = preds, responses = resp)
+hist(poisdata$responses, main="Histogram of Responses", col=4. , xlab ="Responses")
+plot(data=poisdata, responses~predictors)
+```
+
+```{r det func}
+detfunc <- function(x,a,b){
+  return (a+b*x)
+}
+```
+
+```{r inv link}
+inv.link <- function(z){
+  return(exp(z))
+}
+```
+
+Here is an example of running mle2 on our data. The resulting coefficients, where beta0 is the intercept and beta1 is the slope, are close to 100 and 0.6, respectively. This is close to the parameters set at the beginning of this document. 
+
+```{r mle2 regression}
+LL <- function(beta0, beta1, mu, sigma) {
+  R = poisdata$responses - poisdata$predictors * beta1 - beta0
+  R = suppressWarnings(dnorm(R, mu, sigma, log = TRUE))
+  -sum(R)
+}
+
+fit <- mle2(LL, start = list(beta0 = 90, beta1 = 1, mu = 0, sigma = 1))
+summary(fit)
+```
