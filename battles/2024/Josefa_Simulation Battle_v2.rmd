@@ -55,4 +55,6 @@ LL <- function(beta0, beta1, mu, sigma) {
 
 fit <- mle2(LL, start = list(beta0 = 90, beta1 = 1, mu = 0, sigma = 1))
 summary(fit)
+
+write.csv(poisdata, file="Josefa_data.csv")
 ```

@@ -68,6 +68,7 @@ mod <- mle2(mucus ~ dexp(rate=inv_link_function(det_funct(weight,a,r))),
             data=dragon_data,
             start=list("a"=1,"r"=0))
 
+mod
 
 modData = det_funct(dragon_data$weight,mod@coef["a"], mod@coef["r"])
 
@@ -75,5 +76,9 @@ modData = det_funct(dragon_data$weight,mod@coef["a"], mod@coef["r"])
 
 plot(dragon_data$weight, dragon_data$mucus, bty="n", col="darkgray")
 points(dragon_data$weight, modData,col="red",lwd=2)
+
+
+
+write.csv(dragon_data,file='Kiara_data.csv')
 ```
 

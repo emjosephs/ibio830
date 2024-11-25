@@ -78,3 +78,149 @@ modData <- invLink(detFunc(md$predictor, mod@coef[1], mod@coef[2]))
 plot(md$predictor, md$response)
 points(md$predictor, modData, col="red")
 ```
+
+Hannah G -- model isn't able to recover the parameters used to simulate perfectly but maybe this is OK
+
+```{r}
+library(bbmle)
+
+md = read.csv('~/Documents/ibio830/battles/2024/HannahG-Simulation.Battle.Data.csv')
+
+plot(md$predictor, md$response)
+
+detFunc <- function(x,a,b){
+  mean<-a*exp(-b*x)
+  return(mean)
+}
+
+  
+# Specify the inverse link function
+invLink <- function(z){
+  lambda<-exp((z))
+  return(lambda)
+}
+
+
+mod <- mle2(response ~ dpois(lambda=invLink(detFunc(predictor, a, b))),
+             data=md,
+             start=list("a"=2, "b"=.1)
+             )
+
+mod
+
+
+modData <- invLink(detFunc(md$predictor, mod@coef[1], mod@coef[2]))
+
+plot(md$predictor, md$response)
+points(md$predictor, modData, col="red")
+points(md$predictor, invLink(detFunc(md$predictor,2,.1)), col="blue")
+```
+
+Josefa
+
+```{r}
+library(bbmle)
+
+md = read.csv('~/Documents/ibio830/battles/2024/Josefa_data.csv')
+
+plot(md$predictor, md$response)
+
+detFunc <- function(x,a,b){
+  mean<-a + b*x
+  return(mean)
+}
+
+  
+# Specify the inverse link function
+invLink <- function(z){
+  lambda<-exp((z))
+  return(lambda)
+}
+
+
+mod <- mle2(responses ~ dpois(lambda=invLink(detFunc(predictors, a, b))),
+             data=md,
+             start=list("a"=2, "b"=.1)
+             )
+
+mod
+
+
+modData <- invLink(detFunc(md$predictors, mod@coef[1], mod@coef[2]))
+
+plot(md$predictors, md$responses)
+points(md$predictors, modData, col="red")
+#points(md$predictors, invLink(detFunc(md$predictors,2,.1)), col="blue")
+
+```
+
+Kiara
+
+```{r}
+library(bbmle)
+
+md = read.csv('~/Documents/ibio830/battles/2024/Kiara_data.csv')
+names(md)<-c('x','predictor','response')
+
+plot(md$predictor, md$response)
+
+# Deterministic function - exponential decay
+det_funct <- function(data, a, r){ return (a * exp(r*data)) }
+
+# Inverse link function (canonical - negative inverse)
+ inv_link_function <- function(z) {return( 1/z)}
+
+ mod <- mle2(response ~ dexp(rate=inv_link_function(det_funct(predictor,a,r))),
+            data=md,
+            start=list("a"=1,"r"=0))
+mod
+
+
+modData <- invLink(detFunc(md$predictors, mod@coef[1], mod@coef[2]))
+
+plot(md$predictors, md$responses)
+points(md$predictors, modData, col="red")
+#points(md$predictors, invLink(detFunc(md$predictors,2,.1)), col="blue")
+
+```
+
+
+
+Tony
+```{r}
+library(bbmle)
+
+md = read.csv('~/Documents/ibio830/battles/2024/Tony_test.csv')
+
+plot(md$predictor, md$response)
+
+detFunc <- function(x,a,b){
+  mean<-a + b*x
+  return(mean)
+}
+
+
+# Inverse link function (canonical - negative inverse)
+ invLink <-  function(y){
+  miu<-1/(1+exp(-y))
+  return(miu)
+}
+
+mod <- mle2(response ~ dpois(lambda=invLink(detFunc(predictor, a, b))),
+             data=md,
+             start=list("a"=4, "b"=-.1)
+             )
+
+
+mod
+
+
+modData <- invLink(detFunc(md$predictor, mod@coef[1], mod@coef[2]))
+
+plot(md$predictor, md$response)
+points(md$predictor, modData, col="red")
+#points(md$predictors, invLink(detFunc(md$predictors,2,.1)), col="blue")
+
+```
+
+
