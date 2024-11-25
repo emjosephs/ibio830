@@ -188,7 +188,6 @@ points(md$predictors, modData, col="red")
 
 Tony
 ```{r}
-library(bbmle)
 
 md = read.csv('~/Documents/ibio830/battles/2024/Tony_test.csv')
 
@@ -224,3 +223,39 @@ points(md$predictor, modData, col="red")
 ```
 
 
+Sally
+
+```{r}
+md = read.csv('~/Documents/ibio830/battles/2024/Sally_goat.detections.csv')
+
+plot(md$predictor, md$response)
+
+detFunc <- function(x,a,b){
+  mean<-a + b*x
+  return(mean)
+}
+
+# specify the inverse link function
+invLink <- function(x){
+	p <- 1/(1+exp(-x))
+	return(p)
+} ### CHANGE 
+
+
+
+mod <- mle2(response ~ dbinom(size=1,p=invLink(detFunc(predictor, a, b))),
+             data=md,
+             start=list("a"=-70, "b"=0)
+             )
+
+
+mod
+
+
+modData <- invLink(detFunc(md$predictor, mod@coef[1], mod@coef[2]))
+
+plot(md$predictor, md$response)
+points(md$predictor, modData, col="red")
+#points(md$predictors, invLink(detFunc(md$predictors,2,.1)), col="blue")
+
+```
