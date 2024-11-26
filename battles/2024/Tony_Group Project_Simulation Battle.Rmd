@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 \
 ```{r, eval=TRUE, echo=TRUE}
 #1. the code used to simulate the data:
-library(tidyverse)
+#library(tidyverse)
 library(bbmle)
 
 #MyDataset<- simulate(object=, nsim=1000, seed=69) #I think we can omit this now?-Jack
