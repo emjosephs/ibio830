@@ -1,0 +1,63 @@
+---
+title: "SimulationBattle"
+output: html_document
+date: "2024-11-21"
+---
+This is data collected during an experiment investigating the effects of the presence of beneficial bacteria on insect colony growth. This bacteria, when present in the environment, is believed to help individual insects digest their food better, allowing for increased amounts of energy. It is not known how it impacts the growth at the colony level. In this experiment, individual insect colonies were grown, and after a month, the amount of beneficial bacteria present in the environment (in micro-grams) was measured, along with the size of the insect colony. The x axis is the amount of bacteria recovered in micro-grams from each colony, and the y axis is the growth of the insect population in individual insects. 
+
+```{r}
+#poisson probability distribution
+#linear deterministic function 
+
+#Data simulation
+n.samples<-1000 
+insect.bacteria.beta<-0.009
+insect.bacteria.alpha<-10
+n.bacteria<- runif(n.samples, min = 1, max = 400)
+n.insects<-(insect.bacteria.beta)*(n.bacteria)+ (insect.bacteria.alpha)
+lambda.insect<-(exp(n.insects)*insect.bacteria.beta)
+insect.growth<-rpois(n.samples,lambda = lambda.insect)
+
+
+group_data<-data.frame(bacteria_amount = n.bacteria,
+                   insect_population = insect.growth)
+
+write.csv(group_data,file='~/Documents/ibio830/battles/2024/Cori_data.csv', quote=F)
+
+library(ggplot2)
+ggplot(group_data, aes(x = bacteria_amount, y = insect_population)) +
+  geom_point(alpha = 0.5) +
+  theme_minimal() +
+  labs(x = "Amount of Beneficial Bacteria",
+       y = "Insect Population Growth")
+
+
+```
+
+
+```{r}
+#Model testing
+library(bbmle)
+
+detFunc<-function(x,a,b){
+  y<-a+b*x
+  return(y)
+}
+
+invlinkFunc<-function(z){
+  return(exp(z))
+}
+
+mod <- mle2(group_data$insect_population ~ dpois(lambda=invlinkFunc( detFunc(group_data$bacteria_amount,a,b))),
+            data=group_data,
+            start=list("a"=0,"b"=0))
+
+modData = invlinkFunc(mod@coef[1]+group_data$bacteria_amount*mod@coef[2])
+
+
+plot(group_data$bacteria_amount, group_data$insect_population, bty="n", col="darkgray")
+points(group_data$bacteria_amount, modData,col="red",lwd=2)
+
+summary(mod)
+
+```
