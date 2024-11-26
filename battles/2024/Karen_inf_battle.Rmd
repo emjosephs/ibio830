@@ -1,0 +1,85 @@
+---
+title: "Slay Slay Fashion Slurp"
+output: html_document
+date: "2024-11-21"
+author: Jackson, Abby, Karen, Kai
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+ 
+
+## Justification
+
+**Introduction**: Dragons have mucus that allows them to produce flames – this material is flammable but has low ignition potential so this is safe to collect. Dragon mucus is societally important as it is a green fuel allowing for transition away from fossil fuels. 
+Location: Tolkien post industrial revolution dragon village
+
+**Methods**: Over a period of several months, we asked 5-10 dragons a day in the village to collect all their oral/nasal mucus secretions for a 24 hour period. We also asked the dragons to weigh themselves once in the middle of the collection period.
+
+**Variables**:
+
+* Pounds of mucus secreted a day
+    + We compensated the dragons for their mucus at the market rate 
+* Dragon size
+    + We predict this is correlated with age as dragons turn into rocks as they age & get bigger (and rocks don’t secrete mucus)
+    + Potential for future study, but concerned with potential ageism ramifications for elder dragons who become less societally important, hence why it is not included in this study
+
+## Data
+
+```{r cars}
+library(bbmle)
+
+set.seed(123)
+
+# Simulate data (exponential distribution)
+first <- 1.74
+second <- -0.04
+
+inv_link_function <- function(z) {return( -1/z)}
+
+myExpSim <- function(i){
+  Myrate = first * exp(second*i)
+  
+  responseI = rexp(n=length(i), rate = inv_link_function(Myrate) ) # generate 1000 response values
+  return(responseI)
+}
+
+weight <- runif(1000, min=0, max=100) # predictor
+mucus <- myExpSim(weight) # response
+
+
+# Visualize
+plot(weight,mucus)
+
+```
+
+## Inference
+
+```{r pressure}
+
+dragon_data <- data.frame(weight=weight,mucus=mucus)
+
+# Deterministic function - exponential decay
+det_funct <- function(data, a, r){ return (a * exp(r*data)) }
+
+# Inverse link function (canonical - negative inverse)
+ inv_link_function <- function(z) {return( 1/z)}
+
+mod <- mle2(mucus ~ dexp(rate=inv_link_function(det_funct(weight,a,r))),
+            data=dragon_data,
+            start=list("a"=1.75,"r"=0))
+
+mod
+
+
+modData = det_funct(dragon_data$weight,[mod@coef["a"], mod@coef["r"])
+
+## look at the model-predicted data curve on top of the actual data
+
+plot(dragon_data$weight, dragon_data$mucus, bty="n", col="darkgray")
+points(dragon_data$weight, modData,col="red",lwd=2)
+
+write.csv(dragon_data, file="dragon_data2.csv")
+```
+

@@ -159,7 +159,7 @@ Kiara
 ```{r}
 library(bbmle)
 
-md = read.csv('~/Documents/ibio830/battles/2024/Kiara_data.csv')
+md = read.csv('~/Documents/ibio830/battles/2024/dragon_data2.csv')
 names(md)<-c('x','predictor','response')
 
 plot(md$predictor, md$response)
@@ -168,7 +168,7 @@ plot(md$predictor, md$response)
 det_funct <- function(data, a, r){ return (a * exp(r*data)) }
 
 # Inverse link function (canonical - negative inverse)
- inv_link_function <- function(z) {return( 1/z)}
+ inv_link_function <- function(z) {return( -1/z)}
 
  mod <- mle2(response ~ dexp(rate=inv_link_function(det_funct(predictor,a,r))),
             data=md,
@@ -176,10 +176,10 @@ det_funct <- function(data, a, r){ return (a * exp(r*data)) }
 mod
 
 
-modData <- invLink(detFunc(md$predictors, mod@coef[1], mod@coef[2]))
+modData <- invLink(detFunc(md$predictor, mod@coef[1], mod@coef[2]))
 
-plot(md$predictors, md$responses)
-points(md$predictors, modData, col="red")
+plot(md$predictor, md$response)
+points(md$predictor, modData, col="red")
 #points(md$predictors, invLink(detFunc(md$predictors,2,.1)), col="blue")
 
 ```
